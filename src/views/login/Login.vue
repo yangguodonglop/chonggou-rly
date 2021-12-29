@@ -81,7 +81,7 @@ export default {
               localStorage.setItem('userInfo', JSON.stringify(res.data) )
               this.$store.commit("saveUserName", this.form.username);
               this.$router.push({
-                path: "/User"
+                path: "/MusicList"
               });
             } else {
               this.$message.error("用户名或密码不正确");

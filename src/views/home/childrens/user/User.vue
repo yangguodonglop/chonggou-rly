@@ -256,7 +256,8 @@ export default {
         token: this.token,
         pageSize: 10,
         curPage: this.currentPage - 1,
-        fFuncGroup: JSON.parse(localStorage.getItem("userInfo")).account.funcGroup
+        // fFuncGroup: JSON.parse(localStorage.getItem("userInfo")).account.funcGroup
+        fFuncGroup: []
       };
       this.loading = true;
       //向后端发送请求并接受数据库中的用户列表
@@ -411,112 +412,7 @@ export default {
     }
   },
   computed: {
-    //筛选之后的表格数据
-    //   getTableData() {
-    //     //不为空的时候做
-    //     if (this.search.uid) {
-    //       return (
-    //         this.tableData
-    //           //筛选符合条件的数据
-    //           .filter(data => {
-    //             if (data.uid == this.search.uid) {
-    //               return data;
-    //             }
-    //           })
-    //           .slice(
-    //             (this.currentPage - 1) * this.pagesize,
-    //             this.currentPage * this.pagesize
-    //           )
-    //       );
-    //     }
-    //     if (this.search.userName) {
-    //       return this.tableData
-    //         .filter(data => {
-    //           if (
-    //             data.userName
-    //               .toLowerCase()
-    //               .includes(this.search.userName.toLowerCase())
-    //           ) {
-    //             return data;
-    //           }
-    //         })
-    //         .slice(
-    //           (this.currentPage - 1) * this.pagesize,
-    //           this.currentPage * this.pagesize
-    //         );
-    //     }
-    //     if (this.search.address) {
-    //       return this.tableData
-    //         .filter(data => {
-    //           if (
-    //             data.address
-    //               .toLowerCase()
-    //               .includes(this.search.address.toLowerCase())
-    //           ) {
-    //             return data;
-    //           }
-    //         })
-    //         .slice(
-    //           (this.currentPage - 1) * this.pagesize,
-    //           this.currentPage * this.pagesize
-    //         );
-    //     }
-    //     if (this.search.status) {
-    //       console.log(this.currentPage);
-    //       return this.tableData
-    //         .filter(data => {
-    //           if (data.status == this.search.status) {
-    //             return data;
-    //           }
-    //         })
-    //         .slice(
-    //           (this.currentPage - 1) * this.pagesize,
-    //           this.currentPage * this.pagesize
-    //         );
-    //     }
-    //     return this.tableData.slice(
-    //       (this.currentPage - 1) * this.pagesize,
-    //       this.currentPage * this.pagesize
-    //     );
-    //   },
-    //   //获取筛选过后的表格数据长度
-    //   getTotal() {
-    //     if (this.search.uid) {
-    //       return this.tableData.filter(data => {
-    //         if (data.uid == this.search.uid) {
-    //           return data;
-    //         }
-    //       }).length;
-    //     }
-    //     if (this.search.userName) {
-    //       return this.tableData.filter(data => {
-    //         if (data.userName.includes(this.search.userName)) {
-    //           return data;
-    //         }
-    //       }).length;
-    //     }
-    //     if (this.search.address) {
-    //       return this.tableData.filter(data => {
-    //         if (data.address.includes(this.search.address)) {
-    //           return data;
-    //         }
-    //       }).length;
-    //     }
-    //     if (this.search.status) {
-    //       return this.tableData.filter(data => {
-    //         if (data.status == this.search.status) {
-    //           return data;
-    //         }
-    //       }).length;
-    //     }
-    //     return this.tableData.length;
-    //   }
-    // },
-    // filters: {
-    //   dateFmt(date) {
-    //     let d = new Date(date);
-    //     return fmtDate(d, "yyyy-MM-dd hh:mm:ss");
-    //   }
+   
   }
 };
 </script>

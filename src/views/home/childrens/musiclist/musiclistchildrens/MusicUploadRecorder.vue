@@ -5,7 +5,7 @@
           <el-input :disabled="true" v-model="userInfo.songName" autocomplete="off" placeholder="请输入歌曲名称"></el-input>
         </el-form-item>
     
-        <el-form-item label="上传编曲:" prop="file" :label-width="formLabelWidth">
+        <el-form-item label="上传录音:" prop="file" :label-width="formLabelWidth">
           <el-upload
             action
             multiple
@@ -26,10 +26,10 @@
             :http-request="httpRequestPro"
           >
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <span slot="tip" class="el-upload__tip">请选择.歌词文件上传</span>
+            <span slot="tip" class="el-upload__tip">请选择工程文件文件上传</span>
           </el-upload>
         </el-form-item>
-         <el-form-item label="上传导唱文件:" prop="file" :label-width="formLabelWidth">
+         <!-- <el-form-item label="上传导唱文件:" prop="file" :label-width="formLabelWidth">
           <el-upload
             action
             multiple
@@ -40,19 +40,17 @@
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
             <span slot="tip" class="el-upload__tip">请选择.歌词文件上传</span>
           </el-upload>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer" style="display: flex;justify-content: center;">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="close()">取 消</el-button>
         <el-button type="primary" @click="confirm()">确 定</el-button>
       </div>
   </div>
 </template>
 
-
-
 <script>
-import { uploadFile, aboutMusicTag, commitDemo,commitArrangement } from "network/home.js";
+import { uploadFile, aboutMusicTag, commitDemo,commitArrangement,commitRecord } from "network/home.js";
 
 export default {
   name: "MusicAdd",
@@ -143,7 +141,7 @@ export default {
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
-      fd.append("category", "arrPro");
+      fd.append("category", "rec");
 
       // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
       // let config = {
@@ -156,14 +154,14 @@ export default {
           this.fileCode = res.data;
           this.$message({
             type: "success",
-            message: "上传编曲成功！"
+            message: "上传录音成功！"
           });
           //this.submitForm();//提交表单
         } else {
           this.fileCode = "";
           this.$message({
             type: "error",
-            message: "上传编曲失败！"
+            message: "上传录音失败！"
           });
         }
         //  if(res.code===0){
@@ -177,7 +175,7 @@ export default {
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
-      fd.append("category", "arrDC");
+      fd.append("category", "recPro");
 
       // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
       // let config = {
@@ -190,7 +188,7 @@ export default {
           this.projectCode = res.data;
           this.$message({
             type: "success",
-            message: "上传工程文件成功！"
+            message: "上传录音工程文件成功！"
           });
           //this.submitForm();//提交表单
         } else {
@@ -198,7 +196,7 @@ export default {
 
           this.$message({
             type: "error",
-            message: "上传工程文件失败！"
+            message: "上传录音工程文件失败！"
           });
         }
       });
@@ -239,6 +237,9 @@ export default {
       this.reload();
     },
    
+    close(){
+          this.$emit('editDistributeRecorder')
+    },
     confirm() {
       
       const param = {
@@ -247,26 +248,25 @@ export default {
     
     fileCode: this.fileCode,
     projectCode: this.projectCode,
-    daoChangCode: this.daoChangCode
       };
       console.log(param)
-      commitArrangement(param).then(res => {
+      commitRecord(param).then(res => {
         console.log(res);
         if (res.status == 0) {
           this.lyricsCode = res.data;
           this.$message({
             type: "success",
-            message: "上传编曲成功！"
+            message: "上传录音成功！"
           });
           this.dialogFormVisible=false
           //this.submitForm();//提交表单
-          this.$emit('addMusic')
+          this.$emit('editDistributeRecorder')
         } else {
           this.lyricsCode = "";
 
           this.$message({
             type: "error",
-            message: "上传编曲失败！"
+            message: "上传录音失败！"
           });
         }
       });

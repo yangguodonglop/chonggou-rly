@@ -52,7 +52,7 @@
         <div class="btn option-active">
           <music-add style="margin-left:20px" :music-type-list="musicTypes" @addMusic="addMusic"></music-add>
           <music-delete style="margin-left:20px" :multiple-selection="multipleSelection"></music-delete>
-          <div class="refresh" style="margin-left:20px"        >
+          <div class="refresh" style="margin-left:20px">
             <el-button type="info" @click="refresh" size="small" icon="el-icon-refresh"></el-button>
           </div>
         </div>
@@ -75,36 +75,41 @@
       <el-table-column prop="songName" label="歌曲名称" sortable width="120" align="center"></el-table-column>
       <el-table-column prop="tag" label="歌曲风格" width="150" align="center"></el-table-column>
       <el-table-column prop="lyricist" label="作词人" width="120" align="center"></el-table-column>
-      <el-table-column prop="composer" label="作曲人"  width="120" align="center"></el-table-column>
-      <el-table-column prop="producerNick" label="制作人"  width="120" align="center"></el-table-column>
-            <el-table-column prop="progressRate" label="歌曲状态" width="150" align="center"></el-table-column>
+      <el-table-column prop="composer" label="作曲人" width="120" align="center"></el-table-column>
+      <el-table-column prop="producerNick" label="制作人" width="120" align="center"></el-table-column>
+      <el-table-column prop="progressRate" label="歌曲状态" width="150" align="center"></el-table-column>
 
       <el-table-column prop="lyricurl" label="歌词地址" width="80" align="center"></el-table-column>
       <el-table-column prop="time" label="创建时间" width="150" align="center" sortable></el-table-column>
-      <el-table-column fixed="right" label="操作"  align="center">
+      <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <!-- <el-button @click="checkClick(scope.row)" type="text" size="mini">查看</el-button>
           <el-button type="text" size="mini" @click="updateClick(scope.row)">修改</el-button>
-          <el-button type="text" size="mini" @click="deleteClick(scope.row)">删除</el-button> -->
-           <div>
-         <el-dropdown trigger="click" @command="handleCommand">
-      <span class="el-dropdown-link" style="color:#409eff;" >
-        操作<i class="el-icon-arrow-down el-icon--right"></i>
-      </span>
-      <el-dropdown-menu slot="dropdown">
-         <el-dropdown-item @click.native="toAudition(scope.row)">选择试听</el-dropdown-item>
-         <el-dropdown-item @click.native="toDistribute(scope.row,'producer','200')">分配制作人</el-dropdown-item>
-         <el-dropdown-item @click.native="toDistribute(scope.row,'arrangementM','300')">分配编曲组长</el-dropdown-item>
-         <el-dropdown-item @click.native="toDistribute(scope.row,'arrangement','351')">分配编曲师</el-dropdown-item>
-         <el-dropdown-item @click.native="toUpload(scope.row)">上传编曲</el-dropdown-item>
-         <el-dropdown-item @click.native="toReview(scope.row,'arrangement','30')">通过</el-dropdown-item>
-         <el-dropdown-item @click.native="toReview(scope.row,'arrangement','20')">驳回</el-dropdown-item>
-         <el-dropdown-item @click.native="toUpload(scope.row,'arrangement','10')">删除</el-dropdown-item>
-    <el-dropdown-item command="b">退出系统</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
-      </div>
-          
+          <el-button type="text" size="mini" @click="deleteClick(scope.row)">删除</el-button>-->
+          <div>
+            <el-dropdown trigger="click" @command="handleCommand">
+              <span class="el-dropdown-link" style="color:#409eff;">
+                操作
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native="toAudition(scope.row)">选择试听</el-dropdown-item>
+                <el-dropdown-item @click.native="toDistribute(scope.row,'producer','200')">分配制作人</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native="toDistribute(scope.row,'arrangementM','300')"
+                >分配编曲组长</el-dropdown-item>
+                <el-dropdown-item @click.native="toDistribute(scope.row,'arrangement','351')">分配编曲师</el-dropdown-item>
+                <el-dropdown-item @click.native="toDistribute(scope.row,'recorderM','400')">分配录音组长</el-dropdown-item>
+                <el-dropdown-item @click.native="toDistribute(scope.row,'recorder','451')">分配录音师</el-dropdown-item>
+                <el-dropdown-item @click.native="toUploadArrangemen(scope.row)">上传编曲</el-dropdown-item>
+                <el-dropdown-item @click.native="toUploadRecorder(scope.row)">上传录音</el-dropdown-item>
+                <el-dropdown-item @click.native="toReview(scope.row,'arrangement','30')">通过</el-dropdown-item>
+                <el-dropdown-item @click.native="toReview(scope.row,'arrangement','20')">驳回</el-dropdown-item>
+                <el-dropdown-item @click.native="toUpload(scope.row,'arrangement','10')">删除</el-dropdown-item>
+                <el-dropdown-item command="b">退出系统</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -120,36 +125,39 @@
         style="textAlign: right"
       ></el-pagination>
     </div>
-      <el-dialog
-    :footer='false'
-  title="试听"
-  :visible.sync="dialogVisibleAudition"
-  customClass="customWidth-audition"
- >
-   <music-audition :userInfo="userInfo"  @editInfo="editInfo"></music-audition>
-
-</el-dialog>
     <el-dialog
-    :footer='false'
-  title="分配制作人"
-  :visible.sync="dialogVisibleDistribute"
-  customClass="customWidth-distribute"
- >
-   <music-distribute :userInfo="userInfo"  @editDistribute="editDistribute"></music-distribute>
-
-</el-dialog>
-   <el-dialog
-    :footer='false'
-  title="上传文件"
-  :visible.sync="dialogVisibleUpload"
-  customClass="customWidth-distribute"
- >
-   <music-upload :userInfo="userInfo"  @editDistribute="editDistribute"></music-upload>
-
-</el-dialog>
-
+      :footer="false"
+      title="试听"
+      :visible.sync="dialogVisibleAudition"
+      customClass="customWidth-audition"
+    >
+      <music-audition :userInfo="userInfo" @editInfo="editInfo"></music-audition>
+    </el-dialog>
+    <el-dialog
+      :footer="false"
+      title="分配制作人"
+      :visible.sync="dialogVisibleDistribute"
+      customClass="customWidth-distribute"
+    >
+      <music-distribute :userInfo="userInfo" @editDistribute="editDistribute"></music-distribute>
+    </el-dialog>
+    <el-dialog
+      :footer="false"
+      title="上传编曲"
+      :visible.sync="dialogVisibleUpload"
+      customClass="customWidth-distribute"
+    >
+      <music-upload :userInfo="userInfo" @editDistribute="editDistribute"></music-upload>
+    </el-dialog>
+    <el-dialog
+      :footer="false"
+      title="上传录音"
+      :visible.sync="dialogVisibleUploadRecorder"
+      customClass="customWidth-distribute"
+    >
+      <music-upload-recorder :userInfo="userInfo" @editDistributeRecorder="editDistributeRecorder"></music-upload-recorder>
+    </el-dialog>
   </div>
-  
 </template>
 
 <script>
@@ -169,14 +177,30 @@ import MusicDelete from "./musiclistchildrens/MusicDelete.vue";
 import MusicAudition from "./musiclistchildrens/MusicAudition.vue";
 import MusicDistribute from "./musiclistchildrens/MusicDistribute.vue";
 import MusicUpload from "./musiclistchildrens/MusicUpload.vue";
+import MusicUploadRecorder from "./musiclistchildrens/MusicUploadRecorder.vue";
 
 import fmtDate from "common/js/Date.js";
-import { getProductionSong, aboutMusicTag,openFile,openFileActive,checkWork } from "network/home.js";
+import {
+  getProductionSong,
+  aboutMusicTag,
+  openFile,
+  openFileActive,
+  checkWork
+} from "network/home.js";
 
 export default {
   name: "MusicList",
   inject: ["reload"],
-  components: { SearchHeader, SearchInput, MusicAdd, MusicDelete,MusicAudition,MusicDistribute,MusicUpload},
+  components: {
+    SearchHeader,
+    SearchInput,
+    MusicAdd,
+    MusicDelete,
+    MusicAudition,
+    MusicDistribute,
+    MusicUpload,
+    MusicUploadRecorder
+  },
 
   data() {
     return {
@@ -200,7 +224,7 @@ export default {
       //歌手搜索框的占位符
       singerContent: "请输入歌手名称",
       // 表单验证
-     
+
       //表格数据
       tableData: [],
       //搜索框的属性
@@ -220,11 +244,12 @@ export default {
       dataText: "",
       token: JSON.parse(localStorage.getItem("userInfo")).token,
       styleType: [],
-      dialogVisibleAudition:false,
-      dialogVisibleDistribute:false,
-      dialogVisibleUpload:false,
-      userInfo:{},
-      editInfo:{}
+      dialogVisibleAudition: false,
+      dialogVisibleDistribute: false,
+      dialogVisibleUpload: false,
+      dialogVisibleUploadRecorder: false,
+      userInfo: {},
+      editInfo: {}
     };
   },
   created() {
@@ -238,16 +263,29 @@ export default {
     // this.getSingerList();
   },
   methods: {
+    //上传编曲取消
+
+    editDistributeRecorder() {
+      this.dialogVisibleUploadRecorder = false;
+      this.musicList();
+    },
     //审核
-    toReview(row,type,typeNum){
-      const param={
-    "token": this.token,
-    "songID": row.id,
-    "step": type,
-    "operation": parseInt(typeNum),
-    "remark": "暂无备注"
-}
- checkWork(param).then(res => {
+    toReview(row, type, typeNum) {
+      let tempType = "";
+      if (row.progressRate == "录音师已提交") {
+        tempType = "record";
+      } else if (row.progressRate == "编曲师已提交") {
+        tempType = "arrangement";
+      }
+      console.log(row);
+      const param = {
+        token: this.token,
+        songID: row.id,
+        step: tempType,
+        operation: parseInt(typeNum),
+        remark: "暂无备注"
+      };
+      checkWork(param).then(res => {
         if (res.status == 0) {
           this.$message({
             type: "success",
@@ -255,7 +293,6 @@ export default {
           });
           //this.submitForm();//提交表单
         } else {
-
           this.$message({
             type: "error",
             message: "操作失败！"
@@ -263,44 +300,44 @@ export default {
         }
       });
     },
-    //上传文件
-    toUpload(row){
-      this.userInfo={...row}
-      this.dialogVisibleUpload=true
+    //上传编曲文件
+    toUploadArrangemen(row) {
+      this.userInfo = { ...row };
+      this.dialogVisibleUpload = true;
+    },
+    //上传录音文件
+    toUploadRecorder(row) {
+      this.userInfo = { ...row };
+      this.dialogVisibleUploadRecorder = true;
     },
     //新增成功查询列表
-    addMusic(){
-
-      this.musicList()
+    addMusic() {
+      this.musicList();
     },
-    editDistribute(){
- this.dialogVisibleDistribute=false
-  this.musicList()
+    editDistribute() {
+      this.dialogVisibleDistribute = false;
+      this.musicList();
     },
     //分配制作人
-    toDistribute(row,type,group){
-      const param={
-        selecttype:type,
-        fFuncGroup:group
-      }
-          this.userInfo={...row,...param}
-      this.dialogVisibleDistribute=true
-
+    toDistribute(row, type, group) {
+      const param = {
+        selecttype: type,
+        fFuncGroup: group
+      };
+      this.userInfo = { ...row, ...param };
+      this.dialogVisibleDistribute = true;
     },
     //试听
-    toAudition(row){
-      console.log("***8")
-        this.userInfo={...row}
-      this.dialogVisibleAudition=true
-
+    toAudition(row) {
+      console.log("***8");
+      this.userInfo = { ...row };
+      this.dialogVisibleAudition = true;
     },
     // 操作
-    handleCommand(){
-
-    },
+    handleCommand() {},
     //删除
-      deleteClick(row) {
-        console.log(row)
+    deleteClick(row) {
+      console.log(row);
       const param = {
         token: this.token,
         songID: row.id
@@ -354,7 +391,7 @@ export default {
         }
       });
     },
-  
+
     updateClick(row) {
       this.$router.push({
         path: "/musicupdate",
@@ -370,7 +407,7 @@ export default {
         this.musicTypes = res;
       });
     },
- 
+
     //获取音乐列表
     musicList() {
       const param = {
@@ -389,56 +426,54 @@ export default {
       getProductionSong(param).then(res => {
         console.log(res);
         console.log(this.styleType);
-         this.tableData=[]
+        this.tableData = [];
         res.data.item.forEach((items, index) => {
-          let tempStatus=''
-          switch(items.progressRate){
+          let tempStatus = "";
+          switch (items.progressRate) {
             case 0:
-            tempStatus='已提交小样'
-            break;
-             case 100:
-            tempStatus='已提交小样'
-            break;
-             case 150:
-            tempStatus='已分配编曲组长'
-            break;
-             case 200:
-            tempStatus='已分配编曲师'
-            break;
-             case 220:
-            tempStatus='编曲师已提交'
-            break;
-             case 299:
-            tempStatus='编曲已完成'
-            break;
-              case 300:
-            tempStatus='已分配录音组长'
-            break;
-              case 350:
-            tempStatus='已分配录音师'
-            break;
-              case 370:
-            tempStatus='录音师已提交'
-            break;
-              case 499:
-            tempStatus='录音完成'
-            break;
+              tempStatus = "已提交小样";
+              break;
+            case 100:
+              tempStatus = "已提交小样";
+              break;
+            case 150:
+              tempStatus = "已分配编曲组长";
+              break;
+            case 200:
+              tempStatus = "已分配编曲师";
+              break;
+            case 220:
+              tempStatus = "编曲师已提交";
+              break;
+            case 299:
+              tempStatus = "编曲已完成";
+              break;
+            case 300:
+              tempStatus = "已分配录音组长";
+              break;
+            case 350:
+              tempStatus = "已分配录音师";
+              break;
+            case 370:
+              tempStatus = "录音师已提交";
+              break;
+            case 499:
+              tempStatus = "录音完成";
+              break;
           }
           let obj = {
             songName: items.submitter.songName,
             composer: items.submitter.composer,
             lyricist: items.submitter.lyricist,
             tag: items.submitter.tagName.join(","),
-            id:items.id,
-            demoFile:items.submitter.demoFile,
-            lyricsFile:items.submitter.lyricsFile,
-            producerNick:items.producerNick,
-            progressRate:tempStatus
-
+            id: items.id,
+            demoFile: items.submitter.demoFile,
+            lyricsFile: items.submitter.lyricsFile,
+            producerNick: items.producerNick,
+            progressRate: tempStatus
           };
           this.tableData.push(obj);
         });
-       
       });
     },
     //获取歌手列表
@@ -631,18 +666,16 @@ export default {
 </script>
 
 <style >
-.customWidth-audition{
+.customWidth-audition {
   width: 500px;
 }
-.customWidth-distribute{
+.customWidth-distribute {
   width: 500px;
-
 }
 .option {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  
 }
 
 /* .option div {

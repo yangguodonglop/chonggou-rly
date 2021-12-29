@@ -35,6 +35,7 @@ export const openFile = (param) => post(baseUrl+'/openFile', param)
 export const openFileActive = (param) => get(baseUrl+'/openFile/'+param,)
 export const assignWork = (param) => post(baseUrl+'/productLine/assignWork', param)
 export const checkWork = (param) => post(baseUrl+'/productLine/checkWork', param)
+export const commitRecord = (param) => post(baseUrl+'/productLine/commitRecord', param)
 
 const method = "POST";
 
