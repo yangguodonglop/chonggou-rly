@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.js"></script>
+  <!-- <script src="  https://unpkg.com/ant-design-vue@1.7.2/dist/antd.min.js"></script> -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.js"></script>
+
+
+</head>
+<style>
+  html {
+    width: 100%;
+    height: 100%
+  }
+
+  body {
+    height: 100%;
+    width: 100%
+  }
+
+  #root {
+    width: 100%;
+    height: 100%;
+  }
+
+  .container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    position: relative;
+
+    background: url(http://47.114.141.171:8990/logo01.jpg) no-repeat;
+    background-size: 100% 100%;
+    justify-content: center;
+    /*子元素水平居中*/
+    align-items: center;
+    /*子元素垂直居中*/
+    display: flex;
+  }
+
+  .main {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .main-form {
+    width: 400px;
+    height: 210px;
+    border-radius: 4px;
+    background: #ffffff;
+
+  }
+</style>
+
+<body>
+  <div id="root">
+
+    <div class="container">
+      <div class="main">
+        <div class="main-form">
+          <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit">
+            <a-form-item label="账号" style="margin-top:20px;">
+              <a-input style="width:280px"
+                v-decorator="['admin', { rules: [{ required: true, message: '请输入账号!' }] }]" />
+            </a-form-item>
+            <a-form-item label="密码" style="margin-top:20px;">
+              <a-input type="password" style="width:280px"
+                v-decorator="['pw', { rules: [{ required: true, message: '请输入账号!' }] }]" />
+            </a-form-item>
+            <a-form-item style="display: flex;justify-content: center;" :wrapper-col="{ span: 12, offset: 5 }">
+              <a-button type="primary" html-type="submit" style="margin-left:35px">
+                确定
+              </a-button>
+            </a-form-item>
+          </a-form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+
+
+
+    var vue = new Vue({
+      el: '#root',
+      data() {
+        return {
+          formLayout: "horizontal",
+          form: this.$form.createForm(this, { name: "coordinated" }),
+          customActiveKey: "tab1",
+          loginBtn: false,
+          // login type: 0 email, 1 username, 2 telephone
+          loginType: 0,
+          isLoginError: false,
+          requiredTwoStepCaptcha: false,
+          stepCaptchaVisible: false,
+          form: this.$form.createForm(this),
+          serverUrl:"http://47.114.141.171:8990",
+
+
+        };
+      },
+      mounted: function () {
+        //var temptest = "http://47.114.141.171:8990/MusicIndex.html?type=324324324";
+
+        var temptest = location.search; //获取url中"?"符后的字串 ?'
+        //var temptest = 'http://47.114.141.171:8990/MusicIndex.html?type=e5597321-c509-46ed-9574-bfe9a1aa6610'
+        var tempUrl;
+        if (temptest.indexOf("?") != -1) {
+          var str = temptest.split("?");
+          var tempurl1 = str[1]
+          console.log(str[1])
+          var tempurl2 = tempurl1.split("=")[1]
+          console.log(tempurl2)
+          this.axiosUrl = ''
+          this.axiosUrl = tempurl2
+          //  strs = str.split("=");
+          //  id = strs[1];
+          //this.queryInfo(this.axiosUrl)
+        }
+
+      },
+
+      methods: {
+        handleSubmit(e) {
+          let _this = this
+          e.preventDefault();
+          this.form.validateFields((err, values) => {
+            if (!err) {
+
+              axios({
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                },
+                method: 'post',
+                url: _this.serverUrl + '/signIn',
+                data: {
+                  key: values.admin,
+                  pw: values.pw
+                }
+              }).then(res => {
+                console.log(res)
+                let tempdata = res.data
+                if (tempdata.state == 0) {
+                  localStorage.setItem("admin", tempdata.userName);
+
+                  // var tempwindow = window.open("_blank");
+                  window.location = _this.serverUrl + '/MusicIndex.html?type=' + this.axiosUrl
+                  // "http://47.114.141.171:8990/MusicIndex.html?type=" + this.axiosUrl;
+                }
+                //this.queryCopyList = tempdata.data
+                // this.data.map((item,index)=>{
+                //   item['nums']=index
+                //   console.log(this.data)
+
+                // })
+                else {
+                  this.$message.error("密码错误，请重新登陆！");
+
+                }
+
+              });
+            }
+          });
+        },
+        handleSelectChange(value) {
+          console.log(value);
+          this.form.setFieldsValue({
+            note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
+          });
+        },
+
+      },
+    })
+
+  </script>
+</body>
+
+</html>

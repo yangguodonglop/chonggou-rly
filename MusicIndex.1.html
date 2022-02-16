@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.js"></script>
+  <!-- <script src="https://unpkg.com/ant-design-vue@1.7.2/dist/antd.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+
+</head>
+<style>
+  .ant-table-thead>tr>th,
+  .ant-table-tbody>tr>td {
+    padding: 12px 16px !important;
+  }
+</style>
+
+<body>
+  <div id="root">
+    <a-row>
+      <a-col :span="24" style="display: flex;
+        justify-content: start;
+        align-items: center;
+        margin:20px 20px;">
+        <a-button type="primary" @click="showHistory()">查看购买历史</a-button>
+        <a-button type="primary" @click="updataPassword()" style="margin-left:20px;">修改密码</a-button>
+
+
+
+      </a-col>
+    </a-row>
+    <a-row>
+      <a-col>
+    <a-table :pagination="false" :columns="columns" :data-source="data">
+
+      <span slot="action" slot-scope="record">
+
+        <a href="javascript:;" @click="queryPartner(record)">试听</a>
+        <a style="margin-left:20px" href="javascript:;" @click="toBuy(record)">确定买入</a>
+
+      </span>
+    </a-table>
+  </a-col>
+</a-row>
+    <a-row>
+      <a-col>
+        <div style="float:right">
+          <a-pagination
+            @change="onShowSizeChange"
+            v-model="current"
+            :total="totalNum"
+            show-less-items
+            style="margin-top:20px;"
+          />
+        </div>
+      </a-col>
+    </a-row>
+
+    <a-modal title="选择买入" :visible="visibleType" @ok="handleOk" @cancel="handleCancel" ok-text="确定" cancel-text="取消">
+      <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit">
+        
+
+   
+        <a-form-item label="版权方式">
+          <a-select default-value="" style="width: 100%" @change="handleChange2" v-decorator="[
+          'nName1',
+          { rules: [{ required: true, message: '请输入版权方式!' }] },
+        ]">
+            <a-select-option v-for="(item, index) in queryCopyList" :key="index" :value="item"> {{item}}
+            </a-select-option>
+
+
+          </a-select>
+        </a-form-item>
+        <a-form-item label="合作方式">
+          <a-select default-value="" style="width: 100%" @change="handleChange3" v-decorator="[
+          'nName2',
+          { rules: [{ required: true, message: '请输入合作方式!' }] },
+        ]">
+            <a-select-option v-for="(item, index) in cooperationList" :key="index" :value="item"> {{item}}
+            </a-select-option>
+
+          </a-select>
+        </a-form-item>
+      </a-form>
+    </a-modal>
+    <a-modal title="试听" :visible="visibleAudition" :confirm-loading="confirmLoading" @ok="handleOkAudition" ok-text="确定"
+      cancel-text="取消" @cancel="handleCancelAudition">
+      <div style="display: flex;justify-content: center;flex-direction: column;">
+        <div style="display: flex;justify-content: center;">
+          <audio :src="auditionCodeUrl" controls="controls" id="music1" controlslist="nodownload"></audio>
+        </div>
+        <div style="margin-top: 20px;text-indent: 20px;max-height: 600px;white-space: pre-wrap;overflow-y: auto;padding: 10px 20px;">{{songText}}</div>
+      </div>
+    </a-modal>
+    <a-modal title=" 购买记录" width="900px" :visible="visiblePartner" :confirm-loading="confirmLoading"
+      @ok="handleOkPartner" @cancel="handleCancelPartner" ok-text="确定" cancel-text="取消" >
+      <div>
+        <a-row>
+          <a-col :span="24">
+            <a-table :pagination="false" :columns="columnPartner" :data-source="data1" style="margin-top: 20px">
+            </a-table>
+          </a-col>
+        </a-row>
+        <a-row>
+          <a-col>
+            <div style="float:right">
+              <a-pagination @change="onShowSizeChange1" v-model="current1" :total="totalNum1" show-less-items
+                style="margin-top:20px;" />
+            </div>
+          </a-col>
+        </a-row>
+      </div>
+    </a-modal>
+    <a-modal title="购买提示" width="900px" :visible="visibleBuy" :confirm-loading="confirmLoading"
+    @ok="handleOkBuy" @cancel="handleCancelBuy" ok-text="确定" cancel-text="取消" >
+    <div>
+      <a-row>
+        <a-col :span="24">
+         <div style="display: flex; justify-content: center; align-items: center;">{{buyText}}</div>
+        </a-col>
+      </a-row>
+     
+    </div>
+  </a-modal>
+  <a-modal title="购买提示" width="900px" :visible="visibleBuying" :confirm-loading="confirmLoading"
+  @ok="handleOkBuying" @cancel="handleCancelBuying" ok-text="确定" cancel-text="取消" >
+  <div>
+    <a-row>
+      <a-col :span="24">
+       <div style="display: flex; justify-content: center; align-items: center;">{{buyTexting}}</div>
+      </a-col>
+    </a-row>
+   
+  </div>
+</a-modal>
+<a-modal title="修改密码" :visible="visibleType2" @ok="handleOk2" @cancel="handleCancel2" ok-text="确定" cancel-text="取消">
+  <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit2">
+    
+    <a-form-item label="原密码">
+      <a-input  type="password"
+        v-decorator="[
+          'oldPassword',
+          { rules: [{ required: true, message: '请输入原密码!' }] },
+        ]"
+      />
+    </a-form-item>
+    <a-form-item label="新密码">
+      <a-input  type="password"
+        v-decorator="[
+          'newPassword',
+          { rules: [{ required: true, message: '请输入新密码!' }] },
+        ]"
+      />
+    </a-form-item>
+
+   
+  </a-form>
+</a-modal>
+  </div>
+
+  <script>
+    const columns = [
+      {
+        dataIndex: "nums",
+        title: "编号",
+        key: "nums",
+        slots: { title: "customTitle" },
+        scopedSlots: { customRender: "name1" },
+      },
+      {
+        title: "歌曲名",
+        dataIndex: "name",
+        key: "name",
+      },
+      {
+        title: "词作者",
+        dataIndex: "lyricist",
+        key: "lyricist",
+      },
+      {
+        title: "曲作者",
+        dataIndex: "composer",
+        key: "composer",
+      },
+
+
+      {
+        title: "操作",
+        key: "action",
+        scopedSlots: { customRender: "action" },
+      },
+    ];
+    const columnPartner = [
+      {
+        dataIndex: "songName",
+        title: "歌曲名",
+        key: "songName",
+        slots: { title: "customTitle" },
+        scopedSlots: { customRender: "name1" }
+      },
+      {
+        dataIndex: "tag",
+        title: "风格",
+        key: "tag",
+        slots: { title: "customTitle" },
+        scopedSlots: { customRender: "name1" }
+      },
+
+      {
+        dataIndex: "createTime",
+        title: "意向时间",
+        key: "createTime",
+        slots: { title: "customTitle" },
+        scopedSlots: { customRender: "name1" }
+      },
+
+      {
+        dataIndex: "contractTime",
+        title: "签署合同时间",
+        key: "contractTime",
+        slots: { title: "customTitle" },
+        scopedSlots: { customRender: "name1" }
+      },
+
+      {
+        dataIndex: "publishTime",
+        title: "发布时间",
+        key: "publishTime",
+        slots: { title: "customTitle" },
+        scopedSlots: { customRender: "name1" }
+      },
+
+
+
+    ]
+
+    const data = [
+
+    ];
+    const data1 = [
+
+    ];
+
+
+    var vue = new Vue({
+      el: '#root',
+      data() {
+        return {
+          data,
+          data1,
+          columns,
+          columnPartner,
+          axiosUrl: "",
+          selectedRowKeys: [], // Check here to configure the default column
+          visibleType: false,
+          queryCopyList: [],
+          cooperationList: [],
+          confirmLoading: false,
+          formLayout: "horizontal",
+          form: this.$form.createForm(this, { name: "coordinated" }),
+          visibleAudition: false,
+          auditionCodeUrl: '',
+          song: "",
+          lockTime:0,
+          copyright: "",
+          cooperative: "",
+          saveUrl: "",
+          songText: "",
+          severUrl: "http://47.114.141.171:8990",
+          visiblePartner: false,
+          current: 1,
+          totalNum: 20,
+          current1: 1,
+          totalNum1: 2,
+          visibleBuy:false,
+          visibleBuying:false,
+          buyText:"选择后发现该歌曲已经被别人买入了：非常抱歉，该歌曲已经被其他合作伙伴暂时锁定了，请您理解！",
+          buyTexting:"",
+          visibleType2:false
+       
+        };
+      },
+      mounted: function () {
+        //var temptest = "http://47.114.141.171:8990/MusicIndex.html?type=324324324";
+
+        var temptest = location.search; //获取url中"?"符后的字串 ?'
+        //var temptest = 'http://47.114.141.171:8990/MusicIndex.html?type=e5597321-c509-46ed-9574-bfe9a1aa6610'
+        var tempUrl;
+        if (temptest.indexOf("?") != -1) {
+          var str = temptest.split("?");
+          var tempurl1 = str[1]
+          var tempurl2 = tempurl1.split("=")[1]
+          this.axiosUrl = ''
+          this.axiosUrl = tempurl2
+          //  strs = str.split("=");
+          //  id = strs[1];
+          this.queryInfo(this.axiosUrl)
+        }
+
+
+      },
+
+      methods: {
+        //修改密码
+        updataPassword(){
+          this.visibleType2=true
+
+        },
+        //查看历史
+        showHistory() {
+          this.querybuyHistory()
+          this.visiblePartner = true
+        },
+        //时间格式化
+        getTimes: function (b) {
+          let e = new Date(b)
+          let year = e.getFullYear();
+          let month = e.getMonth() + 1;
+          let day = e.getDate();
+          let hh =
+            e.getHours() < 10 ?
+              "0" + e.getHours() :
+              e.getHours();
+          let mm =
+            e.getMinutes() < 10 ?
+              "0" + e.getMinutes() :
+              e.getMinutes();
+          let ss =
+            e.getSeconds() < 10 ?
+              "0" + e.getSeconds() :
+              e.getSeconds();
+          let endTime = `${year}-${month}-${day} ${hh}:${mm}:${ss}`;
+          return endTime
+        },
+        //关闭试听伙伴弹窗
+        handleOkPartner() {
+          this.visiblePartner = false;
+        },
+        handleCancelPartner() {
+          this.visiblePartner = false;
+        },
+        //已被购买弹窗关闭
+        handleOkBuy(){
+          this.visibleBuy=false
+          
+        },
+         //已被购买弹窗关闭
+         handleCancelBuy(){
+          this.visibleBuy=false
+        },
+            //购买成功弹窗关闭
+            handleOkBuying(){
+          this.visibleBuying=false
+          
+        },
+         //购买成功弹窗关闭
+         handleCancelBuying(){
+          this.visibleBuying=false
+        },
+        //查看历史分页
+        onShowSizeChange1(current, pageSize) {
+          this.current1 = current;
+          this.querybuyHistory()
+        },
+         //查看历史分页
+         onShowSizeChange(current, pageSize) {
+          this.current = current;
+          console.log(current, pageSize);
+          this.queryInfo(this.axiosUrl)
+        },
+        //查看历史
+        querybuyHistory() {
+          let _this = this
+          axios({
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            method: 'post',
+            url: _this.severUrl + '/getBuyHistory',
+            data: {
+              key: localStorage.getItem("admin"),
+              page: _this.current1,
+              pageSize: 10
+            }
+          }).then(res => {
+            let tempdata = res.data
+            if (tempdata.state == 0) {
+              this.data1 = tempdata.buyHistory;
+              this.data1.map(item => {
+                if (item.createTime > 0) {
+                  item.createTime = _this.getTimes(item.createTime * 1000)
+                } else {
+                  item.createTime = ""
+                }
+                if (item.contractTime > 0) {
+                  item.contractTime = _this.getTimes(item.contractTime * 1000)
+                } else {
+                  item.contractTime = ""
+                }
+                if (item.publishTime > 0) {
+                  item.publishTime = _this.getTimes(item.publishTime * 1000)
+                } else {
+                  item.publishTime = ""
+                }
+                // item["timess"] = common.getTimes(item.time * 1000);
+                this.totalNum1 = tempdata.Count
+                this.visiblePartner = true;
+
+              });
+            }
+
+          });
+
+
+        },
+
+        //取消试听
+        handleCancelAudition() {
+          var audio = document.getElementById("music1");
+          audio.pause();
+          this.visibleAudition = false
+
+        },
+        handleOkAudition() {
+          var audio = document.getElementById("music1");
+          audio.pause();
+          this.visibleAudition = false
+
+        },
+        //试听
+        queryPartner(val) {
+          let _this = this
+          this.auditionCodeUrl = _this.severUrl + '/song/' + val.url
+
+          this.visibleAudition = true
+
+          axios({
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'token': localStorage.getItem("admin"),
+            },
+            method: 'post',
+            url: _this.severUrl + '/song/' + val.url,
+            data: {
+              key: localStorage.getItem("admin"),
+            }
+          }).then(res => {
+
+          });
+          axios({
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'token': "test"
+            },
+            method: 'post',
+            url: _this.severUrl + '/addAuditionRec',
+            data: {
+              key: localStorage.getItem("admin"), songName: val.name, url: this.axiosUrl
+            }
+          }).then(res => {
+            let tempdata = res.data
+            if (tempdata.state == 0) {
+              axios({
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                },
+                method: 'post',
+                url: _this.severUrl + '/getLyricContent',
+                data: {
+                  key: localStorage.getItem("admin"), code: val.lyrics,
+                }
+              }).then(res => {
+                let tempdata = res.data
+                if (tempdata.state == 0) {
+                  let str = tempdata.content.split("plain")[1];
+                  let str1 = str.split("------Web")[0];
+
+                  this.songText = str1;
+                }
+
+              });
+            }
+
+          });
+
+        },
+        //保存买入
+        handleSubmit() {
+          // e.preventDefault();
+          this.form.validateFields((err, values) => {
+            if (!err) {
+
+              // const param  {key:"xiaoMing",songName:"像我这样的人",”lyricist”:”毛不易”,”composer”:”毛不易”,”lyricsCode”:”ABCDEFSAAS~”,”demoCode”:”ADJIFAOQQ*&^^”}
+              axios({
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                },
+                method: 'post',
+                url: this.severUrl + '/addCooperative',
+                data: {
+                  key: localStorage.getItem("admin"),
+                  url: this.axiosUrl,
+                  data: [
+                    {
+                      song: this.song,
+                      copyright: this.copyright,
+                      cooperative: this.cooperative
+                    }
+                  ]
+                }
+              }).then(res => {
+                let tempdata = res.data
+                if (tempdata.state == 0) {
+                  this.visibleType = false;
+                  this.visibleBuying=true
+                  this.buyTexting=`感谢您选择《${this.song}》歌曲，请在${this.lockTime}天内将该歌曲的版权协议，寄给我们，如果我们没有收到协议，将会在${this.lockTime}天后将该歌曲从新开放给所有合作伙伴，感谢理解！`
+
+                  this.queryInfo(this.axiosUrl)
+
+                } else {
+                  this.$message.error("对不起，您买入失败！");
+
+                }
+
+              });
+            }
+          });
+        },
+          //修改密码
+          handleSubmit2() {
+          // e.preventDefault();
+          this.form.validateFields((err, values) => {
+            if (!err) {
+              console.log(values)
+
+              // const param  {key:"xiaoMing",songName:"像我这样的人",”lyricist”:”毛不易”,”composer”:”毛不易”,”lyricsCode”:”ABCDEFSAAS~”,”demoCode”:”ADJIFAOQQ*&^^”}
+              axios({
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                },
+                method: 'post',
+                url: this.severUrl + '/updatePassword',
+                data: {
+                  // key:"kehu02",
+                   key: localStorage.getItem("admin"),
+                oldPassword:values.oldPassword,
+                newPassword:values.newPassword
+                }
+              }).then(res => {
+                let tempdata = res.data
+                if (tempdata.state == 0) {
+                  this.visibleType2 = false;
+                  this.$message.success("修改成功！");
+
+
+                } else {
+                  this.$message.error("修改失败！");
+
+                }
+
+              });
+            }
+          });
+        },
+        //版权列表
+        queryCopyright() {
+          axios({
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            method: 'post',
+            url: this.severUrl + '/copyright',
+            data: {
+              key: localStorage.getItem("admin"), "operation": 0, "name": ""
+            }
+          }).then(res => {
+            let tempdata = res.data
+            if (tempdata.state == 0) {
+              this.queryCopyList = tempdata.data
+           
+            } else {
+
+            }
+
+          });
+        },
+        //合作方式列表
+        queryCooperation() {
+          axios({
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            method: 'post',
+            url: this.severUrl + '/cooperation',
+            data: {
+              key: localStorage.getItem("admin"), "operation": 0, "name": ""
+            }
+          }).then(res => {
+            let tempdata = res.data
+            if (tempdata.state == 0) {
+              this.cooperationList = tempdata.data
+
+            } else {
+
+            }
+
+          });
+        },
+
+        handleChange1(val) {
+          console.log(val)
+        },
+        handleChange2(val) {
+          console.log(val)
+          this.copyright = val
+        },
+        handleChange3(val) {
+          console.log(val)
+          this.cooperative = val
+        },
+        //确定买入
+        handleOk() {
+          this.handleSubmit();
+          //this.visibleType = false
+        },
+          //确定买入
+          handleOk2() {
+          this.handleSubmit2();
+          //this.visibleType = false
+        },
+        handleCancel2(){
+          this.visibleType2=false
+        },
+        //取消买入
+        handleCancel() {
+          this.visibleType = false
+
+        },
+        //确定买入
+        toBuy(val) {
+          let _this=this
+
+          axios({
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            method: 'post',
+            url: this.severUrl + '/checkSold',
+            data: {
+              key: localStorage.getItem("admin"),
+              songName: val.name
+            }
+          }).then(res => {
+            let tempdata = res.data
+            if (tempdata.state == 0) {
+              if (tempdata.sold === true) {
+                _this.visibleBuy=true
+              } else {
+                this.song = val.name
+                this.lockTime=val.lockTime
+                this.queryCopyright()
+                this.queryCooperation()
+                this.visibleType = true
+              }
+
+            } else {
+
+
+            }
+
+          });
+
+
+        },
+        queryInfo(Ulrs) {
+          let _this=this
+          axios({
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            method: 'post',
+            url: this.severUrl + '/openAuditionList/' + Ulrs,
+            data: {
+              key: localStorage.getItem("admin"),
+              page:_this.current,
+              pageSize:10,
+            }
+          }).then(res => {
+            let tempdata = res.data
+            if (tempdata.state == 0) {
+              this.totalNum=tempdata.count
+              this.data = tempdata.data
+              this.data.map((item, index) => {
+                item['nums'] = index
+
+              })
+              
+            } else {
+
+            }
+
+          });
+        },
+        onChange(value) {
+        },
+        onSelectChange(selectedRowKeys, selectedRows) {
+          this.songNameList = []
+          console.log('selectedRowKeys changed: ', selectedRows);
+          this.selectedRowKeys = selectedRowKeys;
+          selectedRows.map((item) => {
+            this.songNameList.push(item.name)
+          })
+          console.log(this.songNameList)
+        },
+      },
+    })
+
+  </script>
+</body>
+
+</html>
