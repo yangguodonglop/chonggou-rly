@@ -313,7 +313,6 @@ export default {
       this.dialogVisibleActive = true;
     },
     deleteClick(row) {
-      debugger;
       const param = {
         token: this.token,
         userName: [row.account]

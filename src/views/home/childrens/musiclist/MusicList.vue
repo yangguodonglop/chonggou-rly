@@ -50,6 +50,7 @@
           </el-select>
         </div>
         <div class="btn option-active">
+          <music-add-active style="margin-left:20px" :music-type-list="musicTypes" @addMusic="addMusic"></music-add-active>
           <music-add style="margin-left:20px" :music-type-list="musicTypes" @addMusic="addMusic"></music-add>
           <music-delete style="margin-left:20px" :multiple-selection="multipleSelection"></music-delete>
           <div class="refresh" style="margin-left:20px">
@@ -59,7 +60,7 @@
       </div>
     </search-header>
     <el-table
-      :data="getTableData"
+      :data="tableData"
       border
       style="width: 100%;height:auto;"
       stripe
@@ -101,11 +102,14 @@
                 <el-dropdown-item @click.native="toDistribute(scope.row,'arrangement','351')">分配编曲师</el-dropdown-item>
                 <el-dropdown-item @click.native="toDistribute(scope.row,'recorderM','400')">分配录音组长</el-dropdown-item>
                 <el-dropdown-item @click.native="toDistribute(scope.row,'recorder','451')">分配录音师</el-dropdown-item>
+                <el-dropdown-item @click.native="toDistribute(scope.row,'mixerM','500')">分配混音组长</el-dropdown-item>
+                <el-dropdown-item @click.native="toDistribute(scope.row,'mixer','551')">分配混音师</el-dropdown-item>
                 <el-dropdown-item @click.native="toUploadArrangemen(scope.row)">上传编曲</el-dropdown-item>
                 <el-dropdown-item @click.native="toUploadRecorder(scope.row)">上传录音</el-dropdown-item>
+                <el-dropdown-item @click.native="toUploadMix(scope.row)">上传缩混</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','30')">通过</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','20')">驳回</el-dropdown-item>
-                <el-dropdown-item @click.native="toUpload(scope.row,'arrangement','10')">删除</el-dropdown-item>
+                <el-dropdown-item @click.native="deleteClick(scope.row)">删除</el-dropdown-item>
                 <el-dropdown-item command="b">退出系统</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -157,6 +161,14 @@
     >
       <music-upload-recorder :userInfo="userInfo" @editDistributeRecorder="editDistributeRecorder"></music-upload-recorder>
     </el-dialog>
+       <el-dialog
+      :footer="false"
+      title="上传缩混"
+      :visible.sync="dialogVisibleUploadMix"
+      customClass="customWidth-distribute"
+    >
+      <music-upload-mix :userInfo="userInfo" @editDistributeRecorder="editDistributeRecorder"></music-upload-mix>
+    </el-dialog>
   </div>
 </template>
 
@@ -173,11 +185,13 @@ import SearchHeader from "components/common/header/SearchHeader.vue";
 import SearchInput from "components/common/searchinput/SearchInput.vue";
 
 import MusicAdd from "./musiclistchildrens/MusicAdd.vue";
+import MusicAddActive from "./musiclistchildrens/MusicAddActive.vue";
 import MusicDelete from "./musiclistchildrens/MusicDelete.vue";
 import MusicAudition from "./musiclistchildrens/MusicAudition.vue";
 import MusicDistribute from "./musiclistchildrens/MusicDistribute.vue";
 import MusicUpload from "./musiclistchildrens/MusicUpload.vue";
 import MusicUploadRecorder from "./musiclistchildrens/MusicUploadRecorder.vue";
+import MusicUploadMix from "./musiclistchildrens/MusicUploadMix.vue";
 
 import fmtDate from "common/js/Date.js";
 import {
@@ -199,7 +213,9 @@ export default {
     MusicAudition,
     MusicDistribute,
     MusicUpload,
-    MusicUploadRecorder
+    MusicUploadRecorder,
+    MusicUploadMix,
+    MusicAddActive
   },
 
   data() {
@@ -214,6 +230,7 @@ export default {
         musicUrl: null,
         musicSonger: null
       },
+      getTotal:0,
       //音乐类型
       musicTypes: [],
 
@@ -248,6 +265,7 @@ export default {
       dialogVisibleDistribute: false,
       dialogVisibleUpload: false,
       dialogVisibleUploadRecorder: false,
+      dialogVisibleUploadMix:false,
       userInfo: {},
       editInfo: {}
     };
@@ -263,6 +281,41 @@ export default {
     // this.getSingerList();
   },
   methods: {
+      //点击之后的当前页数
+    handleCurrentChange(val) {
+      // 当前页数
+      this.currentPage = val;
+      this.musicList();
+    },
+    //删除歌曲
+    deleteClick(row) {
+      const param = {
+        token: this.token,
+        songID: row.id
+      };
+      this.$confirm("完成信息核对, 确认删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          deleteSong(param).then(res => {
+            if (res.status == 0) {
+              this.$message({
+                type: "success",
+                message: "删除成功!"
+              });
+              this.findUserInfo();
+            } else {
+              this.$message({
+                type: "error",
+                message: "删除失败!"
+              });
+            }
+          });
+        })
+        .catch(() => {});
+    },
     //上传编曲取消
 
     editDistributeRecorder() {
@@ -271,11 +324,24 @@ export default {
     },
     //审核
     toReview(row, type, typeNum) {
+      // console.log(row)
+      // let tempType=''
+      // if(row.producerNick=='录音完成'){
+      //   tempType='record'
+      // }
+      // else if(rwo.producerNick=='编曲完成'){
+      //   tempType='arrangement'
+      // }else{
+      //   tempType='arrangement'
+      // }
+      // return false
       let tempType = "";
       if (row.progressRate == "录音师已提交") {
         tempType = "record";
       } else if (row.progressRate == "编曲师已提交") {
         tempType = "arrangement";
+      }else{
+        tempType = "mix";
       }
       console.log(row);
       const param = {
@@ -309,6 +375,10 @@ export default {
     toUploadRecorder(row) {
       this.userInfo = { ...row };
       this.dialogVisibleUploadRecorder = true;
+    },
+    toUploadMix(row){
+      this.userInfo={...row}
+      this.dialogVisibleUploadMix=true
     },
     //新增成功查询列表
     addMusic() {
@@ -413,7 +483,7 @@ export default {
       const param = {
         token: this.token,
         pageSize: 10,
-        curPage: 0,
+        curPage: this.currentPage-1,
         filter: {
           progressRateReg: [],
           createTimeReg: [],
@@ -424,8 +494,7 @@ export default {
         }
       };
       getProductionSong(param).then(res => {
-        console.log(res);
-        console.log(this.styleType);
+        console.log(res)
         this.tableData = [];
         res.data.item.forEach((items, index) => {
           let tempStatus = "";
@@ -460,6 +529,18 @@ export default {
             case 499:
               tempStatus = "录音完成";
               break;
+               case 500:
+              tempStatus = "已分配缩混组长";
+              break;
+                case 550:
+              tempStatus = "已分配缩混师";
+              break;
+                 case 570:
+              tempStatus = "缩混师已提交";
+              break;
+                 case 599:
+              tempStatus = "缩混完成";
+              break;   
           }
           let obj = {
             songName: items.submitter.songName,
@@ -474,6 +555,8 @@ export default {
           };
           this.tableData.push(obj);
         });
+        console.log(this.tableData)
+        this.getTotal=res.data.count
       });
     },
     //获取歌手列表
@@ -526,11 +609,7 @@ export default {
       // console.log(this.multipleSelection);
     },
 
-    //点击之后的当前页数
-    handleCurrentChange(val) {
-      // 当前页数
-      this.currentPage = val;
-    },
+
 
     hotFilter(val) {
       if (val < 10000) {
@@ -618,49 +697,49 @@ export default {
         this.currentPage * this.pagesize
       );
     },
-    getTotal() {
-      if (this.search.musicid) {
-        return this.tableData.filter(data => {
-          if (data.musicid == this.search.musicid) {
-            return data;
-          }
-        }).length;
-      }
-      if (this.search.musicname) {
-        return this.tableData.filter(data => {
-          if (
-            data.musicname
-              .toLowerCase()
-              .includes(this.search.musicname.toLowerCase())
-          ) {
-            return data;
-          }
-        }).length;
-      }
-      if (this.search.singer) {
-        return this.tableData.filter(data => {
-          if (
-            data.singer.singername
-              .toLowerCase()
-              .includes(this.search.singer.toLowerCase())
-          ) {
-            return data;
-          }
-        }).length;
-      }
-      if (this.search.musictype) {
-        return this.tableData.filter(data => {
-          if (
-            data.musictype.musictypename
-              .toLowerCase()
-              .includes(this.search.musictype.toLowerCase())
-          ) {
-            return data;
-          }
-        }).length;
-      }
-      return this.tableData.length;
-    }
+    // getTotal() {
+    //   if (this.search.musicid) {
+    //     return this.tableData.filter(data => {
+    //       if (data.musicid == this.search.musicid) {
+    //         return data;
+    //       }
+    //     }).length;
+    //   }
+    //   if (this.search.musicname) {
+    //     return this.tableData.filter(data => {
+    //       if (
+    //         data.musicname
+    //           .toLowerCase()
+    //           .includes(this.search.musicname.toLowerCase())
+    //       ) {
+    //         return data;
+    //       }
+    //     }).length;
+    //   }
+    //   if (this.search.singer) {
+    //     return this.tableData.filter(data => {
+    //       if (
+    //         data.singer.singername
+    //           .toLowerCase()
+    //           .includes(this.search.singer.toLowerCase())
+    //       ) {
+    //         return data;
+    //       }
+    //     }).length;
+    //   }
+    //   if (this.search.musictype) {
+    //     return this.tableData.filter(data => {
+    //       if (
+    //         data.musictype.musictypename
+    //           .toLowerCase()
+    //           .includes(this.search.musictype.toLowerCase())
+    //       ) {
+    //         return data;
+    //       }
+    //     }).length;
+    //   }
+    //   return this.tableData.length;
+    // }
   }
 };
 </script>

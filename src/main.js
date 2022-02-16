@@ -7,7 +7,9 @@ import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import Video from 'video.js'
 import 'video.js/dist/video-js.css'
-
+import Clipboard from 'v-clipboard'
+ 
+Vue.use(Clipboard)
 Vue.prototype.$video = Video
 
 Vue.config.productionTip = false;

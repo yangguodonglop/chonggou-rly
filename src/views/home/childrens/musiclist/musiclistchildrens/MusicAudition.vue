@@ -1,23 +1,29 @@
 <template>
   <div id="music-check">
     <div style="display: flex;justify-content: center;flex-direction: column;">
-        <div style="display: flex;justify-content: center;">
-          <audio :src="auditionCodeUrl" controls="controls" id="music1" controlslist="nodownload"></audio>
-        </div>
-        <div
-          style="margin-top: 20px;text-indent: 20px;max-height: 600px;white-space: pre-wrap;overflow-y: auto;padding: 10px 20px;"
-        >{{songText}}</div>
+      <div style="display: flex;justify-content: center;">
+        <audio :src="auditionCodeUrl" controls="controls" id="music1" controlslist="nodownload"></audio>
       </div>
+      <div
+        style="margin-top: 20px;text-indent: 20px;max-height: 600px;white-space: pre-wrap;overflow-y: auto;padding: 10px 20px;"
+      >{{songText}}</div>
+    </div>
   </div>
 </template>
 
 <script>
 import fmtDate from "common/js/Date.js";
-import { getProductionSong, aboutMusicTag,openFile,openFileActive,baseUrl } from "network/home.js";
+import {
+  getProductionSong,
+  aboutMusicTag,
+  openFile,
+  openFileActive,
+  baseUrl
+} from "network/home.js";
 
 export default {
   name: "MusicCheck",
-    props: {
+  props: {
     userInfo: {
       type: Object,
       default: () => {}
@@ -25,7 +31,7 @@ export default {
   },
   data() {
     return {
-            token: JSON.parse(localStorage.getItem("userInfo")).token,
+      token: JSON.parse(localStorage.getItem("userInfo")).token,
 
       size: "",
       mid: this.$route.query.mid,
@@ -35,72 +41,76 @@ export default {
       musicPictureUrl: "",
       musicUrl: "",
 
-      songText:"sdsads",
-      auditionCodeUrl:""
+      songText: "sdsads",
+      auditionCodeUrl: ""
     };
   },
-  created(){
-
-  },
+  created() {},
   mounted() {
-       console.log(baseUrl)
     //this.findMusicById(this.mid);
-    this.musicListlyricsFile()
-     this.musicListDemo()
+    this.musicListlyricsFile();
+    this.musicListDemo();
   },
-   watch: {
+  watch: {
     userInfo(val) {
-      console.log(val)
       // this.keyArr = [];
       // this.keyArr = val.funcGroup;
       this.$nextTick(() => {
-        console.log(baseUrl)
-       
-        this.musicListlyricsFile()
-        this.musicListDemo()
+
+        this.musicListlyricsFile();
+        this.musicListDemo();
       });
     }
-   },
+  },
   methods: {
-        //获取歌词
+    //获取歌曲
     musicListDemo() {
-      console.log(this.userInfo)
 
       const param = {
-    "token": this.token,
-    "songID": this.userInfo.id,
-    "fileCode": this.userInfo.demoFile,
-    "category": "lyric"
+        token: this.token,
+        songID: this.userInfo.id,
+        fileCode: this.userInfo.demoFile,
+        category: "lyric"
       };
-      let tempStr=JSON.stringify(param)
-      console.log(tempStr)
-            const Base64 = require('js-base64').Base64
-tempStr = Base64.encode(tempStr)
-this.auditionCodeUrl=baseUrl+'/openFile/'+tempStr
+      let tempStr = JSON.stringify(param);
+      let tempStr1 = JSON.stringify(param);
+      console.log(tempStr);
+      const Base64 = require("js-base64").Base64;
+      //tempStr = Base64.encode(tempStr)
+      tempStr = Base64.encodeURL(tempStr);
+      tempStr1=window.btoa(tempStr1);
+
+       console.log(tempStr);
+       console.log(tempStr1);
+      this.auditionCodeUrl = baseUrl + "/openFile/" + tempStr;
       // openFileActive(tempStr).then(res => {
       //  // console.log(res);
       //   this.auditionCodeUrl=res
-     
+
       // });
     },
-      //获取歌词
+    //获取歌词
     musicListlyricsFile() {
-      console.log(this.userInfo)
 
       const param = {
-    "token": this.token,
-    "songID": this.userInfo.id,
-    "fileCode": this.userInfo.lyricsFile,
-    "category": "lyric"
+        token: this.token,
+        songID: this.userInfo.id,
+        fileCode: this.userInfo.lyricsFile,
+        category: "lyric"
       };
-      let tempStr=JSON.stringify(param)
-      console.log(tempStr)
-            const Base64 = require('js-base64').Base64
-tempStr = Base64.encode(tempStr)
+      let tempStr = JSON.stringify(param);
+      let tempStr1 = JSON.stringify(param);
+      console.log(tempStr);
+      const Base64 = require("js-base64").Base64;
+      tempStr = Base64.encodeURL(tempStr);
+      console.log
+          tempStr1=window.btoa(tempStr1);
+
+       console.log(tempStr);
+       console.log(tempStr1);
       openFileActive(tempStr).then(res => {
         console.log(res);
-        this.songText=res
-     
+        this.songText = res;
       });
     },
     back() {
@@ -108,7 +118,6 @@ tempStr = Base64.encode(tempStr)
     },
     findMusicById(mid) {
       findMusicById(mid).then(res => {
-        // console.log(res);
         res.musicphotourl =
           "http://localhost:8090/musicstatic/" + res.musicphotourl;
         this.music = res;

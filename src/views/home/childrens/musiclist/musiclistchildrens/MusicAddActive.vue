@@ -1,7 +1,7 @@
 <template>
   <div id="add">
-    <el-button type="primary" size="small" @click="dialogFormVisible = true">上传成品</el-button>
-    <el-dialog title="上传成品" customClass="customWidth-addSong" :visible.sync="dialogFormVisible">
+    <el-button type="primary" size="small" @click="dialogFormVisible = true">上传小样</el-button>
+    <el-dialog title="上传小样" customClass="customWidth-addSong" :visible.sync="dialogFormVisible">
       <el-form :model="music">
         <el-form-item label="歌曲名称:" :label-width="formLabelWidth">
           <el-input v-model="music.musicName" autocomplete="off" placeholder="请输入歌曲名称"></el-input>
@@ -58,7 +58,7 @@
 
 
 <script>
-import { uploadFile, aboutMusicTag, commitDemo } from "network/home.js";
+import { uploadFile, aboutMusicTag, commitDemo,commitFinishedProduct } from "network/home.js";
 
 export default {
   name: "MusicAdd",
@@ -232,22 +232,33 @@ export default {
       const param = {
         token: this.token,
         songName: this.music.musicName,
-        demo: {
+        item: {
+           songName: this.music.musicName,
           lyricist: this.music.musicLric,
           composer: this.music.musicSinger,
-          lyricsCode: this.lyricsCode,
-          demoCode: this.demoCode,
-          tag: this.music.musicType
+          lyricsFile: this.lyricsCode,
+          auditionFileCode: this.demoCode,
+          tag: this.music.musicType,
+          mixProjectCode:''
         }
+    // "item": {
+    //     "songName": "",
+    //     "lyricist": "",
+    //     "composer": "",
+    //     "lyricsFile": "",
+    //     "tag": [],
+    //     "mixProjectCode": "",
+    //     "auditionFileCode": ""
+    // }
       };
       console.log(param)
-      commitDemo(param).then(res => {
+      commitFinishedProduct(param).then(res => {
         console.log(res);
         if (res.status == 0) {
           this.lyricsCode = res.data;
           this.$message({
             type: "success",
-            message: "上传小样成功！"
+            message: "上传成品成功！"
           });
           this.dialogFormVisible=false
           //this.submitForm();//提交表单
@@ -257,7 +268,7 @@ export default {
 
           this.$message({
             type: "error",
-            message: "上传小样失败！"
+            message: "上传成品失败！"
           });
         }
       });

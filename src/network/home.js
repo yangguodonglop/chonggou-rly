@@ -36,7 +36,13 @@ export const openFileActive = (param) => get(baseUrl+'/openFile/'+param,)
 export const assignWork = (param) => post(baseUrl+'/productLine/assignWork', param)
 export const checkWork = (param) => post(baseUrl+'/productLine/checkWork', param)
 export const commitRecord = (param) => post(baseUrl+'/productLine/commitRecord', param)
+export const commitMix = (param) => post(baseUrl+'/productLine/commitMix', param)
+export const getPublishSong = (param) => post(baseUrl+'/sell/getPublishSong', param)
+export const commitFinishedProduct = (param) => post(baseUrl+'/productLine/commitFinishedProduct', param)
+export const makeAuditionList = (param) => post(baseUrl+'/audition/makeAuditionList', param)
 
+// export const deleteSong = (param) => post(baseUrl+'/productLine/deleteSong', param)
+// sell/getPublishSong
 const method = "POST";
 
 //相关参数要与实体类名字一样
