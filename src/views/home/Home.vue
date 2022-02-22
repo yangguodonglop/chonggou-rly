@@ -37,24 +37,24 @@
                   <span>音乐管理</span>
                 </template>
                 <el-menu-item-group>
-                  <el-menu-item index="/musiclist">音乐列表</el-menu-item>
+                  <el-menu-item index="/musiclist">歌曲列表</el-menu-item>
                   <!-- <el-menu-item index="/musictype">音乐类型</el-menu-item> -->
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu index="2">
                 <template slot="title">
                   <i class="el-icon-microphone"></i>
-                  <span slot="title">发布管理</span>
+                  <span slot="title">生成管理</span>
                 </template>
                 <el-menu-item-group>
-                  <el-menu-item index="/singerlist">发布列表</el-menu-item>
+                  <el-menu-item index="/singerlist">生成试听歌单</el-menu-item>
                   <!-- <el-menu-item index="/singertype">歌手类型</el-menu-item> -->
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu index="3">
                 <template slot="title">
                   <i class="el-icon-video-camera"></i>
-                  <span slot="title">试听管理</span>
+                  <span slot="title">发布管理</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="/videolist">发布列表</el-menu-item>

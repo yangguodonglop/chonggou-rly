@@ -198,7 +198,8 @@ import {
   aboutMusicTag,
   openFile,
   openFileActive,
-  checkWork
+  checkWork,
+  getPublishSongSell
 } from "network/home.js";
 
 export default {
@@ -484,7 +485,7 @@ export default {
           tag: []
         }
       };
-      getPublishSong(param).then(res => {
+      getPublishSongSell(param).then(res => {
         console.log(res);
         console.log(this.styleType);
         this.tableData = [];

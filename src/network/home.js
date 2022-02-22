@@ -40,7 +40,7 @@ export const commitMix = (param) => post(baseUrl+'/productLine/commitMix', param
 export const getPublishSong = (param) => post(baseUrl+'/sell/getPublishSong', param)
 export const commitFinishedProduct = (param) => post(baseUrl+'/productLine/commitFinishedProduct', param)
 export const makeAuditionList = (param) => post(baseUrl+'/audition/makeAuditionList', param)
-
+export const getPublishSongSell = (param) => post(baseUrl+'/sell/getPublishSong', param)
 // export const deleteSong = (param) => post(baseUrl+'/productLine/deleteSong', param)
 // sell/getPublishSong
 const method = "POST";

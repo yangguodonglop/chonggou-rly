@@ -5,15 +5,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.js"></script>
-  <!-- <script src="https://unpkg.com/ant-design-vue@1.7.2/dist/antd.min.js"></script> -->
+  <script src="https://unpkg.com/ant-design-vue@1.7.2/dist/antd.min.js"></script> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.css" rel="stylesheet" type="text/css" />
   <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.js"></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
-  <script src='base.js'></script>
+  <script src='base.js'></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.js"></script>
+  <!-- <script src="https://unpkg.com/ant-design-vue@1.7.2/dist/antd.min.js"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script> -->
+  <script src="https://cdn.bootcss.com/moment.js/2.22.1/moment.js"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.js"></script>
+
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script> -->
+<!--   <script src="  https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script> -->
+
+  <!-- <script src='base.js'></script> -->
 
 </head>
 <style>
@@ -44,7 +58,9 @@
       <span slot="action" slot-scope="record">
 
         <a href="javascript:;" @click="queryPartner(record)">试听</a>
-        <a style="margin-left:20px" href="javascript:;" @click="toBuy(record)">确定买入</a>
+        <a :disabled="record.progressRate==720" style="margin-left:20px" href="javascript:;" @click="toBuy(record)">确定买入</a>
+        <a v-if="record.progressRate===720"  style="margin-left:20px;color: green" >已被买入 </a>
+        
 
       </span>
     </a-table>
@@ -507,76 +523,13 @@
           });
       return false
     
-      //     let tempdata=JSON.parse(localStorage.getItem("admin"))
-      //     console.log(JSON.parse(localStorage.getItem("admin"))     )
-      // const params = {
-      //   token: tempdata.token,
-      //   songID: val.id,
-      //   fileCode: this.userInfo.demoFile,
-      //   category: "lyric"
-      // };
-      // let tempStr = JSON.stringify(params);
-      // console.log(tempStr);
-      // const Base64 = require("js-base64").Base64;
-      // tempStr = Base64.encodeURL(tempStr);
-      // this.auditionCodeUrl = baseUrl + "/openFile/" + tempStr;
-      //     let _this = this
-      //     this.auditionCodeUrl = _this.severUrl + '/song/' + val.url
-
-      //     this.visibleAudition = true
-
-      //     axios({
-      //       headers: {
-      //         'Content-Type': 'multipart/form-data',
-      //         'token': localStorage.getItem("admin"),
-      //       },
-      //       method: 'post',
-      //       url: _this.severUrl + '/song/' + val.url,
-      //       data: {
-      //         key: localStorage.getItem("admin"),
-      //       }
-      //     }).then(res => {
-
-      //     });
-      //     axios({
-      //       headers: {
-      //         'Content-Type': 'multipart/form-data',
-      //         'token': "test"
-      //       },
-      //       method: 'post',
-      //       url: _this.severUrl + '/addAuditionRec',
-      //       data: {
-      //         key: localStorage.getItem("admin"), songName: val.name, url: this.axiosUrl
-      //       }
-      //     }).then(res => {
-      //       let tempdata = res.data
-      //       if (tempdata.state == 0) {
-      //         axios({
-      //           headers: {
-      //             'Content-Type': 'multipart/form-data'
-      //           },
-      //           method: 'post',
-      //           url: _this.severUrl + '/getLyricContent',
-      //           data: {
-      //             key: localStorage.getItem("admin"), code: val.lyrics,
-      //           }
-      //         }).then(res => {
-      //           let tempdata = res.data
-      //           if (tempdata.state == 0) {
-      //             let str = tempdata.content.split("plain")[1];
-      //             let str1 = str.split("------Web")[0];
-
-      //             this.songText = str1;
-      //           }
-
-      //         });
-      //       }
-
-      //     });
 
         },
         //保存买入
         handleSubmit() {
+          let tempdata=JSON.parse(localStorage.getItem("admin"))
+        
+
           let _this=this
           // e.preventDefault();
           _this.form.validateFields((err, values) => {
@@ -590,23 +543,11 @@
                 method: 'post',
                 url: _this.severUrlActive + '/god/putLockSong',
                 data: {
-                  token: "620cf5261a36819b996c2fb2",
-    
-    url: "620cf51a1a36819b996c2fb0",
+                  token: tempdata.token,    
+    url: this.axiosUrl,
     songIDs:[_this.buysongId],
     collaborateMode:_this.copyright,
     copyrightMode:_this.cooperative
-    // this.song = val.songName
-    //       this.buysongId= val.id
-    //               key: localStorage.getItem("admin"),
-    //               url: this.axiosUrl,
-    //               data: [
-    //                 {
-    //                   song: this.song,
-    //                   copyright: this.copyright,
-    //                   cooperative: this.cooperative
-    //                 }
-    //               ]
                 }
               }).then(res => {
                 console.log(res)
@@ -666,6 +607,8 @@
         },
         //版权列表
         queryCopyright() {
+          let tempdata=JSON.parse(localStorage.getItem("admin"))
+
           axios({
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -674,7 +617,7 @@
             url: this.severUrlActive + '/config/aboutCopyrightMode',
             data: {
               // key: localStorage.getItem("admin"), "operation": 0, "name": ""
-              token: '620cf5261a36819b996c2fb2',
+              token:tempdata.token,
     action:"get",
             }
           }).then(res => {
@@ -693,6 +636,8 @@
         },
         //合作方式列表
         queryCooperation() {
+          let tempdata=JSON.parse(localStorage.getItem("admin"))
+
           axios({
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -700,7 +645,7 @@
             method: 'post',
             url: this.severUrlActive + '/config/aboutCooperative',
             data: {
-              token: '620cf5261a36819b996c2fb2',
+              token: tempdata.token,
     action:"get",
             }
           }).then(res => {
@@ -803,10 +748,10 @@
           // url: this.severUrl + '/openAuditionList/' + Ulrs,
             url: this.severUrlActive + '/god/openOneAudition' ,
             data: {
-              //token: tempdata.token,
-              token:'620cf5261a36819b996c2fb2',
-              url:'620cf51a1a36819b996c2fb0'
-              //url:Ulrs
+              token: tempdata.token,
+              //token:'6214fea51a36819b996c2fcb',
+              //url:'6214fe861a36819b996c2fc9'
+              url:Ulrs
               // page:_this.current,
               // pageSize:10,
             }
@@ -818,9 +763,10 @@
               this.data = tempdata.data.songs
               this.data.map((item, index) => {
                 item['nums'] = index
+                 item.progressRate==599?item['buyType']=false:item['buyType']=true
 
               })
-              
+              console.log(this.data)
             } else {
               this.data=[]
             }
