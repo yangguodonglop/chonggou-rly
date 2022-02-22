@@ -74,7 +74,7 @@
           'nName1',
           { rules: [{ required: true, message: '请输入版权方式!' }] },
         ]">
-            <a-select-option v-for="(item, index) in queryCopyList" :key="index" :value="item"> {{item}}
+            <a-select-option v-for="(item, index) in queryCopyList" :key="index" :value="item.value"> {{item.name}}
             </a-select-option>
 
 
@@ -85,7 +85,7 @@
           'nName2',
           { rules: [{ required: true, message: '请输入合作方式!' }] },
         ]">
-            <a-select-option v-for="(item, index) in cooperationList" :key="index" :value="item"> {{item}}
+            <a-select-option v-for="(item, index) in cooperationList" :key="index" :value="item.value"> {{item.name}}
             </a-select-option>
 
           </a-select>
@@ -296,7 +296,8 @@
           visibleBuying:false,
           buyText:"选择后发现该歌曲已经被别人买入了：非常抱歉，该歌曲已经被其他合作伙伴暂时锁定了，请您理解！",
           buyTexting:"",
-          visibleType2:false
+          visibleType2:false,
+          buysongId:'',
        
         };
       },
@@ -314,7 +315,7 @@
           this.axiosUrl = tempurl2
           this.queryInfo(this.axiosUrl)
         }
-       // this.queryInfo(this.axiosUrl)
+        this.queryInfo(this.axiosUrl)
 
 
       },
@@ -576,8 +577,9 @@
         },
         //保存买入
         handleSubmit() {
+          let _this=this
           // e.preventDefault();
-          this.form.validateFields((err, values) => {
+          _this.form.validateFields((err, values) => {
             if (!err) {
 
               // const param  {key:"xiaoMing",songName:"像我这样的人",”lyricist”:”毛不易”,”composer”:”毛不易”,”lyricsCode”:”ABCDEFSAAS~”,”demoCode”:”ADJIFAOQQ*&^^”}
@@ -586,24 +588,34 @@
                   'Content-Type': 'multipart/form-data'
                 },
                 method: 'post',
-                url: this.severUrl + '/addCooperative',
+                url: _this.severUrlActive + '/god/putLockSong',
                 data: {
-                  key: localStorage.getItem("admin"),
-                  url: this.axiosUrl,
-                  data: [
-                    {
-                      song: this.song,
-                      copyright: this.copyright,
-                      cooperative: this.cooperative
-                    }
-                  ]
+                  token: "620cf5261a36819b996c2fb2",
+    
+    url: "620cf51a1a36819b996c2fb0",
+    songIDs:[_this.buysongId],
+    collaborateMode:_this.copyright,
+    copyrightMode:_this.cooperative
+    // this.song = val.songName
+    //       this.buysongId= val.id
+    //               key: localStorage.getItem("admin"),
+    //               url: this.axiosUrl,
+    //               data: [
+    //                 {
+    //                   song: this.song,
+    //                   copyright: this.copyright,
+    //                   cooperative: this.cooperative
+    //                 }
+    //               ]
                 }
               }).then(res => {
+                console.log(res)
                 let tempdata = res.data
-                if (tempdata.state == 0) {
+                if (res.data.status == 0) {
                   this.visibleType = false;
                   this.visibleBuying=true
-                  this.buyTexting=`感谢您选择《${this.song}》歌曲，请在${this.lockTime}天内将该歌曲的版权协议，寄给我们，如果我们没有收到协议，将会在${this.lockTime}天后将该歌曲从新开放给所有合作伙伴，感谢理解！`
+                  //this.buyTexting=`感谢您选择《${this.songName}》歌曲，请在${this.lockTime}天内将该歌曲的版权协议，寄给我们，如果我们没有收到协议，将会在${this.lockTime}天后将该歌曲从新开放给所有合作伙伴，感谢理解！`
+                  this.buyTexting=`感谢您选择《${this.songName}》歌曲`
 
                   this.queryInfo(this.axiosUrl)
 
@@ -659,18 +671,23 @@
               'Content-Type': 'multipart/form-data'
             },
             method: 'post',
-            url: this.severUrl + '/copyright',
+            url: this.severUrlActive + '/config/aboutCopyrightMode',
             data: {
-              key: localStorage.getItem("admin"), "operation": 0, "name": ""
+              // key: localStorage.getItem("admin"), "operation": 0, "name": ""
+              token: '620cf5261a36819b996c2fb2',
+    action:"get",
             }
           }).then(res => {
-            let tempdata = res.data
-            if (tempdata.state == 0) {
-              this.queryCopyList = tempdata.data
+            console.log(res)
+            console.log( res.data.data)
+            let tempdata = res.data.data
+            this.queryCopyList =res.data.data
+            // if (tempdata.state == 0) {
+            //   this.queryCopyList = tempdata.data
            
-            } else {
+            // } else {
 
-            }
+            // }
 
           });
         },
@@ -681,18 +698,21 @@
               'Content-Type': 'multipart/form-data'
             },
             method: 'post',
-            url: this.severUrl + '/cooperation',
+            url: this.severUrlActive + '/config/aboutCooperative',
             data: {
-              key: localStorage.getItem("admin"), "operation": 0, "name": ""
+              token: '620cf5261a36819b996c2fb2',
+    action:"get",
             }
           }).then(res => {
-            let tempdata = res.data
-            if (tempdata.state == 0) {
-              this.cooperationList = tempdata.data
+            // let tempdata = res.data
+            // let tempdata = res.data.data
+            this.cooperationList =res.data.data
+            // if (tempdata.state == 0) {
+            //   this.cooperationList = tempdata.data
 
-            } else {
+            // } else {
 
-            }
+            // }
 
           });
         },
@@ -728,37 +748,46 @@
         },
         //确定买入
         toBuy(val) {
-          let _this=this
-
-          axios({
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            method: 'post',
-            url: this.severUrl + '/checkSold',
-            data: {
-              key: localStorage.getItem("admin"),
-              songName: val.name
-            }
-          }).then(res => {
-            let tempdata = res.data
-            if (tempdata.state == 0) {
-              if (tempdata.sold === true) {
-                _this.visibleBuy=true
-              } else {
-                this.song = val.name
+          console.log(val)
+          this.song = val.songName
+          this.buysongId= val.id
                 this.lockTime=val.lockTime
-                this.queryCopyright()
+          let _this=this
+          this.queryCopyright()
                 this.queryCooperation()
-                this.visibleType = true
-              }
+          _this.visibleType = true
 
-            } else {
+          // axios({
+          //   headers: {
+          //     'Content-Type': 'multipart/form-data'
+          //   },
+          //   method: 'post',
+          //   // url: this.severUrl + '/checkSold',
+          //   url: this.severUrlActive + '/god/putLockSong',
+            
+          //   data: {
+          //     key: localStorage.getItem("admin"),
+          //     songName: val.name
+          //   }
+          // }).then(res => {
+          //   let tempdata = res.data
+          //   if (tempdata.state == 0) {
+          //     if (tempdata.sold === true) {
+          //       _this.visibleBuy=true
+          //     } else {
+          //       this.song = val.name
+          //       this.lockTime=val.lockTime
+          //       this.queryCopyright()
+          //       this.queryCooperation()
+          //       this.visibleType = true
+          //     }
+
+          //   } else {
 
 
-            }
+          //   }
 
-          });
+          // });
 
 
         },
@@ -774,9 +803,10 @@
           // url: this.severUrl + '/openAuditionList/' + Ulrs,
             url: this.severUrlActive + '/god/openOneAudition' ,
             data: {
-              token: tempdata.token,
-              // url:'61e3e4691a36819b996c2f77'
-              url:Ulrs
+              //token: tempdata.token,
+              token:'620cf5261a36819b996c2fb2',
+              url:'620cf51a1a36819b996c2fb0'
+              //url:Ulrs
               // page:_this.current,
               // pageSize:10,
             }
