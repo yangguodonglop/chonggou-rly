@@ -525,7 +525,7 @@ export default {
         pageSize: 10,
         curPage: 0,
         filter: {
-          progressRateReg: [],
+          progressRateReg: [599,599],
           createTimeReg: [],
           songName: "",
           lyricist: "",

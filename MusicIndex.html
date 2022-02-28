@@ -14,20 +14,29 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
   <script src='base.js'></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+   
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.js"></script>
-  <!-- <script src="https://unpkg.com/ant-design-vue@1.7.2/dist/antd.min.js"></script> -->
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script> -->
-  <script src="https://cdn.bootcss.com/moment.js/2.22.1/moment.js"></script>
+   
+  <script src="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.js"></script>
+   
+  <!-- <script src="https://unpkg.com/ant-design-vue@1.7.2/dist/antd.min.js"></script> -->
+   
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script> -->
+   
+  <script src="https://cdn.bootcss.com/moment.js/2.22.1/moment.js"></script>
 
-  <link href="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.css" rel="stylesheet" type="text/css" />
-  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.js"></script>
+   
+  <link href="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.css" rel="stylesheet" type="text/css" />
+   
+  <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.js"></script>
 
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script> -->
-<!--   <script src="  https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script> -->
+   
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script> -->
+  <!--   <script src="  https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script> -->
 
-  <!-- <script src='base.js'></script> -->
+   
+  <!-- <script src='base.js'></script> -->
 
 </head>
 <style>
@@ -37,8 +46,8 @@
   }
 </style>
 
-<body>
-  <div id="root">
+<body style="padding:20px;">
+  <div id="root" style="border: 1px solid #1890ff;border-radius: 5px;">
     <a-row>
       <a-col :span="24" style="display: flex;
         justify-content: start;
@@ -53,38 +62,35 @@
     </a-row>
     <a-row>
       <a-col>
-    <a-table :pagination="false" :columns="columns" :data-source="data">
+        <a-table :pagination="false" :columns="columns" :data-source="data">
 
-      <span slot="action" slot-scope="record">
+          <span slot="action" slot-scope="record">
 
-        <a href="javascript:;" @click="queryPartner(record)">试听</a>
-        <a :disabled="record.progressRate==720" style="margin-left:20px" href="javascript:;" @click="toBuy(record)">确定买入</a>
-        <a v-if="record.progressRate===720"  style="margin-left:20px;color: green" >已被买入 </a>
-        
+            <a href="javascript:;" @click="queryPartner(record)">试听</a>
+            <a :disabled="record.progressRate==720" style="margin-left:20px" href="javascript:;"
+              @click="toBuy(record)">确定买入</a>
+            <a v-if="record.progressRate===720" style="margin-left:20px;color: green">已被买入 </a>
 
-      </span>
-    </a-table>
-  </a-col>
-</a-row>
+
+          </span>
+        </a-table>
+      </a-col>
+    </a-row>
     <a-row>
       <a-col>
-        <div style="float:right">
-          <a-pagination
-            @change="onShowSizeChange"
-            v-model="current"
-            :total="totalNum"
-            show-less-items
-            style="margin-top:20px;"
-          />
+        <div style="float:right;padding-bottom: 20px;
+        padding-right:20px;">
+          <a-pagination @change="onShowSizeChange" v-model="current" :total="totalNum" show-less-items
+            style="margin-top:20px;" />
         </div>
       </a-col>
     </a-row>
 
     <a-modal title="选择买入" :visible="visibleType" @ok="handleOk" @cancel="handleCancel" ok-text="确定" cancel-text="取消">
       <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit">
-        
 
-   
+
+
         <a-form-item label="版权方式">
           <a-select default-value="" style="width: 100%" @change="handleChange2" v-decorator="[
           'nName1',
@@ -122,13 +128,13 @@
             <audio :src="auditionCodeUrl" controls="controls" id="music1" controlslist="nodownload"></audio>
           </div>
           <div
-            style="margin-top: 20px;text-indent: 20px;max-height: 600px;white-space: pre-wrap;overflow-y: auto;padding: 10px 20px;"
-          >{{songText}}</div>
+            style="margin-top: 20px;text-indent: 20px;max-height: 600px;white-space: pre-wrap;overflow-y: auto;padding: 10px 20px;">
+            {{songText}}</div>
         </div>
       </div>
     </a-modal>
     <a-modal title=" 购买记录" width="900px" :visible="visiblePartner" :confirm-loading="confirmLoading"
-      @ok="handleOkPartner" @cancel="handleCancelPartner" ok-text="确定" cancel-text="取消" >
+      @ok="handleOkPartner" @cancel="handleCancelPartner" ok-text="确定" cancel-text="取消">
       <div>
         <a-row>
           <a-col :span="24">
@@ -146,51 +152,47 @@
         </a-row>
       </div>
     </a-modal>
-    <a-modal title="购买提示" width="900px" :visible="visibleBuy" :confirm-loading="confirmLoading"
-    @ok="handleOkBuy" @cancel="handleCancelBuy" ok-text="确定" cancel-text="取消" >
-    <div>
-      <a-row>
-        <a-col :span="24">
-         <div style="display: flex; justify-content: center; align-items: center;">{{buyText}}</div>
-        </a-col>
-      </a-row>
-     
-    </div>
-  </a-modal>
-  <a-modal title="购买提示" width="900px" :visible="visibleBuying" :confirm-loading="confirmLoading"
-  @ok="handleOkBuying" @cancel="handleCancelBuying" ok-text="确定" cancel-text="取消" >
-  <div>
-    <a-row>
-      <a-col :span="24">
-       <div style="display: flex; justify-content: center; align-items: center;">{{buyTexting}}</div>
-      </a-col>
-    </a-row>
-   
-  </div>
-</a-modal>
-<a-modal title="修改密码" :visible="visibleType2" @ok="handleOk2" @cancel="handleCancel2" ok-text="确定" cancel-text="取消">
-  <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit2">
-    
-    <a-form-item label="原密码">
-      <a-input  type="password"
-        v-decorator="[
+    <a-modal title="购买提示" width="900px" :visible="visibleBuy" :confirm-loading="confirmLoading" @ok="handleOkBuy"
+      @cancel="handleCancelBuy" ok-text="确定" cancel-text="取消">
+      <div>
+        <a-row>
+          <a-col :span="24">
+            <div style="display: flex; justify-content: center; align-items: center;">{{buyText}}</div>
+          </a-col>
+        </a-row>
+
+      </div>
+    </a-modal>
+    <a-modal title="购买提示" width="900px" :visible="visibleBuying" :confirm-loading="confirmLoading" @ok="handleOkBuying"
+      @cancel="handleCancelBuying" ok-text="确定" cancel-text="取消">
+      <div>
+        <a-row>
+          <a-col :span="24">
+            <div style="display: flex; justify-content: center; align-items: center;">{{buyTexting}}</div>
+          </a-col>
+        </a-row>
+
+      </div>
+    </a-modal>
+    <a-modal title="修改密码" :visible="visibleType2" @ok="handleOk2" @cancel="handleCancel2" ok-text="确定" cancel-text="取消">
+      <a-form :form="form" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" @submit="handleSubmit2">
+
+        <a-form-item label="原密码">
+          <a-input type="password" v-decorator="[
           'oldPassword',
           { rules: [{ required: true, message: '请输入原密码!' }] },
-        ]"
-      />
-    </a-form-item>
-    <a-form-item label="新密码">
-      <a-input  type="password"
-        v-decorator="[
+        ]" />
+        </a-form-item>
+        <a-form-item label="新密码">
+          <a-input type="password" v-decorator="[
           'newPassword',
           { rules: [{ required: true, message: '请输入新密码!' }] },
-        ]"
-      />
-    </a-form-item>
+        ]" />
+        </a-form-item>
 
-   
-  </a-form>
-</a-modal>
+
+      </a-form>
+    </a-modal>
   </div>
 
   <script>
@@ -296,7 +298,7 @@
           visibleAudition: false,
           auditionCodeUrl: '',
           song: "",
-          lockTime:0,
+          lockTime: 0,
           copyright: "",
           cooperative: "",
           saveUrl: "",
@@ -308,13 +310,14 @@
           totalNum: 20,
           current1: 1,
           totalNum1: 2,
-          visibleBuy:false,
-          visibleBuying:false,
-          buyText:"选择后发现该歌曲已经被别人买入了：非常抱歉，该歌曲已经被其他合作伙伴暂时锁定了，请您理解！",
-          buyTexting:"",
-          visibleType2:false,
-          buysongId:'',
-       
+          visibleBuy: false,
+          visibleBuying: false,
+          buyText: "选择后发现该歌曲已经被别人买入了：非常抱歉，该歌曲已经被其他合作伙伴暂时锁定了，请您理解！",
+          buyTexting: "",
+          visibleType2: false,
+          buysongId: '',
+          songName: ''
+
         };
       },
       mounted: function () {
@@ -331,15 +334,15 @@
           this.axiosUrl = tempurl2
           this.queryInfo(this.axiosUrl)
         }
-        this.queryInfo(this.axiosUrl)
+        //this.queryInfo(this.axiosUrl)
 
 
       },
 
       methods: {
         //修改密码
-        updataPassword(){
-          this.visibleType2=true
+        updataPassword() {
+          this.visibleType2 = true
 
         },
         //查看历史
@@ -376,70 +379,81 @@
           this.visiblePartner = false;
         },
         //已被购买弹窗关闭
-        handleOkBuy(){
-          this.visibleBuy=false
-          
+        handleOkBuy() {
+          this.visibleBuy = false
+
         },
-         //已被购买弹窗关闭
-         handleCancelBuy(){
-          this.visibleBuy=false
+        //已被购买弹窗关闭
+        handleCancelBuy() {
+          this.visibleBuy = false
         },
-            //购买成功弹窗关闭
-            handleOkBuying(){
-          this.visibleBuying=false
-          
+        //购买成功弹窗关闭
+        handleOkBuying() {
+          this.visibleBuying = false
+
         },
-         //购买成功弹窗关闭
-         handleCancelBuying(){
-          this.visibleBuying=false
+        //购买成功弹窗关闭
+        handleCancelBuying() {
+          this.visibleBuying = false
         },
         //查看历史分页
         onShowSizeChange1(current, pageSize) {
           this.current1 = current;
           this.querybuyHistory()
         },
-         //查看历史分页
-         onShowSizeChange(current, pageSize) {
+        //查看历史分页
+        onShowSizeChange(current, pageSize) {
           this.current = current;
           console.log(current, pageSize);
           this.queryInfo(this.axiosUrl)
         },
         //查看历史
         querybuyHistory() {
+          let tempdata = JSON.parse(localStorage.getItem("admin"))
+
           let _this = this
           axios({
             headers: {
               'Content-Type': 'multipart/form-data'
             },
             method: 'post',
-            url: _this.severUrl + '/getBuyHistory',
+            url: _this.severUrlActive + '/god/getPurchaseHistory',
             data: {
-              key: localStorage.getItem("admin"),
+              token: tempdata.token,
               page: _this.current1,
               pageSize: 10
             }
           }).then(res => {
             let tempdata = res.data
-            if (tempdata.state == 0) {
-              this.data1 = tempdata.buyHistory;
+            console.log(tempdata)
+            if (tempdata.status == 0) {
+              this.data1 = tempdata.data;
+              this.totalNum1 = 9
+              this.visiblePartner = true;
               this.data1.map(item => {
-                if (item.createTime > 0) {
-                  item.createTime = _this.getTimes(item.createTime * 1000)
-                } else {
-                  item.createTime = ""
-                }
-                if (item.contractTime > 0) {
-                  item.contractTime = _this.getTimes(item.contractTime * 1000)
-                } else {
-                  item.contractTime = ""
-                }
-                if (item.publishTime > 0) {
-                  item.publishTime = _this.getTimes(item.publishTime * 1000)
-                } else {
-                  item.publishTime = ""
-                }
-                // item["timess"] = common.getTimes(item.time * 1000);
-                this.totalNum1 = tempdata.Count
+                item['createTime'] = item.publish.startLockTime
+                item['contractTime'] = item.publish.contractTime
+                item['publishTime'] = item.publish.publishTime
+                item['songName'] = item.submitter.songName
+                item['tag'] = item.submitter.tag
+
+                // if (item.createTime > 0) {
+                //   item.createTime = _this.getTimes(item.createTime * 1000)
+                // } else {
+                //   item.createTime = ""
+                // }
+                // if (item.contractTime > 0) {
+                //   item.contractTime = _this.getTimes(item.contractTime * 1000)
+                // } else {
+                //   item.contractTime = ""
+                // }
+                // if (item.publishTime > 0) {
+                //   item.publishTime = _this.getTimes(item.publishTime * 1000)
+                // } else {
+                //   item.publishTime = ""
+                // }
+                // // item["timess"] = common.getTimes(item.time * 1000);
+                this.totalNum1 = 9
                 this.visiblePartner = true;
 
               });
@@ -466,71 +480,71 @@
         //试听
         queryPartner(val) {
           console.log(val)
-            //获取歌词
-            let tempdata=JSON.parse(localStorage.getItem("admin"))
-      let _this = this
-      const param = {
-        token: tempdata.token,
-        songID: val.id,
-        fileCode: val.lyricsFile,
-        category: "lyric"
-      };
-      let tempStr = JSON.stringify(param);
-      console.log(tempStr);
-     // const Base64 = require("js-base64").Base64;
-     // tempStr =window.btoa(tempStr);
-      // tempStr = $.base64.encode(tempStr)
-      tempStr=window.btoa(tempStr);
-      console.log(tempStr.split("=="))
-      tempStr=tempStr.split("==")[0]
-      //tempStr=split('==')[0]
-      // openFileActive(tempStr).then(res => {
-      //   console.log(res);
-      //   this.songText = res;
-      // });
-      console.log(tempStr)
-      this.visibleAudition = true
-      axios({
+          //获取歌词
+          let tempdata = JSON.parse(localStorage.getItem("admin"))
+          let _this = this
+          const param = {
+            token: tempdata.token,
+            songID: val.id,
+            fileCode: val.lyricsFile,
+            category: "lyric"
+          };
+          let tempStr = JSON.stringify(param);
+          console.log(tempStr);
+          // const Base64 = require("js-base64").Base64;
+          // tempStr =window.btoa(tempStr);
+          // tempStr = $.base64.encode(tempStr)
+          tempStr = window.btoa(tempStr);
+          console.log(tempStr.split("=="))
+          tempStr = tempStr.split("==")[0]
+          //tempStr=split('==')[0]
+          // openFileActive(tempStr).then(res => {
+          //   console.log(res);
+          //   this.songText = res;
+          // });
+          console.log(tempStr)
+          this.visibleAudition = true
+          axios({
             headers: {
               'Content-Type': 'multipart/form-data',
               //'token': localStorage.getItem("admin"),
             },
             method: 'get',
-            url: _this.severUrlActive +'/openFile/' +tempStr,
+            url: _this.severUrlActive + '/openFile/' + tempStr,
             // data: {
             //  // key: localStorage.getItem("admin"),
             // }
           }).then(res => {
             console.log(val)
-            if(res.status==200){
-              let tempdata1=JSON.parse(localStorage.getItem("admin"))
+            if (res.status == 200) {
+              let tempdata1 = JSON.parse(localStorage.getItem("admin"))
 
               this.songText = res.data;
               const params = {
-        token: tempdata1.token,
-        songID: val.id,
-        fileCode: val.auditionFile,
-        category: "lyric"
-      };
-      let tempStr1 = JSON.stringify(params);
-      tempStr1=window.btoa(tempStr1);
-      console.log(tempStr1.split("=="))
-      tempStr1=tempStr1.split("==")[0]
-      this.auditionCodeUrl = _this.severUrlActive + "/openFile/" + tempStr1;
+                token: tempdata1.token,
+                songID: val.id,
+                fileCode: val.auditionFile,
+                category: "lyric"
+              };
+              let tempStr1 = JSON.stringify(params);
+              tempStr1 = window.btoa(tempStr1);
+              console.log(tempStr1.split("=="))
+              tempStr1 = tempStr1.split("==")[0]
+              this.auditionCodeUrl = _this.severUrlActive + "/openFile/" + tempStr1;
             }
-           
+
 
           });
-      return false
-    
+          return false
+
 
         },
         //保存买入
         handleSubmit() {
-          let tempdata=JSON.parse(localStorage.getItem("admin"))
-        
+          let tempdata = JSON.parse(localStorage.getItem("admin"))
 
-          let _this=this
+
+          let _this = this
           // e.preventDefault();
           _this.form.validateFields((err, values) => {
             if (!err) {
@@ -543,20 +557,20 @@
                 method: 'post',
                 url: _this.severUrlActive + '/god/putLockSong',
                 data: {
-                  token: tempdata.token,    
-    url: this.axiosUrl,
-    songIDs:[_this.buysongId],
-    collaborateMode:_this.copyright,
-    copyrightMode:_this.cooperative
+                  token: tempdata.token,
+                  url: this.axiosUrl,
+                  songIDs: [_this.buysongId],
+                  collaborateMode: _this.copyright,
+                  copyrightMode: _this.cooperative
                 }
               }).then(res => {
                 console.log(res)
                 let tempdata = res.data
                 if (res.data.status == 0) {
                   this.visibleType = false;
-                  this.visibleBuying=true
+                  this.visibleBuying = true
                   //this.buyTexting=`感谢您选择《${this.songName}》歌曲，请在${this.lockTime}天内将该歌曲的版权协议，寄给我们，如果我们没有收到协议，将会在${this.lockTime}天后将该歌曲从新开放给所有合作伙伴，感谢理解！`
-                  this.buyTexting=`感谢您选择《${this.songName}》歌曲`
+                  this.buyTexting = `感谢您选择《${this.songName}》歌曲,请在15天内将该歌曲的版权协议，寄给我们，如果我们没有收到协议，将会在15天后将该歌曲从新开放给所有合作伙伴，感谢理解！`
 
                   this.queryInfo(this.axiosUrl)
 
@@ -569,10 +583,13 @@
             }
           });
         },
-          //修改密码
-          handleSubmit2() {
+        //修改密码
+        handleSubmit2() {
           // e.preventDefault();
           this.form.validateFields((err, values) => {
+            let tempdata = JSON.parse(localStorage.getItem("admin"))
+            console.log(tempdata)
+
             if (!err) {
               console.log(values)
 
@@ -582,22 +599,23 @@
                   'Content-Type': 'multipart/form-data'
                 },
                 method: 'post',
-                url: this.severUrl + '/updatePassword',
+                url: this.severUrlActive + '/account/updatePassword',
                 data: {
                   // key:"kehu02",
-                   key: localStorage.getItem("admin"),
-                oldPassword:values.oldPassword,
-                newPassword:values.newPassword
+                  token: tempdata.token,
+                  oldPassword: values.oldPassword,
+                  newPassword: values.newPassword
                 }
               }).then(res => {
                 let tempdata = res.data
-                if (tempdata.state == 0) {
+                if (tempdata.status == 0) {
                   this.visibleType2 = false;
-                  this.$message.success("修改成功！");
+                  this.$message.success("密码修改成功！");
 
+                  window.location = 'http://106.53.61.91:8990/clientLogin.html?type=' + this.axiosUrl
 
                 } else {
-                  this.$message.error("修改失败！");
+                  this.$message.error("密码修改失败！");
 
                 }
 
@@ -607,7 +625,7 @@
         },
         //版权列表
         queryCopyright() {
-          let tempdata=JSON.parse(localStorage.getItem("admin"))
+          let tempdata = JSON.parse(localStorage.getItem("admin"))
 
           axios({
             headers: {
@@ -617,17 +635,17 @@
             url: this.severUrlActive + '/config/aboutCopyrightMode',
             data: {
               // key: localStorage.getItem("admin"), "operation": 0, "name": ""
-              token:tempdata.token,
-    action:"get",
+              token: tempdata.token,
+              action: "get",
             }
           }).then(res => {
             console.log(res)
-            console.log( res.data.data)
+            console.log(res.data.data)
             let tempdata = res.data.data
-            this.queryCopyList =res.data.data
+            this.queryCopyList = res.data.data
             // if (tempdata.state == 0) {
             //   this.queryCopyList = tempdata.data
-           
+
             // } else {
 
             // }
@@ -636,7 +654,7 @@
         },
         //合作方式列表
         queryCooperation() {
-          let tempdata=JSON.parse(localStorage.getItem("admin"))
+          let tempdata = JSON.parse(localStorage.getItem("admin"))
 
           axios({
             headers: {
@@ -646,12 +664,12 @@
             url: this.severUrlActive + '/config/aboutCooperative',
             data: {
               token: tempdata.token,
-    action:"get",
+              action: "get",
             }
           }).then(res => {
             // let tempdata = res.data
             // let tempdata = res.data.data
-            this.cooperationList =res.data.data
+            this.cooperationList = res.data.data
             // if (tempdata.state == 0) {
             //   this.cooperationList = tempdata.data
 
@@ -678,13 +696,13 @@
           this.handleSubmit();
           //this.visibleType = false
         },
-          //确定买入
-          handleOk2() {
+        //确定买入
+        handleOk2() {
           this.handleSubmit2();
           //this.visibleType = false
         },
-        handleCancel2(){
-          this.visibleType2=false
+        handleCancel2() {
+          this.visibleType2 = false
         },
         //取消买入
         handleCancel() {
@@ -695,11 +713,12 @@
         toBuy(val) {
           console.log(val)
           this.song = val.songName
-          this.buysongId= val.id
-                this.lockTime=val.lockTime
-          let _this=this
+          this.songName=val.songName
+          this.buysongId = val.id
+          this.lockTime = val.lockTime
+          let _this = this
           this.queryCopyright()
-                this.queryCooperation()
+          this.queryCooperation()
           _this.visibleType = true
 
           // axios({
@@ -709,7 +728,7 @@
           //   method: 'post',
           //   // url: this.severUrl + '/checkSold',
           //   url: this.severUrlActive + '/god/putLockSong',
-            
+
           //   data: {
           //     key: localStorage.getItem("admin"),
           //     songName: val.name
@@ -737,21 +756,21 @@
 
         },
         queryInfo(Ulrs) {
-          let tempdata=JSON.parse(localStorage.getItem("admin"))
-          console.log(JSON.parse(localStorage.getItem("admin"))     )
-          let _this=this
+          let tempdata = JSON.parse(localStorage.getItem("admin"))
+          console.log(JSON.parse(localStorage.getItem("admin")))
+          let _this = this
           axios({
             headers: {
               'Content-Type': 'multipart/form-data'
             },
             method: 'post',
-          // url: this.severUrl + '/openAuditionList/' + Ulrs,
-            url: this.severUrlActive + '/god/openOneAudition' ,
+            // url: this.severUrl + '/openAuditionList/' + Ulrs,
+            url: this.severUrlActive + '/god/openOneAudition',
             data: {
               token: tempdata.token,
-              //token:'6214fea51a36819b996c2fcb',
-              //url:'6214fe861a36819b996c2fc9'
-              url:Ulrs
+              //token:'6218e7abff343b0460492b3c',
+              // url:'6218d888f60db081ef1cf1bc'
+              url: Ulrs
               // page:_this.current,
               // pageSize:10,
             }
@@ -759,16 +778,16 @@
             console.log(res)
             let tempdata = res.data
             if (res.data.status == 0) {
-             // this.totalNum=tempdata.count
+              // this.totalNum=tempdata.count
               this.data = tempdata.data.songs
               this.data.map((item, index) => {
                 item['nums'] = index
-                 item.progressRate==599?item['buyType']=false:item['buyType']=true
+                item.progressRate == 599 ? item['buyType'] = false : item['buyType'] = true
 
               })
               console.log(this.data)
             } else {
-              this.data=[]
+              this.data = []
             }
 
           });

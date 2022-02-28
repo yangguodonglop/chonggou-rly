@@ -3,7 +3,7 @@
     <search-header>
       <div class="option">
         <div class="sing-id option-active">
-          <span>歌曲编号222：</span>
+          <span>歌曲编号2：</span>
           <el-input
             v-model="search.musicid"
             size="mini"
@@ -59,7 +59,7 @@
       </div>
     </search-header>
     <el-table
-      :data="getTableData"
+      :data="tableData"
       border
       style="width: 100%;height:auto;"
       stripe
@@ -71,16 +71,26 @@
         <p>{{ dataText }}</p>
       </template>
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="musicid" label="歌曲编号" width="100" align="center" sortable></el-table-column>
+      <!-- <el-table-column prop="musicid" label="歌曲编号" width="100" align="center" sortable></el-table-column> -->
       <el-table-column prop="songName" label="歌曲名称" sortable width="120" align="center"></el-table-column>
       <el-table-column prop="tag" label="歌曲风格" width="150" align="center"></el-table-column>
       <el-table-column prop="lyricist" label="作词人" width="120" align="center"></el-table-column>
       <el-table-column prop="composer" label="作曲人" width="120" align="center"></el-table-column>
-      <el-table-column prop="producerNick" label="制作人" width="120" align="center"></el-table-column>
-      <el-table-column prop="progressRate" label="歌曲状态" width="150" align="center"></el-table-column>
+      <el-table-column prop="collaborateName" label="合作模式" width="120" align="center"></el-table-column>
+      <el-table-column prop="copyrightName" label="版权模式" width="120" align="center"></el-table-column>
+      <el-table-column prop="startLockTime" label="确定意向时间" width="120" align="center"></el-table-column>
+      <el-table-column prop="contractTime" label="签合同时间" width="120" align="center"></el-table-column>
+      <el-table-column prop="cashDepositTime" label="收到首笔款时间" width="120" align="center"></el-table-column>
+      <el-table-column prop="publishTime" label="发布时间" width="120" align="center"></el-table-column>
+      <el-table-column prop="finishLockTime" label="锁定时间" width="120" align="center"></el-table-column>
+      <el-table-column prop="account" label="发行人员" width="120" align="center"></el-table-column>
+      	
 
-      <el-table-column prop="lyricurl" label="歌词地址" width="80" align="center"></el-table-column>
-      <el-table-column prop="time" label="创建时间" width="150" align="center" sortable></el-table-column>
+      <!-- <el-table-column prop="producerNick" label="制作人" width="120" align="center"></el-table-column>
+      <el-table-column prop="progressRate" label="歌曲状态" width="150" align="center"></el-table-column> -->
+
+      <!-- <el-table-column prop="lyricurl" label="歌词地址" width="80" align="center"></el-table-column>
+      <el-table-column prop="time" label="创建时间" width="150" align="center" sortable></el-table-column> -->
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <!-- <el-button @click="checkClick(scope.row)" type="text" size="mini">查看</el-button>
@@ -477,13 +487,13 @@ export default {
         pageSize: 10,
         curPage: 0,
         filter: {
-          progressRateReg: [],
-          createTimeReg: [],
-          songName: "",
-          lyricist: "",
-          composer: "",
-          tag: []
+          "progressRateReg":[720,720],
+        publishTime:[],
+        songName:"",
+        publishe:"",
+        tag:[]
         }
+    
       };
       getPublishSongSell(param).then(res => {
         console.log(res);
@@ -544,7 +554,14 @@ export default {
             demoFile: items.submitter.demoFile,
             lyricsFile: items.submitter.lyricsFile,
             producerNick: items.producerNick,
-            progressRate: tempStatus
+            copyrightName: items.publish.copyrightName,
+            collaborateName: items.publish.collaborateName,
+            startLockTime:items.publish.startLockTime,
+            contractTime:items.publish.contractTime,
+            cashDepositTime:items.publish.cashDepositTime,
+            publishTime:items.publish.publishTime,
+            finishLockTime:items.publish.finishLockTime,
+            account:items.publish.account
           };
           this.tableData.push(obj);
         });
