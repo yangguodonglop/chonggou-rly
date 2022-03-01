@@ -78,19 +78,48 @@
       <el-table-column prop="composer" label="作曲人" width="120" align="center"></el-table-column>
       <el-table-column prop="collaborateName" label="合作模式" width="120" align="center"></el-table-column>
       <el-table-column prop="copyrightName" label="版权模式" width="120" align="center"></el-table-column>
-      <el-table-column prop="startLockTime" label="确定意向时间" width="120" align="center"></el-table-column>
-      <el-table-column prop="contractTime" label="签合同时间" width="120" align="center"></el-table-column>
-      <el-table-column prop="cashDepositTime" label="收到首笔款时间" width="120" align="center"></el-table-column>
-      <el-table-column prop="publishTime" label="发布时间" width="120" align="center"></el-table-column>
-      <el-table-column prop="finishLockTime" label="锁定时间" width="120" align="center"></el-table-column>
+      <el-table-column prop="startLockTime" label="确定意向时间" width="140" align="center"></el-table-column>
+      <el-table-column prop="contractTime" label="签合同时间" width="140" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.startLockTime}}{{scope.row.progressRate}}</span>
+          <el-button
+            :disabled="scope.row.progressRate!==720"
+            type="primary"
+            size="mini"
+            @click="onclick(scope.row,'contract')"
+          >确认收到合同</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column prop="cashDepositTime" label="收到首笔款时间" width="140" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.cashDepositTime}}{{scope.row.progressRate}}</span>
+          <el-button
+            :disabled="scope.row.progressRate!==730"
+            type="primary"
+            size="mini"
+            @click="onclick(scope.row,'payment')"
+          >确认首笔付款</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column prop="publishTime" label="发布时间" width="140" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.publishTime}}{{scope.row.progressRate}}</span>
+          <el-button
+            :disabled="scope.row.progressRate!==740"
+            type="primary"
+            size="mini"
+            @click="onclick(scope.row,'publish')"
+          >发布</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column prop="finishLockTime" label="锁定时间" width="140" align="center"></el-table-column>
       <el-table-column prop="account" label="发行人员" width="120" align="center"></el-table-column>
-      	
 
       <!-- <el-table-column prop="producerNick" label="制作人" width="120" align="center"></el-table-column>
-      <el-table-column prop="progressRate" label="歌曲状态" width="150" align="center"></el-table-column> -->
+      <el-table-column prop="progressRate" label="歌曲状态" width="150" align="center"></el-table-column>-->
 
       <!-- <el-table-column prop="lyricurl" label="歌词地址" width="80" align="center"></el-table-column>
-      <el-table-column prop="time" label="创建时间" width="150" align="center" sortable></el-table-column> -->
+      <el-table-column prop="time" label="创建时间" width="150" align="center" sortable></el-table-column>-->
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <!-- <el-button @click="checkClick(scope.row)" type="text" size="mini">查看</el-button>
@@ -104,6 +133,9 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native="toAudition(scope.row)">选择试听</el-dropdown-item>
+                <el-dropdown-item @click.native="toLock(scope.row)">延期锁定</el-dropdown-item>
+          <el-dropdown-item type="text" size="mini" @click.native="removeLockSong(scope.row)">解除锁定</el-dropdown-item>
+
                 <el-dropdown-item @click.native="toDistribute(scope.row,'producer','200')">分配制作人</el-dropdown-item>
                 <el-dropdown-item
                   @click.native="toDistribute(scope.row,'arrangementM','300')"
@@ -170,13 +202,34 @@
     >
       <music-upload-recorder :userInfo="userInfo" @editDistributeRecorder="editDistributeRecorder"></music-upload-recorder>
     </el-dialog>
-       <el-dialog
+    <el-dialog
       :footer="false"
       title="上传缩混"
       :visible.sync="dialogVisibleUploadMix"
       customClass="customWidth-distribute"
     >
       <music-upload-mix :userInfo="userInfo" @editDistributeRecorder="editDistributeRecorder"></music-upload-mix>
+    </el-dialog>
+     <el-dialog
+      :footer="true"
+      title="延迟锁定"
+      :visible.sync="lockType"
+      customClass="customWidth-distribute"
+    >
+    <div>
+        <el-form class="userfrom" >
+        <el-form-item label="歌曲名" prop="userName" :label-width="formLabelWidth">
+          <el-input :disabled="true" v-model="songName" ref="ipt"></el-input>
+        </el-form-item>
+           <el-form-item label="延迟天数" prop="userName" :label-width="formLabelWidth">
+          <el-input v-model="extendDays" ref="ipt"></el-input>
+        </el-form-item>
+            <el-form-item  style=" display: flex;justify-content: end;" >
+          <el-button type="primary" @click="onSubmit">确定</el-button>
+          <el-button type="primary" @click="onBack">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     </el-dialog>
   </div>
 </template>
@@ -188,7 +241,10 @@ import {
   deleteMusicById,
   singerList,
   deleteSong,
-  getPublishSong
+  getPublishSong,
+  doWork,
+  extendLock,
+  removeLockSong
 } from "network/home.js";
 
 import SearchHeader from "components/common/header/SearchHeader.vue";
@@ -224,11 +280,13 @@ export default {
     MusicDistribute,
     MusicUpload,
     MusicUploadRecorder,
-    MusicUploadMix
+    MusicUploadMix,
+    extendLock
   },
 
   data() {
     return {
+            formLabelWidth: "100px",
       //音乐列表
       musicInfo: {
         musicName: null,
@@ -273,9 +331,14 @@ export default {
       dialogVisibleDistribute: false,
       dialogVisibleUpload: false,
       dialogVisibleUploadRecorder: false,
-      dialogVisibleUploadMix:false,
+      dialogVisibleUploadMix: false,
       userInfo: {},
-      editInfo: {}
+      editInfo: {},
+      lockType:false,
+       songIDs:[],
+    extendDays:3,
+    songName:'',
+
     };
   },
   created() {
@@ -289,6 +352,71 @@ export default {
     // this.getSingerList();
   },
   methods: {
+    //延迟锁定
+    toLock(val){
+      console.log(val)
+      this.lockType=true
+      this.songName=val.songName
+      this.songIDs=val.id
+    },
+    //确定锁定
+    onSubmit(){
+      const param={
+ token:this.token,
+    
+    songIDs:[this.songIDs],
+    extendDays: parseInt(this.extendDays) 
+      }
+      extendLock(param).then(res=>{
+        if(res.status==0){
+                this.$message({
+                type: "success",
+                message: "延期锁定成功!"
+              });
+        }else{
+    this.$message({
+                type: "error",
+                message: "延期锁定失败!"
+              });
+        }
+              this.lockType=false
+
+      })
+    },
+    //接触锁定
+    onBack(){
+      this.lockType=false
+    },
+      removeLockSong(row) {
+      const param = {
+        token: this.token,
+    
+    songIDs:[row.id]
+      };
+      this.$confirm("是否解除锁定?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          removeLockSong(param).then(res => {
+            if (res.status == 0) {
+              this.$message({
+                type: "success",
+                message: "解除锁定成功!"
+              });
+              this.findUserInfo();
+            } else {
+              this.$message({
+                type: "error",
+                message: "解除锁定失败!"
+              });
+            }
+          });
+        })
+        .catch(() => {});
+    },
+
     //删除歌曲
     deleteClick(row) {
       const param = {
@@ -324,6 +452,66 @@ export default {
       this.dialogVisibleUploadRecorder = false;
       this.musicList();
     },
+    //发布操作
+    onclick(item, val) {
+      console.log(item);
+      console.log(val);
+      const param = {
+        token: this.token,
+        songID: item.id,
+        step: val
+      };
+      doWork(param).then(res => {
+        console.log(res);
+
+        if (res.status == 0) {
+          switch (val) {
+            case "contract":
+              this.$message({
+                type: "success",
+                message: "确认收到合同成功！"
+              });
+              break;
+            case "payment":
+              this.$message({
+                type: "success",
+                message: "确认收到首笔款成功！"
+              });
+              break;
+            case "publish":
+              this.$message({
+                type: "success",
+                message: "发布成功！"
+              });
+              break;
+          }
+
+          this.musicList();
+        } else {
+          switch (val) {
+            case "contract":
+              this.$message({
+                type: "error",
+                message: "确认收到合同失败！"
+              });
+              break;
+            case "payment":
+              this.$message({
+                type: "error",
+                message: "确认收到首笔款失败！"
+              });
+              break;
+            case "publish":
+              this.$message({
+                type: "error",
+                message: "发布失败！"
+              });
+              break;
+          }
+          this.musicList();
+        }
+      });
+    },
     //审核
     toReview(row, type, typeNum) {
       // console.log(row)
@@ -342,7 +530,7 @@ export default {
         tempType = "record";
       } else if (row.progressRate == "编曲师已提交") {
         tempType = "arrangement";
-      }else{
+      } else {
         tempType = "mix";
       }
       console.log(row);
@@ -378,9 +566,9 @@ export default {
       this.userInfo = { ...row };
       this.dialogVisibleUploadRecorder = true;
     },
-    toUploadMix(row){
-      this.userInfo={...row}
-      this.dialogVisibleUploadMix=true
+    toUploadMix(row) {
+      this.userInfo = { ...row };
+      this.dialogVisibleUploadMix = true;
     },
     //新增成功查询列表
     addMusic() {
@@ -487,17 +675,15 @@ export default {
         pageSize: 10,
         curPage: 0,
         filter: {
-          "progressRateReg":[720,720],
-        publishTime:[],
-        songName:"",
-        publishe:"",
-        tag:[]
+          progressRateReg: [720, 1000],
+          publishTime: [],
+          songName: "",
+          publishe: "",
+          tag: []
         }
-    
       };
       getPublishSongSell(param).then(res => {
         console.log(res);
-        console.log(this.styleType);
         this.tableData = [];
         res.data.item.forEach((items, index) => {
           let tempStatus = "";
@@ -532,18 +718,18 @@ export default {
             case 499:
               tempStatus = "录音完成";
               break;
-               case 500:
+            case 500:
               tempStatus = "已分配缩混组长";
               break;
-                case 550:
+            case 550:
               tempStatus = "已分配缩混师";
               break;
-                 case 570:
+            case 570:
               tempStatus = "缩混师已提交";
               break;
-                 case 599:
+            case 599:
               tempStatus = "缩混完成";
-              break;   
+              break;
           }
           let obj = {
             songName: items.submitter.songName,
@@ -556,12 +742,13 @@ export default {
             producerNick: items.producerNick,
             copyrightName: items.publish.copyrightName,
             collaborateName: items.publish.collaborateName,
-            startLockTime:items.publish.startLockTime,
-            contractTime:items.publish.contractTime,
-            cashDepositTime:items.publish.cashDepositTime,
-            publishTime:items.publish.publishTime,
-            finishLockTime:items.publish.finishLockTime,
-            account:items.publish.account
+            startLockTime: this.dateFmt(items.publish.startLockTime),
+            contractTime: this.dateFmt(items.publish.contractTime),
+            cashDepositTime: this.dateFmt(items.publish.cashDepositTime),
+            publishTime: this.dateFmt(items.publish.publishTime),
+            finishLockTime: this.dateFmt(items.publish.finishLockTime),
+            account: items.publish.account,
+            progressRate: items.progressRate
           };
           this.tableData.push(obj);
         });

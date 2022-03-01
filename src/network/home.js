@@ -41,6 +41,10 @@ export const getPublishSong = (param) => post(baseUrl+'/sell/getPublishSong', pa
 export const commitFinishedProduct = (param) => post(baseUrl+'/productLine/commitFinishedProduct', param)
 export const makeAuditionList = (param) => post(baseUrl+'/audition/makeAuditionList', param)
 export const getPublishSongSell = (param) => post(baseUrl+'/sell/getPublishSong', param)
+export const doWork = (param) => post(baseUrl+'/sell/doWork', param)
+export const extendLock = (param) => post(baseUrl+'/sell/extendLock', param)
+export const removeLockSong = (param) => post(baseUrl+'/sell/removeLockSong', param)
+
 // export const deleteSong = (param) => post(baseUrl+'/productLine/deleteSong', param)
 // sell/getPublishSong
 const method = "POST";
