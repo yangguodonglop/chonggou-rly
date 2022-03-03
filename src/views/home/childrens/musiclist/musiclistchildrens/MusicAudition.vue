@@ -65,13 +65,21 @@ export default {
   methods: {
     //获取歌曲
     musicListDemo() {
+      let fileCode=''
+      if(this.userInfo.progressRateActive==0){
+        fileCode=this.userInfo.demoFile
+      }else{
+                fileCode=this.userInfo.mixFile
 
+      }
+      console.log(this.userInfo)
       const param = {
         token: this.token,
         songID: this.userInfo.id,
-        fileCode: this.userInfo.demoFile,
-        category: "lyric"
+        fileCode: fileCode,
+        category: "audition"
       };
+      console.log(param)
       let tempStr = JSON.stringify(param);
       let tempStr1 = JSON.stringify(param);
       console.log(tempStr);

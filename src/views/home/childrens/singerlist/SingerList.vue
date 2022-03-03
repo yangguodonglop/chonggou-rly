@@ -72,16 +72,15 @@
         <p>{{ dataText }}</p>
       </template>
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="musicid" label="歌曲编号" width="100" align="center" sortable></el-table-column>
-      <el-table-column prop="songName" label="歌曲名称" sortable width="120" align="center"></el-table-column>
-      <el-table-column prop="tag" label="歌曲风格" width="150" align="center"></el-table-column>
+      <el-table-column prop="musicid" label="歌曲编号" width="100" align="center" ></el-table-column>
+      <el-table-column prop="songName" label="歌曲名称"  width="300" align="center"></el-table-column>
       <el-table-column prop="lyricist" label="作词人" width="120" align="center"></el-table-column>
       <el-table-column prop="composer" label="作曲人" width="120" align="center"></el-table-column>
-      <el-table-column prop="producerNick" label="制作人" width="120" align="center"></el-table-column>
-      <el-table-column prop="progressRate" label="歌曲状态" width="150" align="center"></el-table-column>
+            <el-table-column prop="tag" label="歌曲风格" width="200" align="center"></el-table-column>
 
-      <el-table-column prop="lyricurl" label="歌词地址" width="80" align="center"></el-table-column>
-      <el-table-column prop="time" label="创建时间" width="150" align="center" sortable></el-table-column>
+
+      <el-table-column prop="createTime" label="创建时间" width="200" align="center"></el-table-column>
+      <el-table-column prop="lastUpdateTime" label="结束时间" width="200" align="center" ></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <!-- <el-button @click="checkClick(scope.row)" type="text" size="mini">查看</el-button>
@@ -94,8 +93,11 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native="toLock(scope.row)">延期锁定</el-dropdown-item>
                 <el-dropdown-item @click.native="toAudition(scope.row)">选择试听</el-dropdown-item>
-                <el-dropdown-item @click.native="toDistribute(scope.row,'producer','200')">分配制作人</el-dropdown-item>
+                                <el-dropdown-item @click.native="toUploadRecorder(scope.row)">查看试听情况</el-dropdown-item>
+
+                <!-- <el-dropdown-item @click.native="toDistribute(scope.row,'producer','200')">分配制作人</el-dropdown-item>
                 <el-dropdown-item
                   @click.native="toDistribute(scope.row,'arrangementM','300')"
                 >分配编曲组长</el-dropdown-item>
@@ -104,13 +106,11 @@
                 <el-dropdown-item @click.native="toDistribute(scope.row,'recorder','451')">分配录音师</el-dropdown-item>
                 <el-dropdown-item @click.native="toDistribute(scope.row,'mixerM','500')">分配混音组长</el-dropdown-item>
                 <el-dropdown-item @click.native="toDistribute(scope.row,'mixer','551')">分配混音师</el-dropdown-item>
-                <!-- <el-dropdown-item @click.native="toUploadArrangemen(scope.row)">上传编曲</el-dropdown-item> -->
-                <el-dropdown-item @click.native="toUploadRecorder(scope.row)">上传录音</el-dropdown-item>
                 <el-dropdown-item @click.native="toUploadMix(scope.row)">上传缩混</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','30')">通过</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','20')">驳回</el-dropdown-item>
                 <el-dropdown-item @click.native="deleteClick(scope.row)">删除</el-dropdown-item>
-                <el-dropdown-item command="b">退出系统</el-dropdown-item>
+                <el-dropdown-item command="b">退出系统</el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -155,7 +155,7 @@
     </el-dialog>
     <el-dialog
       :footer="false"
-      title="上传录音"
+      title="查看试听情况"
       :visible.sync="dialogVisibleUploadRecorder"
       customClass="customWidth-distribute"
     >
@@ -307,6 +307,7 @@ export default {
     onCopy(e) {
       this.$message.success("内容已复制到剪切板！");
     },
+
     // 复制失败时的回调函数
     onError(e) {
       this.$message.error("抱歉，复制失败！");
@@ -584,6 +585,9 @@ export default {
               break;   
           }
           let obj = {
+            createTime:this.dateFmt(items.createTime),
+            lastUpdateTime:this.dateFmt(items.lastUpdateTime),
+            
             songName: items.submitter.songName,
             composer: items.submitter.composer,
             lyricist: items.submitter.lyricist,
@@ -592,7 +596,9 @@ export default {
             demoFile: items.submitter.demoFile,
             lyricsFile: items.submitter.lyricsFile,
             producerNick: items.producerNick,
-            progressRate: tempStatus
+            progressRate: tempStatus,
+                 progressRateActive:items.progressRate,
+            mixFile:items.mix.auditionFile
           };
           this.tableData.push(obj);
         });

@@ -551,7 +551,9 @@ export default {
             demoFile: items.submitter.demoFile,
             lyricsFile: items.submitter.lyricsFile,
             producerNick: items.producerNick,
-            progressRate: tempStatus
+            progressRate: tempStatus,
+            progressRateActive:items.progressRate,
+            mixFile:items.mix.auditionFile
           };
           this.tableData.push(obj);
         });

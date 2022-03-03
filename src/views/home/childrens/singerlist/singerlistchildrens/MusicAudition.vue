@@ -62,41 +62,72 @@ export default {
     }
    },
   methods: {
-        //获取歌词
+        //获取歌曲
     musicListDemo() {
       console.log(this.userInfo)
+   let fileCode=''
+      if(this.userInfo.progressRateActive==0){
+        fileCode=this.userInfo.demoFile
+      }else{
+                fileCode=this.userInfo.mixFile
 
-      const param = {
-    "token": this.token,
-    "songID": this.userInfo.id,
-    "fileCode": this.userInfo.demoFile,
-    "category": "lyric"
+      }
+      console.log(this.userInfo)
+   const param = {
+        token: this.token,
+        songID: this.userInfo.id,
+        fileCode: fileCode,
+        category: "audition"
       };
-      let tempStr=JSON.stringify(param)
-      console.log(tempStr)
-            const Base64 = require('js-base64').Base64
-tempStr = Base64.encode(tempStr)
-this.auditionCodeUrl=baseUrl+'/openFile/'+tempStr
-      // openFileActive(tempStr).then(res => {
-      //  // console.log(res);
-      //   this.auditionCodeUrl=res
+      
+//       let tempStr=JSON.stringify(param)
+//       console.log(tempStr)
+//             const Base64 = require('js-base64').Base64
+// tempStr = Base64.encode(tempStr)
+// this.auditionCodeUrl=baseUrl+'/openFile/'+tempStr
+//       // openFileActive(tempStr).then(res => {
+//       //  // console.log(res);
+//       //   this.auditionCodeUrl=res
      
-      // });
+//       // });
+        let tempStr = JSON.stringify(param);
+      let tempStr1 = JSON.stringify(param);
+      console.log(tempStr);
+      const Base64 = require("js-base64").Base64;
+      //tempStr = Base64.encode(tempStr)
+      tempStr = Base64.encodeURL(tempStr);
+      tempStr1=window.btoa(tempStr1);
+
+       console.log(tempStr);
+       console.log(tempStr1);
+      this.auditionCodeUrl = baseUrl + "/openFile/" + tempStr;
     },
       //获取歌词
     musicListlyricsFile() {
       console.log(this.userInfo)
 
       const param = {
-    "token": this.token,
-    "songID": this.userInfo.id,
-    "fileCode": this.userInfo.lyricsFile,
-    "category": "lyric"
+    token: this.token,
+    songID: this.userInfo.id,
+    fileCode: this.userInfo.lyricsFile,
+    category: "lyric"
       };
-      let tempStr=JSON.stringify(param)
-      console.log(tempStr)
-            const Base64 = require('js-base64').Base64
-tempStr = Base64.encode(tempStr)
+//       let tempStr=JSON.stringify(param)
+//       console.log(tempStr)
+//             const Base64 = require('js-base64').Base64
+// tempStr = Base64.encode(tempStr)
+
+
+  let tempStr = JSON.stringify(param);
+      let tempStr1 = JSON.stringify(param);
+      console.log(tempStr);
+      const Base64 = require("js-base64").Base64;
+      tempStr = Base64.encodeURL(tempStr);
+      console.log
+          tempStr1=window.btoa(tempStr1);
+
+       console.log(tempStr);
+       console.log(tempStr1);
       openFileActive(tempStr).then(res => {
         console.log(res);
         this.songText=res

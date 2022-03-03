@@ -112,7 +112,7 @@
           >发布</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="finishLockTime" label="锁定时间" width="140" align="center"></el-table-column>
+      <el-table-column prop="finishLockTime" label="锁定到期时间" width="140" align="center"></el-table-column>
       <el-table-column prop="account" label="发行人员" width="120" align="center"></el-table-column>
 
       <!-- <el-table-column prop="producerNick" label="制作人" width="120" align="center"></el-table-column>
@@ -380,6 +380,7 @@ export default {
               });
         }
               this.lockType=false
+               this.musicList();
 
       })
     },
