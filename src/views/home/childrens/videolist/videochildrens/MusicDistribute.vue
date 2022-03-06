@@ -1,29 +1,39 @@
 <template>
-  <div id="music-check">
-    <div style="display: flex;justify-content: center;flex-direction: column;">
-     <el-select style="width:100%;"  @change="onChange"  v-model="distributeType" placeholder="请选择歌曲风格">
-            <el-option
-              v-for="(item, index) in distributeTypeList"
-              :key="index"
-              :label="item.nick"
-              :value="item.account"
-            ></el-option>
-          </el-select>
+  <div id="add">
+    <el-table :data="tableData" border style="width: 100%;height:auto;" stripe size="mini">
+      <el-table-column prop="creator" label="试听伙伴" width="100" align="center"></el-table-column>
+      <el-table-column prop="expiredTime" label="试听时间" width="200" align="center"></el-table-column>
+      <el-table-column prop="valid" label="试听次数" align="center"></el-table-column>
+    </el-table>
+     <div class="block">
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        layout="total, prev, pager, next, jumper"
+        background
+        :total="getTotal"
+        style="textAlign: right"
+      ></el-pagination>
       
-      </div>
-            <div slot="footer" class="dialog-footer" style="margin-top: 20px;display: flex;justify-content: center;">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirm()">确 定</el-button>
-      </div>
+    </div>
+
+    <div
+      slot="footer"
+      class="dialog-footer"
+      style="display: flex;justify-content: end; margin-top:20px"
+    >
+      <el-button @click="close()">取 消</el-button>
+    </div>
   </div>
 </template>
 
 <script>
-import { findMusicById,userList,userListActive,assignWork } from "network/home.js";
-import fmtDate from "common/js/Date.js";
+import { queryAuditionList } from "network/home.js";
+
 export default {
-  name: "MusicCheck",
-      props: {
+  name: "MusicAdd",
+  inject: ["reload"],
+  props: {
     userInfo: {
       type: Object,
       default: () => {}
@@ -31,133 +41,74 @@ export default {
   },
   data() {
     return {
-      size: "",
-      mid: this.$route.query.mid,
-      music: {},
-      singer: {},
-      musicType: {},
-      musicPictureUrl: "",
-      musicUrl: "",
-      distributeType:'',
-        distributeTypeList: [],
-           currentPage: 1,
+      token: JSON.parse(localStorage.getItem("userInfo")).token,
+      tableData: [],
+      getTotal:0,
+          currentPage: 1,
       //1页10个数据
       pagesize: 10,
-      dataText: "",
-      multipleSelection: [],
-      token: JSON.parse(localStorage.getItem("userInfo")).token,
-
-      songText:"sdsads",
-      auditionCodeUrl:"http://47.114.141.171:8990/song/44CK5Lq66Ze05LiA5Y-256eL44CLYnBt77yaNjUg5aWz6ZmNQS5tcDM",
-            token: JSON.parse(localStorage.getItem("userInfo")).token,
-
     };
   },
-  mounted() {
-    //this.findMusicById(this.mid);
-      //this.musicListDemo()
-      this.findUserInfo()
-     console.log(this.userInfo) 
+
+  created() {
+    this.param = new FormData();
   },
-   watch: {
+  mounted() {
+    this.queryInfo();
+    console.log(this.userInfo);
+  },
+  watch: {
     userInfo(val) {
-      console.log(val)
-      // this.keyArr = [];
-      // this.keyArr = val.funcGroup;
       this.$nextTick(() => {
-        this.findUserInfo()
-       // console.log(baseUrl)
-       
-        // this.musicListlyricsFile()
-        // this.musicListDemo()
+        this.queryInfo();
       });
     }
-   },
-  
+  },
   methods: {
-      //选择制作人
-    onChange(val){
-      console.log(val)
-
-    },
-    //确定
-    confirm(){
-      const param=
-            {
-    "token": this.token,
-    "songID": this.userInfo.id,
-    "work": this.userInfo.selecttype,
-    "to": this.distributeType
-}
-  assignWork(param).then(res => {
-        if (res.status == 0) {
-          this.$message({
-            type: "success",
-            message: "分配成功！"
-          });
-          this.$emit('editDistribute')
-          //this.submitForm();//提交表单
-        } else {
-          this.demoCode = "";
-          this.$message({
-            type: "error",
-            message: "分配失败,请查看歌曲状态!"
-          });
-        }
-        //  if(res.code===0){
-        //    this.submitForm();//提交表单
-        //  }
-      });
-    },
-     //查找用户列表
-    findUserInfo() {
+    //查询合作模式
+    queryInfo() {
       const param = {
         token: this.token,
         pageSize: 10,
-        curPage: this.currentPage - 1,
-        fFuncGroup: parseInt(this.userInfo.fFuncGroup) 
+        curPage: this.currentPage-1,
+
+        filter: {
+          listName: "",
+          creatorID: "",
+          publisher: "",
+          songName: "",
+          isValid: true
+        }
       };
-      this.loading = true;
-      //向后端发送请求并接受数据库中的用户列表
-      userListActive(param).then(res => {
+      queryAuditionList(param).then(res => {
         console.log(res);
         if (res.status == 0) {
-          this.loading = false;
-          this.distributeTypeList = res.data.item;
-          //this.getTotal = res.data.count;
+          this.tableData = [];
+          this.tableData = res.data.item;
+          this.getTotal=res.data.count
         } else {
-          this.distributeTypeList = [];
-          //this.getTotal = 0;
+          this.tableData = [];
+                    this.getTotal=0
+
         }
-        console.log(this.distributeTypeList)
       });
     },
-    back() {
-      this.$router.back();
+          //点击之后的当前页数
+    handleCurrentChange(val) {
+      // 当前页数
+      this.currentPage = val;
+      this.queryInfo();
     },
-    findMusicById(mid) {
-      findMusicById(mid).then(res => {
-        // console.log(res);
-        res.musicphotourl =
-          "http://localhost:8090/musicstatic/" + res.musicphotourl;
-        this.music = res;
-        this.singer = res.singer;
-        this.musicType = res.musictype;
-      });
-    }
-  },
-  filters: {
-    dateFmt(date) {
-      let d = new Date(date);
-      return fmtDate(d, "yyyy-MM-dd hh:mm:ss");
+
+    close() {
+      this.$emit("editDistribute");
     }
   }
 };
 </script>
 
-<style scoped>
-img {
-  width: 100px;
-  height: 100px;
+<style>
+.customWidth-addSong {
+  width: 500px;
 }
 </style>

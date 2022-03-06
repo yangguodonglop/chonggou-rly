@@ -1,61 +1,82 @@
 <template>
   <div id="add">
-      <el-form :model="music">
-        <el-form-item label="歌曲名称:" :label-width="formLabelWidth">
-          <el-input :disabled="true" v-model="userInfo.songName" autocomplete="off" placeholder="请输入歌曲名称"></el-input>
-        </el-form-item>
-    
-        <el-form-item label="上传缩混:" prop="file" :label-width="formLabelWidth">
-          <el-upload
-            action
-            multiple
-            ref="upload_img"
-            accept=".jpg, .jpeg, .png"
-            :http-request="httpRequest"
-          >
-            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <span slot="tip" class="el-upload__tip">请选择.MP3格式的文件上传</span>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="上传工程文件:" prop="file" :label-width="formLabelWidth">
-          <el-upload
-            action
-            multiple
-            ref="upload_img"
-            accept=".jpg, .jpeg, .png"
-            :http-request="httpRequestPro"
-          >
-            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <span slot="tip" class="el-upload__tip">请选择工程文件文件上传</span>
-          </el-upload>
-        </el-form-item>
-         <!-- <el-form-item label="上传导唱文件:" prop="file" :label-width="formLabelWidth">
-          <el-upload
-            action
-            multiple
-            ref="upload_img"
-            accept=".jpg, .jpeg, .png"
-            :http-request="httpRequestDchang"
-          >
-            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <span slot="tip" class="el-upload__tip">请选择.歌词文件上传</span>
-          </el-upload>
-        </el-form-item> -->
-      </el-form>
-      <div slot="footer" class="dialog-footer" style="display: flex;justify-content: center;">
-        <el-button @click="close()">取 消</el-button>
-        <el-button type="primary" @click="confirm()">确 定</el-button>
-      </div>
+    <el-form :model="music">
+      <el-form-item label="歌曲名称:" :label-width="formLabelWidth">
+        <el-input
+          :disabled="true"
+          v-model="userInfo.songName"
+          autocomplete="off"
+          placeholder="请输入歌曲名称"
+        ></el-input>
+      </el-form-item>
+
+      <el-form-item label="版权方式:" :label-width="formLabelWidth">
+        <el-select
+          style="width:100%;"
+          @change="onChangeMode"
+          v-model="collaborateMode"
+          placeholder="请选择歌曲风格"
+        >
+          <el-option
+            v-for="(item, index) in copyrightModeList"
+            :key="index"
+            :label="item.name"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="合作方式:" :label-width="formLabelWidth">
+        <el-select
+          style="width:100%;"
+          @change="onChangeRightMode"
+          v-model="copyrightMode"
+          placeholder="请选择歌曲风格"
+        >
+          <el-option
+            v-for="(item, index) in CooperativeList"
+            :key="index"
+            :label="item.name"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="合作伙伴:" :label-width="formLabelWidth">
+        <el-select style="width:100%;" @change="onChange" v-model="publisher" placeholder="请选择歌曲风格">
+          <el-option
+            v-for="(item, index) in publisherList"
+            :key="index"
+            :label="item.nick"
+            :value="item.account"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer" style="display: flex;justify-content: center;">
+      <el-button @click="closeMoadl()">取 消</el-button>
+      <el-button type="primary" @click="confirm()">确 定</el-button>
+    </div>
   </div>
 </template>
 
+
+
 <script>
-import { uploadFile, aboutMusicTag, commitDemo,commitArrangement,commitMix } from "network/home.js";
+import {
+  uploadFile,
+  aboutMusicTag,
+  commitDemo,
+  commitArrangement,
+  userListActive,
+  makeAuditionList,
+  aboutCooperative,
+  aboutCopyrightMode,
+  putLockIngList
+} from "network/home.js";
 
 export default {
   name: "MusicAdd",
   inject: ["reload"],
-      props: {
+  props: {
     userInfo: {
       type: Object,
       default: () => {}
@@ -64,6 +85,16 @@ export default {
   data() {
     return {
       token: JSON.parse(localStorage.getItem("userInfo")).token,
+      listName: "",
+      validTime: 15,
+      lockTime: 7,
+      publisher: "",
+      publisherList: [],
+      collaborateMode: "",
+      copyrightMode: "",
+      CooperativeList: [],
+      copyrightModeList: [],
+      // "songID":["61baa9143790470b7935b544"]
 
       music: {
         fileList: [],
@@ -76,7 +107,7 @@ export default {
         musicLric: ""
       },
       dialogFormVisible: false,
-      formLabelWidth: "120px",
+      formLabelWidth: "150px",
       headers: {
         "Content-Type": "multipart/form-data"
       },
@@ -85,9 +116,10 @@ export default {
       musicTypeList: [],
       lyricsCode: "",
       demoCode: "",
-          fileCode: "",
-    projectCode: "",
-    daoChangCode: ""
+      fileCode: "",
+      projectCode: "",
+      daoChangCode: "",
+      msg: "111"
     };
   },
 
@@ -96,26 +128,111 @@ export default {
   },
   mounted() {
     this.queryInfo();
-    console.log(this.userInfo)
+    this.findUserInfo();
+    this.findcooperativeList();
+    this.findCopyrightModeList();
+
+    console.log(this.userInfo);
   },
-   watch: {
+  watch: {
     userInfo(val) {
-      console.log(val)
+      console.log(val);
       // this.keyArr = [];
       // this.keyArr = val.funcGroup;
       this.$nextTick(() => {
-        this.findUserInfo()
-       // console.log(baseUrl)
-       
+        this.findUserInfo();
+        this.findcooperativeList();
+        this.findCopyrightModeList();
+        // console.log(baseUrl)
+
         // this.musicListlyricsFile()
         // this.musicListDemo()
       });
     }
-   },
+  },
   methods: {
+    onChange(val) {
+      console.log(val);
+      this.publisher = val;
+    },
+    onChangeMode(val) {
+      this.collaborateMode = val;
+    },
+    onChangeRightMode(val) {
+      this.copyrightMode = val;
+    },
+    findCopyrightModeList() {
+      const param = {
+        token: this.token,
+        action: "get"
+        //  updateItem:this.editInfo.value,
+        // updateValue:this.inputActive
+      };
+      // this.loading = true;
+      //向后端发送请求并接受数据库中的用户列表
+      aboutCopyrightMode(param).then(res => {
+        debugger;
+        console.log(res);
+        if (res.status == 0) {
+          this.loading = false;
+          this.copyrightModeList = res.data;
+          //this.getTotal = res.data.count;
+        } else {
+          this.copyrightModeList = [];
+          //this.getTotal = 0;
+        }
+        console.log(this.copyrightModeList);
+      });
+    },
+
+    findcooperativeList() {
+      const param = {
+        token: this.token,
+        action: "get"
+        //  updateItem:this.editInfo.value,
+        // updateValue:this.inputActive
+      };
+      // this.loading = true;
+      //向后端发送请求并接受数据库中的用户列表
+      aboutCooperative(param).then(res => {
+        console.log(res);
+        if (res.status == 0) {
+          this.loading = false;
+          this.CooperativeList = res.data;
+          //this.getTotal = res.data.count;
+        } else {
+          this.CooperativeList = [];
+          //this.getTotal = 0;
+        }
+        console.log(this.CooperativeList);
+      });
+    },
+    //查找用户列表
+    findUserInfo() {
+      const param = {
+        token: this.token,
+        pageSize: 10,
+        curPage: 0,
+        fFuncGroup: 1000
+      };
+      this.loading = true;
+      //向后端发送请求并接受数据库中的用户列表
+      userListActive(param).then(res => {
+        console.log(res);
+        if (res.status == 0) {
+          this.loading = false;
+          this.publisherList = res.data.item;
+          //this.getTotal = res.data.count;
+        } else {
+          this.publisherList = [];
+          //this.getTotal = 0;
+        }
+        console.log(this.publisherList);
+      });
+    },
     //选择制作人
-    onChange(val){
-      console.log(val)
+    onChange(val) {
+      console.log(val);
     },
     //查询合作模式
     queryInfo() {
@@ -135,141 +252,43 @@ export default {
       });
     },
 
-    // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
-    httpRequest(param) {
-      let fileObj = param.file; // 相当于input里取得的files
-      let fd = new FormData(); // FormData 对象
-      fd.append("files", fileObj); // 文件对象
-      fd.append("token", this.token);
-      fd.append("category", "audition");
-
-      // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
-      // let config = {
-      //   headers: {
-      //    'Content-Type': 'multipart/form-data'
-      //   }
-      // }
-      uploadFile(fd).then(res => {
-        if (res.status == 0) {
-          this.fileCode = res.data;
-          this.$message({
-            type: "success",
-            message: "上传混音成功！"
-          });
-          //this.submitForm();//提交表单
-        } else {
-          this.fileCode = "";
-          this.$message({
-            type: "error",
-            message: "上传混音失败！"
-          });
-        }
-        //  if(res.code===0){
-        //    this.submitForm();//提交表单
-        //  }
-      });
-    },
-    // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
-    httpRequestPro(param) {
-      let fileObj = param.file; // 相当于input里取得的files
-      let fd = new FormData(); // FormData 对象
-      fd.append("files", fileObj); // 文件对象
-      fd.append("token", this.token);
-      fd.append("category", "mixPro");
-
-      // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
-      // let config = {
-      //   headers: {
-      //    'Content-Type': 'multipart/form-data'
-      //   }
-      // }
-      uploadFile(fd).then(res => {
-        if (res.status == 0) {
-          this.projectCode = res.data;
-          this.$message({
-            type: "success",
-            message: "上传混音工程文件成功！"
-          });
-          //this.submitForm();//提交表单
-        } else {
-          this.projectCode = "";
-
-          this.$message({
-            type: "error",
-            message: "上传混音工程文件失败！"
-          });
-        }
-      });
-    },
-      httpRequestDchang(param) {
-      let fileObj = param.file; // 相当于input里取得的files
-      let fd = new FormData(); // FormData 对象
-      fd.append("files", fileObj); // 文件对象
-      fd.append("token", this.token);
-      fd.append("category", "rec");
-
-      // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
-      // let config = {
-      //   headers: {
-      //    'Content-Type': 'multipart/form-data'
-      //   }
-      // }
-      uploadFile(fd).then(res => {
-        if (res.status == 0) {
-          this.daoChangCode = res.data;
-          this.$message({
-            type: "success",
-            message: "上传导唱文件成功！"
-          });
-          //this.submitForm();//提交表单
-        } else {
-          this.daoChangCode = "";
-
-          this.$message({
-            type: "error",
-            message: "上传导唱文件失败！"
-          });
-        }
-      });
-    },
-    
     refresh() {
       this.reload();
     },
-   
-    close(){
-          this.$emit('editDistributeRecorder')
-    },
+
     confirm() {
-      
       const param = {
         token: this.token,
-    id: this.userInfo.id,
-    
-    fileCode: this.fileCode,
-    projectCode: this.projectCode,
+        songIDs: [this.userInfo.id],
+        collaborateMode: this.collaborateMode,
+        copyrightMode: this.copyrightMode,
+        godAccount: this.publisher
       };
-      console.log(param)
-      commitMix(param).then(res => {
+
+      putLockIngList(param).then(res => {
         console.log(res);
         if (res.status == 0) {
-          this.lyricsCode = res.data;
           this.$message({
             type: "success",
-            message: "上传缩混成功！"
+            message: "锁定成功！"
           });
-          this.dialogFormVisible=false
+          // this.dialogFormVisible=false
           //this.submitForm();//提交表单
-          this.$emit('editDistributeRecorder')
+          this.$emit("editLock");
         } else {
           this.lyricsCode = "";
 
           this.$message({
             type: "error",
-            message: "上传缩混失败！"
+            message: "锁定失败！"
           });
         }
       });
+    },
+    //取消锁定
+    closeMoadl() {
+      debugger;
+      this.$emit("editLock");
     }
   }
 };

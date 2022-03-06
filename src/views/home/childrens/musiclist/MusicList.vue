@@ -107,6 +107,7 @@
                 <el-dropdown-item @click.native="toUploadArrangemen(scope.row)">上传编曲</el-dropdown-item>
                 <el-dropdown-item @click.native="toUploadRecorder(scope.row)">上传录音</el-dropdown-item>
                 <el-dropdown-item @click.native="toUploadMix(scope.row)">上传缩混</el-dropdown-item>
+                <el-dropdown-item @click.native="todownLoad(scope.row)">下载小样</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','30')">通过</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','20')">驳回</el-dropdown-item>
                 <el-dropdown-item @click.native="deleteClick(scope.row)">删除</el-dropdown-item>
@@ -199,7 +200,8 @@ import {
   aboutMusicTag,
   openFile,
   openFileActive,
-  checkWork
+  checkWork,
+  uploadFile
 } from "network/home.js";
 
 export default {
@@ -281,6 +283,19 @@ export default {
     // this.getSingerList();
   },
   methods: {
+    //下载小样
+    todownLoad(val){
+      console.log(val)
+  const param=    {
+    token:this.token,
+    songID:val.id,
+    category:"demo"
+}
+uploadFile(param).then(res=>{
+  console.log(res)
+})
+
+    },
       //点击之后的当前页数
     handleCurrentChange(val) {
       // 当前页数

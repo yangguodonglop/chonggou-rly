@@ -93,9 +93,10 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="toLock(scope.row)">延期锁定</el-dropdown-item>
+                <el-dropdown-item @click.native="toLock(scope.row)">锁定</el-dropdown-item>
                 <el-dropdown-item @click.native="toAudition(scope.row)">选择试听</el-dropdown-item>
                                 <el-dropdown-item @click.native="toUploadRecorder(scope.row)">查看试听情况</el-dropdown-item>
+                <el-dropdown-item @click.native="toUploadMix(scope.row)">上传缩混</el-dropdown-item>
 
                 <!-- <el-dropdown-item @click.native="toDistribute(scope.row,'producer','200')">分配制作人</el-dropdown-item>
                 <el-dropdown-item
@@ -106,7 +107,6 @@
                 <el-dropdown-item @click.native="toDistribute(scope.row,'recorder','451')">分配录音师</el-dropdown-item>
                 <el-dropdown-item @click.native="toDistribute(scope.row,'mixerM','500')">分配混音组长</el-dropdown-item>
                 <el-dropdown-item @click.native="toDistribute(scope.row,'mixer','551')">分配混音师</el-dropdown-item>
-                <el-dropdown-item @click.native="toUploadMix(scope.row)">上传缩混</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','30')">通过</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','20')">驳回</el-dropdown-item>
                 <el-dropdown-item @click.native="deleteClick(scope.row)">删除</el-dropdown-item>
@@ -163,11 +163,11 @@
     </el-dialog>
        <el-dialog
       :footer="false"
-      title="上传缩混"
+      title="锁定歌曲"
       :visible.sync="dialogVisibleUploadMix"
       customClass="customWidth-distribute"
     >
-      <music-upload-mix :userInfo="userInfo" @editDistributeRecorder="editDistributeRecorder"></music-upload-mix>
+      <music-upload-mix :userInfo="userInfo" @editLock="editLock"></music-upload-mix>
     </el-dialog>
       <el-dialog
       :footer="false"
@@ -200,7 +200,8 @@ import {
   deleteMusicById,
   singerList,
   deleteSong,
-  getPublishSong
+  getPublishSong,
+  putLockIngList
 } from "network/home.js";
 
 import SearchHeader from "components/common/header/SearchHeader.vue";
@@ -235,7 +236,8 @@ export default {
     MusicDistribute,
     MusicUpload,
     MusicUploadRecorder,
-    MusicUploadMix
+    MusicUploadMix,
+    
   },
 
   data() {
@@ -303,6 +305,41 @@ export default {
     // this.getSingerList();
   },
   methods: {
+    //锁定歌曲
+       toLock(row) {
+               this.userInfo = { ...row };
+
+    //      debugger
+    //   const param = {
+    //     token: this.token,
+    
+    // songIDs:[row.id]
+    //   };
+    //   this.$confirm("是否解除锁定?", "提示", {
+    //     confirmButtonText: "确定",
+    //     cancelButtonText: "取消",
+    //     type: "warning"
+    //   })
+    //     .then(() => {
+    //       putLockIngList(param).then(res => {
+    //         if (res.status == 0) {
+    //           this.$message({
+    //             type: "success",
+    //             message: "锁定成功!"
+    //           });
+    //           this.findUserInfo();
+    //         } else {
+    //           this.$message({
+    //             type: "error",
+    //             message: "锁定失败!"
+    //           });
+    //         }
+    //       });
+    //       this.musicList()
+    //     })
+    //     .catch(() => {});
+        this.dialogVisibleUploadMix=true
+    },
        // 复制成功时的回调函数
     onCopy(e) {
       this.$message.success("内容已复制到剪切板！");
@@ -352,6 +389,10 @@ export default {
 
     editDistributeRecorder() {
       this.dialogVisibleUploadRecorder = false;
+      this.musicList();
+    },
+    editLock(){
+           this.dialogVisibleUploadMix = false;
       this.musicList();
     },
     editDistributeActive(data){

@@ -134,10 +134,16 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native="toAudition(scope.row)">选择试听</el-dropdown-item>
                 <el-dropdown-item @click.native="toLock(scope.row)">延期锁定</el-dropdown-item>
-          <el-dropdown-item type="text" size="mini" @click.native="removeLockSong(scope.row)">解除锁定</el-dropdown-item>
-
-                <el-dropdown-item @click.native="toDistribute(scope.row,'producer','200')">分配制作人</el-dropdown-item>
                 <el-dropdown-item
+                  type="text"
+                  size="mini"
+                  @click.native="removeLockSong(scope.row)"
+                >解除锁定</el-dropdown-item>
+
+                <el-dropdown-item @click.native="toDistribute(scope.row,'producer','200')">查看试听情况</el-dropdown-item>
+                <el-dropdown-item @click.native="toUploadArrangemen(scope.row)">上传编曲</el-dropdown-item>
+
+                <!-- <el-dropdown-item
                   @click.native="toDistribute(scope.row,'arrangementM','300')"
                 >分配编曲组长</el-dropdown-item>
                 <el-dropdown-item @click.native="toDistribute(scope.row,'arrangement','351')">分配编曲师</el-dropdown-item>
@@ -151,7 +157,7 @@
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','30')">通过</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','20')">驳回</el-dropdown-item>
                 <el-dropdown-item @click.native="deleteClick(scope.row)">删除</el-dropdown-item>
-                <el-dropdown-item command="b">退出系统</el-dropdown-item>
+                <el-dropdown-item command="b">退出系统</el-dropdown-item>-->
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -180,7 +186,7 @@
     </el-dialog>
     <el-dialog
       :footer="false"
-      title="分配制作人"
+      title="查看试听记录"
       :visible.sync="dialogVisibleDistribute"
       customClass="customWidth-distribute"
     >
@@ -188,7 +194,7 @@
     </el-dialog>
     <el-dialog
       :footer="false"
-      title="上传编曲"
+      title="更新信息"
       :visible.sync="dialogVisibleUpload"
       customClass="customWidth-distribute"
     >
@@ -210,26 +216,26 @@
     >
       <music-upload-mix :userInfo="userInfo" @editDistributeRecorder="editDistributeRecorder"></music-upload-mix>
     </el-dialog>
-     <el-dialog
+    <el-dialog
       :footer="true"
       title="延迟锁定"
       :visible.sync="lockType"
       customClass="customWidth-distribute"
     >
-    <div>
-        <el-form class="userfrom" >
-        <el-form-item label="歌曲名" prop="userName" :label-width="formLabelWidth">
-          <el-input :disabled="true" v-model="songName" ref="ipt"></el-input>
-        </el-form-item>
-           <el-form-item label="延迟天数" prop="userName" :label-width="formLabelWidth">
-          <el-input v-model="extendDays" ref="ipt"></el-input>
-        </el-form-item>
-            <el-form-item  style=" display: flex;justify-content: end;" >
-          <el-button type="primary" @click="onSubmit">确定</el-button>
-          <el-button type="primary" @click="onBack">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
+      <div>
+        <el-form class="userfrom">
+          <el-form-item label="歌曲名" prop="userName" :label-width="formLabelWidth">
+            <el-input :disabled="true" v-model="songName" ref="ipt"></el-input>
+          </el-form-item>
+          <el-form-item label="延迟天数" prop="userName" :label-width="formLabelWidth">
+            <el-input v-model="extendDays" ref="ipt"></el-input>
+          </el-form-item>
+          <el-form-item style=" display: flex;justify-content: end;">
+            <el-button type="primary" @click="onSubmit">确定</el-button>
+            <el-button type="primary" @click="onBack">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -286,7 +292,7 @@ export default {
 
   data() {
     return {
-            formLabelWidth: "100px",
+      formLabelWidth: "100px",
       //音乐列表
       musicInfo: {
         musicName: null,
@@ -334,11 +340,10 @@ export default {
       dialogVisibleUploadMix: false,
       userInfo: {},
       editInfo: {},
-      lockType:false,
-       songIDs:[],
-    extendDays:3,
-    songName:'',
-
+      lockType: false,
+      songIDs: [],
+      extendDays: 3,
+      songName: ""
     };
   },
   created() {
@@ -353,46 +358,45 @@ export default {
   },
   methods: {
     //延迟锁定
-    toLock(val){
-      console.log(val)
-      this.lockType=true
-      this.songName=val.songName
-      this.songIDs=val.id
+    toLock(val) {
+      console.log(val);
+      this.lockType = true;
+      this.songName = val.songName;
+      this.songIDs = val.id;
     },
     //确定锁定
-    onSubmit(){
-      const param={
- token:this.token,
-    
-    songIDs:[this.songIDs],
-    extendDays: parseInt(this.extendDays) 
-      }
-      extendLock(param).then(res=>{
-        if(res.status==0){
-                this.$message({
-                type: "success",
-                message: "延期锁定成功!"
-              });
-        }else{
-    this.$message({
-                type: "error",
-                message: "延期锁定失败!"
-              });
-        }
-              this.lockType=false
-               this.musicList();
-
-      })
-    },
-    //接触锁定
-    onBack(){
-      this.lockType=false
-    },
-      removeLockSong(row) {
+    onSubmit() {
       const param = {
         token: this.token,
-    
-    songIDs:[row.id]
+
+        songIDs: [this.songIDs],
+        extendDays: parseInt(this.extendDays)
+      };
+      extendLock(param).then(res => {
+        if (res.status == 0) {
+          this.$message({
+            type: "success",
+            message: "延期锁定成功!"
+          });
+        } else {
+          this.$message({
+            type: "error",
+            message: "延期锁定失败!"
+          });
+        }
+        this.lockType = false;
+        this.musicList();
+      });
+    },
+    //接触锁定
+    onBack() {
+      this.lockType = false;
+    },
+    removeLockSong(row) {
+      const param = {
+        token: this.token,
+
+        songIDs: [row.id]
       };
       this.$confirm("是否解除锁定?", "提示", {
         confirmButtonText: "确定",
@@ -588,6 +592,11 @@ export default {
       this.userInfo = { ...row, ...param };
       this.dialogVisibleDistribute = true;
     },
+    //查看试听情况
+    toDistribute(row) {
+      this.userInfo = { ...row };
+      this.dialogVisibleDistribute = true;
+    },
     //试听
     toAudition(row) {
       console.log("***8");
@@ -749,7 +758,11 @@ export default {
             publishTime: this.dateFmt(items.publish.publishTime),
             finishLockTime: this.dateFmt(items.publish.finishLockTime),
             account: items.publish.account,
-            progressRate: items.progressRate
+            progressRate: items.progressRate,
+            publisher: items.publish.publisher,
+            tagActive: items.submitter.tag,
+            collaborate: items.publish.collaborate,
+            copyright: items.publish.copyright
           };
           this.tableData.push(obj);
         });
