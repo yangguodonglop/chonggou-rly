@@ -67,15 +67,26 @@ export default {
       console.log(this.userInfo)
 
       const param = {
-    "token": this.token,
-    "songID": this.userInfo.id,
-    "fileCode": this.userInfo.demoFile,
-    "category": "lyric"
+    token: this.token,
+    songID: this.userInfo.id,
+    fileCode: this.userInfo.demoFile,
+    category: "audition"
       };
-      let tempStr=JSON.stringify(param)
-      console.log(tempStr)
-            const Base64 = require('js-base64').Base64
-tempStr = Base64.encode(tempStr)
+//       let tempStr=JSON.stringify(param)
+//       console.log(tempStr)
+//             const Base64 = require('js-base64').Base64
+// tempStr = Base64.encode(tempStr)
+
+let tempStr = JSON.stringify(param);
+      let tempStr1 = JSON.stringify(param);
+      console.log(tempStr);
+      const Base64 = require("js-base64").Base64;
+      //tempStr = Base64.encode(tempStr)
+      tempStr = Base64.encodeURL(tempStr);
+      tempStr1=window.btoa(tempStr1);
+
+       console.log(tempStr);
+       console.log(tempStr1);
 this.auditionCodeUrl=baseUrl+'/openFile/'+tempStr
       // openFileActive(tempStr).then(res => {
       //  // console.log(res);
@@ -88,10 +99,10 @@ this.auditionCodeUrl=baseUrl+'/openFile/'+tempStr
       console.log(this.userInfo)
 
       const param = {
-    "token": this.token,
-    "songID": this.userInfo.id,
-    "fileCode": this.userInfo.lyricsFile,
-    "category": "lyric"
+    token: this.token,
+    songID: this.userInfo.id,
+    fileCode: this.userInfo.lyricsFile,
+    category: "lyric"
       };
       let tempStr=JSON.stringify(param)
       console.log(tempStr)

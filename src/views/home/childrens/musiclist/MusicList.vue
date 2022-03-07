@@ -107,7 +107,7 @@
                 <el-dropdown-item @click.native="toUploadArrangemen(scope.row)">上传编曲</el-dropdown-item>
                 <el-dropdown-item @click.native="toUploadRecorder(scope.row)">上传录音</el-dropdown-item>
                 <el-dropdown-item @click.native="toUploadMix(scope.row)">上传缩混</el-dropdown-item>
-                <el-dropdown-item @click.native="todownLoad(scope.row)">下载小样</el-dropdown-item>
+                <el-dropdown-item @click.native="todownLoad(scope.row)">下载编曲</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','30')">通过</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','20')">驳回</el-dropdown-item>
                 <el-dropdown-item @click.native="deleteClick(scope.row)">删除</el-dropdown-item>
@@ -201,7 +201,8 @@ import {
   openFile,
   openFileActive,
   checkWork,
-  uploadFile
+  uploadFile,
+  downloadFile
 } from "network/home.js";
 
 export default {
@@ -283,17 +284,58 @@ export default {
     // this.getSingerList();
   },
   methods: {
+    /*
+        *功能： JS跳转页面，并已POST方式提交数据
+        *参数： URL 跳转地址 PARAMTERS 参数
+        */
+        // function ShowReport_Click() {
+
+        //     var parames = new Array();
+        //     parames.push({ name: "name", value: "张三"});
+        //     parames.push({ name: "code", value: "123456"});
+
+        //     Post("www.baidu.com", parames);
+
+        //     return false;
+        // }
+
+        /*
+        *功能： 模拟form表单的提交
+        *参数： URL 跳转地址 PARAMTERS 参数
+        */
+        postExcelFile(params, url) {
+      //params是post请求需要的参数，url是请求url地址
+      var form = document.createElement("form");
+      form.style.display = "none";
+      form.action = url;
+      form.method = "post";
+      document.body.appendChild(form);
+    // 动态创建input并给value赋值
+      for (var key in params) {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key+'';
+        input.value = params[key]+'';
+        form.appendChild(input);
+      }
+
+      form.submit();
+      form.remove();
+    },
+
     //下载小样
     todownLoad(val){
       console.log(val)
   const param=    {
     token:this.token,
     songID:val.id,
-    category:"demo"
+    category:"arr"
 }
-uploadFile(param).then(res=>{
+ // this.postExcelFile(param,"http://106.53.61.91:6325/rylBGM/productLine/downloadFile", );
+downloadFile(param).then(res=>{
   console.log(res)
 })
+
 
     },
       //点击之后的当前页数

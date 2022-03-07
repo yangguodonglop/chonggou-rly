@@ -13,10 +13,16 @@ export {baseUrl}
 //     }
 //   });
 // }
+// export const postActive = (param) =>{
+// return  post(baseUrl+'/productLine/downloadFile', param)
+
+// }
+
 export const userList = (param) => post(baseUrl+'/account/getAllAccountAllInfo', param)
 export const userListActive = (param) => post(baseUrl+'/account/getAccountIntro', param)
 
 export const addUser = (param) => post(baseUrl+'/account/signUp', param)
+
 export const delAccount = (param) => post(baseUrl+'/account/delAccount', param)
 export const rewriteInfo = (param) => post(baseUrl+'/account/rewriteInfo', param)
 export const updatePassword = (param) => post(baseUrl+'/account/updatePassword', param)
@@ -26,6 +32,7 @@ export const aboutCopyrightMode = (param) => post(baseUrl+'/config/aboutCopyrigh
 export const aboutCooperative = (param) => post(baseUrl+'/config/aboutCooperative', param)
 export const aboutMusicTag = (param) => post(baseUrl+'/config/aboutMusicTag', param)
 export const uploadFile = (param) => post(baseUrl+'/uploadFile', param)
+export const downloadFile = (param) => post(baseUrl+'/productLine/downloadFile', param)
 export const commitDemo = (param) => post(baseUrl+'/productLine/commitDemo', param)
 export const commitArrangement = (param) => post(baseUrl+'/productLine/commitArrangement', param)
 

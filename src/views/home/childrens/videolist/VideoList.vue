@@ -343,7 +343,8 @@ export default {
       lockType: false,
       songIDs: [],
       extendDays: 3,
-      songName: ""
+      songName: "",
+      getTotal:0
     };
   },
   created() {
@@ -683,7 +684,7 @@ export default {
       const param = {
         token: this.token,
         pageSize: 10,
-        curPage: 0,
+        curPage: this.currentPage-1,
         filter: {
           progressRateReg: [720, 1000],
           publishTime: [],
@@ -747,7 +748,7 @@ export default {
             lyricist: items.submitter.lyricist,
             tag: items.submitter.tagName.join(","),
             id: items.id,
-            demoFile: items.submitter.demoFile,
+            demoFile: items.mix.auditionFile,
             lyricsFile: items.submitter.lyricsFile,
             producerNick: items.producerNick,
             copyrightName: items.publish.copyrightName,
@@ -766,6 +767,7 @@ export default {
           };
           this.tableData.push(obj);
         });
+        this.getTotal=res.data.count
       });
     },
     //获取歌手列表
@@ -822,6 +824,7 @@ export default {
     handleCurrentChange(val) {
       // 当前页数
       this.currentPage = val;
+      this.musicList()
     },
 
     hotFilter(val) {
@@ -910,49 +913,7 @@ export default {
         this.currentPage * this.pagesize
       );
     },
-    getTotal() {
-      if (this.search.musicid) {
-        return this.tableData.filter(data => {
-          if (data.musicid == this.search.musicid) {
-            return data;
-          }
-        }).length;
-      }
-      if (this.search.musicname) {
-        return this.tableData.filter(data => {
-          if (
-            data.musicname
-              .toLowerCase()
-              .includes(this.search.musicname.toLowerCase())
-          ) {
-            return data;
-          }
-        }).length;
-      }
-      if (this.search.singer) {
-        return this.tableData.filter(data => {
-          if (
-            data.singer.singername
-              .toLowerCase()
-              .includes(this.search.singer.toLowerCase())
-          ) {
-            return data;
-          }
-        }).length;
-      }
-      if (this.search.musictype) {
-        return this.tableData.filter(data => {
-          if (
-            data.musictype.musictypename
-              .toLowerCase()
-              .includes(this.search.musictype.toLowerCase())
-          ) {
-            return data;
-          }
-        }).length;
-      }
-      return this.tableData.length;
-    }
+   
   }
 };
 </script>
