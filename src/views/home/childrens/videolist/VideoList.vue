@@ -141,7 +141,7 @@
                 >解除锁定</el-dropdown-item>
 
                 <el-dropdown-item @click.native="toDistribute(scope.row,'producer','200')">查看试听情况</el-dropdown-item>
-                <el-dropdown-item @click.native="toUploadArrangemen(scope.row)">上传编曲</el-dropdown-item>
+                <el-dropdown-item @click.native="toUploadArrangemen(scope.row)">更新信息</el-dropdown-item>
 
                 <!-- <el-dropdown-item
                   @click.native="toDistribute(scope.row,'arrangementM','300')"
@@ -198,7 +198,7 @@
       :visible.sync="dialogVisibleUpload"
       customClass="customWidth-distribute"
     >
-      <music-upload :userInfo="userInfo" @editDistribute="editDistribute"></music-upload>
+      <music-upload :userInfo="userInfo" @editUpdateInfo="editUpdateInfo"></music-upload>
     </el-dialog>
     <el-dialog
       :footer="false"
@@ -358,6 +358,12 @@ export default {
     // this.getSingerList();
   },
   methods: {
+    //取消更新信息
+    editUpdateInfo(){
+      this.dialogVisibleUpload=false
+          this.musicList();
+
+    },
     //延迟锁定
     toLock(val) {
       console.log(val);

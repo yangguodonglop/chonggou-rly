@@ -12,17 +12,17 @@
       <el-form-item label="作曲者:" :label-width="formLabelWidth">
         <el-input
           :disabled="true"
-          v-model="userInfo.songName"
+          v-model="userInfo.composer"
           autocomplete="off"
-          placeholder="请输入歌曲名称"
+          placeholder="请输入歌作曲者"
         ></el-input>
       </el-form-item>
       <el-form-item label="作词者:" :label-width="formLabelWidth">
         <el-input
           :disabled="true"
-          v-model="userInfo.songName"
+          v-model="userInfo.lyricist"
           autocomplete="off"
-          placeholder="请输入歌曲名称"
+          placeholder="请输入作词者"
         ></el-input>
       </el-form-item>
       <el-form-item label="歌曲风格:" :label-width="formLabelWidth">
@@ -81,7 +81,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="上传编曲:" prop="file" :label-width="formLabelWidth">
+      <el-form-item label="上传歌词:" prop="file" :label-width="formLabelWidth">
         <el-upload
           action
           multiple
@@ -90,36 +90,14 @@
           :http-request="httpRequest"
         >
           <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-          <span slot="tip" class="el-upload__tip">请选择.MP3格式的文件上传</span>
+          <span slot="tip" class="el-upload__tip">请选择.word格式的歌词文件上传</span>
         </el-upload>
       </el-form-item>
-      <!-- <el-form-item label="上传工程文件:" prop="file" :label-width="formLabelWidth">
-        <el-upload
-          action
-          multiple
-          ref="upload_img"
-          accept=".jpg, .jpeg, .png"
-          :http-request="httpRequestPro"
-        >
-          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-          <span slot="tip" class="el-upload__tip">请选择.歌词文件上传</span>
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="上传导唱文件:" prop="file" :label-width="formLabelWidth">
-        <el-upload
-          action
-          multiple
-          ref="upload_img"
-          accept=".jpg, .jpeg, .png"
-          :http-request="httpRequestDchang"
-        >
-          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-          <span slot="tip" class="el-upload__tip">请选择.歌词文件上传</span>
-        </el-upload>
-      </el-form-item> -->
+
+    
     </el-form>
     <div slot="footer" class="dialog-footer" style="display: flex;justify-content: center;">
-      <el-button @click="dialogFormVisible = false">取 消</el-button>
+      <el-button @click="closeModal()">取 消</el-button>
       <el-button type="primary" @click="confirm()">确 定</el-button>
     </div>
   </div>
@@ -135,7 +113,8 @@ import {
   commitArrangement,
   userListActive,
   aboutCopyrightMode,
-  aboutCooperative
+  aboutCooperative,
+  updateSongInfo
 } from "network/home.js";
 
 export default {
@@ -328,12 +307,14 @@ export default {
     },
 
     // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
+   
+    // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
     httpRequest(param) {
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
-      fd.append("category", "arrPro");
+      fd.append("category", "lyric");
 
       // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
       // let config = {
@@ -343,103 +324,59 @@ export default {
       // }
       uploadFile(fd).then(res => {
         if (res.status == 0) {
-          this.fileCode = res.data;
+          this.lyricsCode = res.data;
           this.$message({
             type: "success",
-            message: "上传编曲成功！"
+            message: "上传歌词成功！"
           });
           //this.submitForm();//提交表单
         } else {
-          this.fileCode = "";
-          this.$message({
-            type: "error",
-            message: "上传编曲失败！"
-          });
-        }
-        //  if(res.code===0){
-        //    this.submitForm();//提交表单
-        //  }
-      });
-    },
-    // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
-    httpRequestPro(param) {
-      let fileObj = param.file; // 相当于input里取得的files
-      let fd = new FormData(); // FormData 对象
-      fd.append("files", fileObj); // 文件对象
-      fd.append("token", this.token);
-      fd.append("category", "arrDC");
-
-      // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
-      // let config = {
-      //   headers: {
-      //    'Content-Type': 'multipart/form-data'
-      //   }
-      // }
-      uploadFile(fd).then(res => {
-        if (res.status == 0) {
-          this.projectCode = res.data;
-          this.$message({
-            type: "success",
-            message: "上传工程文件成功！"
-          });
-          //this.submitForm();//提交表单
-        } else {
-          this.projectCode = "";
+          this.lyricsCode = "";
 
           this.$message({
             type: "error",
-            message: "上传工程文件失败！"
+            message: "上传歌词失败！"
           });
         }
       });
     },
-    httpRequestDchang(param) {
-      let fileObj = param.file; // 相当于input里取得的files
-      let fd = new FormData(); // FormData 对象
-      fd.append("files", fileObj); // 文件对象
-      fd.append("token", this.token);
-      fd.append("category", "rec");
-
-      // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
-      // let config = {
-      //   headers: {
-      //    'Content-Type': 'multipart/form-data'
-      //   }
-      // }
-      uploadFile(fd).then(res => {
-        if (res.status == 0) {
-          this.daoChangCode = res.data;
-          this.$message({
-            type: "success",
-            message: "上传导唱文件成功！"
-          });
-          //this.submitForm();//提交表单
-        } else {
-          this.daoChangCode = "";
-
-          this.$message({
-            type: "error",
-            message: "上传导唱文件失败！"
-          });
-        }
-      });
-    },
+  
 
     refresh() {
       this.reload();
     },
 
     confirm() {
-      const param = {
+      let templyricsCode=''
+      if(this.lyricsCode==''){
+        templyricsCode=this.userInfo.lyricsCode
+      }else{
+        templyricsCode=this.lyricsCode
+      }
+     const param= {
         token: this.token,
-        id: this.userInfo.id,
+    songID:this.userInfo.id,
+    updateFiled: {
+        songName:this.userInfo.songName,
+        lyricist: this.userInfo.lyricist,
+        lyricsCode:templyricsCode ,
+        composer:this.userInfo.composer,
+        tag: this.userInfo.tagActive,
+        publisher: this.userInfo.publisher,
+        collaborateMode: this.userInfo.collaborate,
+        copyright: this.userInfo.copyright
+    }
+}
+      // const param = {
+      //   token: this.token,
+      //   id: this.userInfo.id,
 
-        fileCode: this.fileCode,
-        projectCode: this.projectCode,
-        daoChangCode: this.daoChangCode
-      };
+      //   fileCode: this.fileCode,
+      //   projectCode: this.projectCode,
+      //   daoChangCode: this.daoChangCode
+      // };
       console.log(param);
-      commitArrangement(param).then(res => {
+      updateSongInfo(param).then(res => {
         console.log(res);
         if (res.status == 0) {
           this.lyricsCode = res.data;
@@ -449,7 +386,7 @@ export default {
           });
           this.dialogFormVisible = false;
           //this.submitForm();//提交表单
-          this.$emit("addMusic");
+          this.$emit("editUpdateInfo");
         } else {
           this.lyricsCode = "";
 
@@ -459,6 +396,11 @@ export default {
           });
         }
       });
+    },
+    //取消更新
+    closeModal(){
+                this.$emit("editUpdateInfo");
+
     }
   }
 };

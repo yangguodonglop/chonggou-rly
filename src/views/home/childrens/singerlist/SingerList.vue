@@ -96,7 +96,6 @@
                 <el-dropdown-item @click.native="toLock(scope.row)">锁定</el-dropdown-item>
                 <el-dropdown-item @click.native="toAudition(scope.row)">选择试听</el-dropdown-item>
                                 <el-dropdown-item @click.native="toUploadRecorder(scope.row)">查看试听情况</el-dropdown-item>
-                <el-dropdown-item @click.native="toUploadMix(scope.row)">上传缩混</el-dropdown-item>
 
                 <!-- <el-dropdown-item @click.native="toDistribute(scope.row,'producer','200')">分配制作人</el-dropdown-item>
                 <el-dropdown-item
@@ -309,35 +308,6 @@ export default {
        toLock(row) {
                this.userInfo = { ...row };
 
-    //      debugger
-    //   const param = {
-    //     token: this.token,
-    
-    // songIDs:[row.id]
-    //   };
-    //   this.$confirm("是否解除锁定?", "提示", {
-    //     confirmButtonText: "确定",
-    //     cancelButtonText: "取消",
-    //     type: "warning"
-    //   })
-    //     .then(() => {
-    //       putLockIngList(param).then(res => {
-    //         if (res.status == 0) {
-    //           this.$message({
-    //             type: "success",
-    //             message: "锁定成功!"
-    //           });
-    //           this.findUserInfo();
-    //         } else {
-    //           this.$message({
-    //             type: "error",
-    //             message: "锁定失败!"
-    //           });
-    //         }
-    //       });
-    //       this.musicList()
-    //     })
-    //     .catch(() => {});
         this.dialogVisibleUploadMix=true
     },
        // 复制成功时的回调函数

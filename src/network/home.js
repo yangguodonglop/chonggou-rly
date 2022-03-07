@@ -53,7 +53,7 @@ export const extendLock = (param) => post(baseUrl+'/sell/extendLock', param)
 export const removeLockSong = (param) => post(baseUrl+'/sell/removeLockSong', param)
 export const queryAuditionList = (param) => post(baseUrl+'/audition/queryAuditionList', param)
 export const putLockIngList = (param) => post(baseUrl+'/sell/putLockIngList', param)
-
+export const updateSongInfo = (param) => post(baseUrl+'/productLine/updateSongInfo', param)
 // export const deleteSong = (param) => post(baseUrl+'/productLine/deleteSong', param)
 // sell/getPublishSong
 const method = "POST";
