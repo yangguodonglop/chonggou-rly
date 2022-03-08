@@ -107,7 +107,12 @@
                 <el-dropdown-item @click.native="toUploadArrangemen(scope.row)">上传编曲</el-dropdown-item>
                 <el-dropdown-item @click.native="toUploadRecorder(scope.row)">上传录音</el-dropdown-item>
                 <el-dropdown-item @click.native="toUploadMix(scope.row)">上传缩混</el-dropdown-item>
-                <el-dropdown-item @click.native="todownLoad(scope.row)">下载编曲</el-dropdown-item>
+                <el-dropdown-item @click.native="todownLoad(scope.row,'arr')">下载编曲</el-dropdown-item>
+                <el-dropdown-item @click.native="todownLoad(scope.row,'arrPro')">下载编曲工程文件</el-dropdown-item>
+                <el-dropdown-item @click.native="todownLoad(scope.row,'rec')">下载录音</el-dropdown-item>
+                <el-dropdown-item @click.native="todownLoad(scope.row,'recPro')">下载录音工程文件</el-dropdown-item> 
+                    <el-dropdown-item @click.native="todownLoad(scope.row,'mix')">下载缩混</el-dropdown-item>
+                <el-dropdown-item @click.native="todownLoad(scope.row,'mixPro')">下载录缩混程文件</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','30')">通过</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','20')">驳回</el-dropdown-item>
                 <el-dropdown-item @click.native="deleteClick(scope.row)">删除</el-dropdown-item>
@@ -179,7 +184,8 @@ import {
   musicList,
   deleteMusicById,
   singerList,
-  deleteSong
+  deleteSong,
+  baseUrl
 } from "network/home.js";
 
 import SearchHeader from "components/common/header/SearchHeader.vue";
@@ -202,7 +208,8 @@ import {
   openFileActive,
   checkWork,
   uploadFile,
-  downloadFile
+  downloadFile,
+  tempDownLoadFile
 } from "network/home.js";
 
 export default {
@@ -324,16 +331,25 @@ export default {
     },
 
     //下载小样
-    todownLoad(val){
-      console.log(val)
+    todownLoad(val,item){
+      console.log(val,item)
   const param=    {
     token:this.token,
     songID:val.id,
-    category:"arr"
+    category:item
 }
  // this.postExcelFile(param,"http://106.53.61.91:6325/rylBGM/productLine/downloadFile", );
 downloadFile(param).then(res=>{
   console.log(res)
+  if(res.status==0){
+    let tempMd5=res.data
+        //     const Base64 = require("js-base64").Base64;
+        // const exStr = Base64.encodeURI(type);
+        // const fileName = val.cr_songName;
+        let openUrl = baseUrl + "/productLine/tempDownLoadFile/"+tempMd5;
+        window.open(openUrl, "_blank");
+    // tempDownLoadFile(tempMd5)
+  }
 })
 
 
@@ -421,6 +437,7 @@ downloadFile(param).then(res=>{
             message: "操作失败！"
           });
         }
+        this.musicList()
       });
     },
     //上传编曲文件
@@ -572,7 +589,7 @@ downloadFile(param).then(res=>{
               tempStatus = "编曲师已提交";
               break;
             case 299:
-              tempStatus = "编曲已完成";
+              tempStatus = "编曲已完成且已通过审核";
               break;
             case 300:
               tempStatus = "已分配录音组长";
@@ -584,7 +601,7 @@ downloadFile(param).then(res=>{
               tempStatus = "录音师已提交";
               break;
             case 499:
-              tempStatus = "录音完成";
+              tempStatus = "录音完成且已通过审核";
               break;
                case 500:
               tempStatus = "已分配缩混组长";
@@ -596,7 +613,7 @@ downloadFile(param).then(res=>{
               tempStatus = "缩混师已提交";
               break;
                  case 599:
-              tempStatus = "缩混完成";
+              tempStatus = "缩混完成且已通过审核";
               break;   
           }
           let obj = {

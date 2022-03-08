@@ -769,7 +769,9 @@ export default {
             publisher: items.publish.publisher,
             tagActive: items.submitter.tag,
             collaborate: items.publish.collaborate,
-            copyright: items.publish.copyright
+            copyright: items.publish.copyright,
+            lyricsCode:items.submitter.lyricsFile,
+            demoCode:items.mix.auditionFile
           };
           this.tableData.push(obj);
         });
@@ -925,6 +927,9 @@ export default {
 </script>
 
 <style >
+ .el-dialog__body{
+  padding-top: 10px
+  }
 .customWidth-audition {
   width: 500px;
 }

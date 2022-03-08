@@ -1,6 +1,11 @@
 <template>
   <div id="add">
     <el-form :model="music">
+      <div style="font-size:16px;margin-bottom:10px">歌曲基本信息</div>
+      <div style="    border: 1px solid #409EFF;
+    border-radius: 5px;
+    padding-top: 10px;
+    padding-right: 20px;">
       <el-form-item label="歌曲名称:" :label-width="formLabelWidth">
         <el-input
           :disabled="true"
@@ -11,7 +16,6 @@
       </el-form-item>
       <el-form-item label="作曲者:" :label-width="formLabelWidth">
         <el-input
-          :disabled="true"
           v-model="userInfo.composer"
           autocomplete="off"
           placeholder="请输入歌作曲者"
@@ -19,7 +23,6 @@
       </el-form-item>
       <el-form-item label="作词者:" :label-width="formLabelWidth">
         <el-input
-          :disabled="true"
           v-model="userInfo.lyricist"
           autocomplete="off"
           placeholder="请输入作词者"
@@ -35,12 +38,35 @@
           ></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="上传歌词:" prop="file" :label-width="formLabelWidth">
+        <el-upload
+          action
+          multiple
+          ref="upload_img"
+          accept=".jpg, .jpeg, .png"
+          :http-request="httpRequest"
+        >
+          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+          <span slot="tip" class="el-upload__tip">请选择.word格式的歌词文件上传</span>
+        </el-upload>
+      </el-form-item>
+          <el-form-item label="" :label-width="formLabelWidth" style="display: flex;
+    justify-content: end;">
+      <el-button type="primary" size="small" @click="confirm()">确 定</el-button>
+      </el-form-item>
+      </div>
+            <div style="font-size:16px;margin:10px 0px;">歌曲发布信息</div>
+
+       <div style="    border: 1px solid #409EFF;
+    border-radius: 5px;
+    padding-top: 10px;
+    padding-right: 20px;">
       <el-form-item label="合作伙伴:" :label-width="formLabelWidth">
         <el-select
           style="width:100%;"
           @change="onChange"
           v-model="userInfo.publisher"
-          placeholder="请选择歌曲风格"
+          placeholder="请选择合作伙伴"
         >
           <el-option
             v-for="(item, index) in publisherList"
@@ -80,26 +106,15 @@
           ></el-option>
         </el-select>
       </el-form-item>
-
-      <el-form-item label="上传歌词:" prop="file" :label-width="formLabelWidth">
-        <el-upload
-          action
-          multiple
-          ref="upload_img"
-          accept=".jpg, .jpeg, .png"
-          :http-request="httpRequest"
-        >
-          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-          <span slot="tip" class="el-upload__tip">请选择.word格式的歌词文件上传</span>
-        </el-upload>
+  <el-form-item label="" :label-width="formLabelWidth" style="display: flex;
+    justify-content: end;">
+      <el-button type="primary" size="small" @click="confirmActive()">确 定</el-button>
       </el-form-item>
-
+      
+       </div>
     
     </el-form>
-    <div slot="footer" class="dialog-footer" style="display: flex;justify-content: center;">
-      <el-button @click="closeModal()">取 消</el-button>
-      <el-button type="primary" @click="confirm()">确 定</el-button>
-    </div>
+
   </div>
 </template>
 
@@ -114,7 +129,9 @@ import {
   userListActive,
   aboutCopyrightMode,
   aboutCooperative,
-  updateSongInfo
+  updateSongInfo,
+  updateDemo,
+  updatePublish
 } from "network/home.js";
 
 export default {
@@ -354,48 +371,99 @@ export default {
         templyricsCode=this.lyricsCode
       }
      const param= {
+    //     token: this.token,
+    // songID:this.userInfo.id,
+    // updateFiled: {
+    //     songName:this.userInfo.songName,
+    //     lyricist: this.userInfo.lyricist,
+    //     lyricsCode:templyricsCode ,
+    //     composer:this.userInfo.composer,
+    //     tag: this.userInfo.tagActive,
+    //     publisher: this.userInfo.publisher,
+    //     collaborateMode: this.userInfo.collaborate,
+    //     copyright: this.userInfo.copyright
+    // }
+
         token: this.token,
-    songID:this.userInfo.id,
-    updateFiled: {
-        songName:this.userInfo.songName,
-        lyricist: this.userInfo.lyricist,
+    id: this.userInfo.id,
+    demo: {
+        lyricist:  this.userInfo.lyricist,
+        composer: this.userInfo.composer,
         lyricsCode:templyricsCode ,
-        composer:this.userInfo.composer,
-        tag: this.userInfo.tagActive,
-        publisher: this.userInfo.publisher,
-        collaborateMode: this.userInfo.collaborate,
-        copyright: this.userInfo.copyright
+        demoCode: this.userInfo.demoCode,
+        tag: this.userInfo.tagActive
     }
 }
-      // const param = {
-      //   token: this.token,
-      //   id: this.userInfo.id,
-
-      //   fileCode: this.fileCode,
-      //   projectCode: this.projectCode,
-      //   daoChangCode: this.daoChangCode
-      // };
+  
       console.log(param);
-      updateSongInfo(param).then(res => {
+      updateDemo(param).then(res => {
         console.log(res);
         if (res.status == 0) {
           this.lyricsCode = res.data;
           this.$message({
             type: "success",
-            message: "上传编曲成功！"
+            message: "更新歌曲基本信息成功！"
           });
-          this.dialogFormVisible = false;
           //this.submitForm();//提交表单
-          this.$emit("editUpdateInfo");
         } else {
-          this.lyricsCode = "";
 
           this.$message({
             type: "error",
-            message: "上传编曲失败！"
+            message: "更新歌曲基本信息失败！"
           });
         }
       });
+    },
+    confirmActive(){
+
+     const param= {
+    //     token: this.token,
+    // songID:this.userInfo.id,
+    // updateFiled: {
+    //     songName:this.userInfo.songName,
+    //     lyricist: this.userInfo.lyricist,
+    //     lyricsCode:templyricsCode ,
+    //     composer:this.userInfo.composer,
+    //     tag: this.userInfo.tagActive,
+    //     publisher: this.userInfo.publisher,
+    //     collaborateMode: this.userInfo.collaborate,
+    //     copyright: this.userInfo.copyright
+    // }
+
+      token: this.token,
+    
+    songIDs:this.userInfo.id,
+    updateItem:{
+        sellAccount:this.userInfo.account,
+        publisher:this.userInfo.publisher,
+        collaborateMode:this.userInfo.collaborate,
+        copyrightMode:this.userInfo.copyright,
+        // "lockTime":0,
+        // "contractTime":0,
+        // "cashDepositTime":0,
+        // "publishTime":0
+    }
+}
+  
+      console.log(param);
+      updatePublish(param).then(res => {
+        console.log(res);
+        if (res.status == 0) {
+          this.lyricsCode = res.data;
+          this.$message({
+            type: "success",
+            message: "更新歌曲发布信息成功！"
+          });
+          //this.submitForm();//提交表单
+        } else {
+
+          this.$message({
+            type: "error",
+            message: "更新歌曲发布信息失败！"
+          });
+        }
+      });
+
     },
     //取消更新
     closeModal(){
@@ -406,7 +474,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+
 .customWidth-addSong {
   width: 500px;
 }
