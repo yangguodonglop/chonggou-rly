@@ -131,7 +131,9 @@ import {
   aboutCooperative,
   updateSongInfo,
   updateDemo,
-  updatePublish
+  updatePublish,
+  updatePublishData
+
 } from "network/home.js";
 
 export default {
@@ -446,7 +448,7 @@ export default {
 }
   
       console.log(param);
-      updatePublish(param).then(res => {
+      updatePublishData(param).then(res => {
         console.log(res);
         if (res.status == 0) {
           this.lyricsCode = res.data;

@@ -3,34 +3,32 @@
     <search-header>
       <div class="option">
         <div class="sing-id option-active">
-          <span>歌曲编号：</span>
-          <el-input
-            v-model="search.musicid"
-            size="mini"
-            placeholder="请输入歌曲编号"
-            style="width: 150px"
-            @focus="inputchange('musicid')"
-          />
-        </div>
-        <div class="sing-name option-active">
           <span>歌曲名称：</span>
           <el-input
-            v-model="search.musicname"
+            v-model="seachName"
             size="mini"
             placeholder="请输入歌曲名称"
             style="width: 150px"
-            @focus="inputchange('musicname')"
+          />
+        </div>
+        <div class="sing-name option-active">
+          <span>作词者：</span>
+          <el-input
+            v-model="seachLyricist"
+            size="mini"
+            placeholder="请输入作词者"
+            style="width: 150px"
           />
         </div>
         <div class="sing-singer option-active">
-          <span>歌手名称：</span>
-          <search-input
-            :search="search.singer"
-            :list="singerNameList"
-            @sentSearch="getSearch"
-            :singerContent="singerContent"
-            @sentFocus="getFocus"
-          ></search-input>
+                  <span>作曲者:</span>
+
+          <el-input
+            v-model="seachComposer"
+            size="mini"
+            placeholder="请输入作词者"
+            style="width: 150px"
+            />
         </div>
         <div class="sing-musictype option-active">
           <span>歌曲类型：</span>
@@ -56,6 +54,12 @@
           <div class="refresh" style="margin-left:20px">
             <el-button type="info" @click="refresh" size="small" icon="el-icon-refresh"></el-button>
           </div>
+               <div class="refresh" style="margin-left:20px">
+            <el-button type="info"  size="small" @click="seachInfo()" icon="el-icon-refresh">查询</el-button>
+          </div>
+               <div class="refresh" style="margin-left:20px">
+            <el-button type="info" size="small" @click="refreshInfo()" icon="el-icon-refresh">重置</el-button>
+          </div>
         </div>
       </div>
     </search-header>
@@ -72,8 +76,17 @@
         <p>{{ dataText }}</p>
       </template>
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="musicid" label="歌曲编号" width="100" align="center" sortable></el-table-column>
-      <el-table-column prop="songName" label="歌曲名称" sortable width="120" align="center"></el-table-column>
+      <el-table-column prop="musicid" label="歌曲编号" width="100" align="center"  ></el-table-column>
+      <el-table-column  label="歌曲名称"   align="center">
+              <template slot-scope="scope">
+              <div >
+                              {{scope.row.songName}}        <el-button type="primary" size="mini"  @click="toRemark(scope.row)">确 定</el-button>
+                               <el-button type="primary" size="mini"  @click="toRemark(scope.row)">查看</el-button>
+
+
+              </div>
+              </template>
+      </el-table-column>
       <el-table-column prop="tag" label="歌曲风格" width="150" align="center"></el-table-column>
       <el-table-column prop="lyricist" label="作词人" width="120" align="center"></el-table-column>
       <el-table-column prop="composer" label="作曲人" width="120" align="center"></el-table-column>
@@ -81,8 +94,8 @@
       <el-table-column prop="progressRate" label="歌曲状态" width="150" align="center"></el-table-column>
 
       <el-table-column prop="lyricurl" label="歌词地址" width="80" align="center"></el-table-column>
-      <el-table-column prop="time" label="创建时间" width="150" align="center" sortable></el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column prop="time" label="创建时间" width="150" align="center"  ></el-table-column>
+      <el-table-column label="操作" align="center"  width="150">
         <template slot-scope="scope">
           <!-- <el-button @click="checkClick(scope.row)" type="text" size="mini">查看</el-button>
           <el-button type="text" size="mini" @click="updateClick(scope.row)">修改</el-button>
@@ -95,7 +108,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native="toAudition(scope.row)">选择试听</el-dropdown-item>
-                <el-dropdown-item @click.native="toDistribute(scope.row,'producer','200')">分配制作人</el-dropdown-item>
+                <el-dropdown-item v-if="producerHideMain" @click.native="toDistribute(scope.row,'producer','200')">分配制作人</el-dropdown-item>
                 <el-dropdown-item
                   @click.native="toDistribute(scope.row,'arrangementM','300')"
                 >分配编曲组长</el-dropdown-item>
@@ -107,16 +120,18 @@
                 <el-dropdown-item @click.native="toUploadArrangemen(scope.row)">上传编曲</el-dropdown-item>
                 <el-dropdown-item @click.native="toUploadRecorder(scope.row)">上传录音</el-dropdown-item>
                 <el-dropdown-item @click.native="toUploadMix(scope.row)">上传缩混</el-dropdown-item>
-                <el-dropdown-item @click.native="todownLoad(scope.row,'arr')">下载编曲</el-dropdown-item>
+                <el-dropdown-item @click.native="todownLoad(scope.row,'arractive')">下载小样文件</el-dropdown-item>
+                <el-dropdown-item @click.native="todownLoad(scope.row,'arractive')">重新上传歌词</el-dropdown-item>
+                <el-dropdown-item @click.native="todownLoad(scope.row,'arr')">下载编曲小样文件</el-dropdown-item>
                 <el-dropdown-item @click.native="todownLoad(scope.row,'arrPro')">下载编曲工程文件</el-dropdown-item>
-                <el-dropdown-item @click.native="todownLoad(scope.row,'rec')">下载录音</el-dropdown-item>
+                <el-dropdown-item @click.native="todownLoad(scope.row,'rec')">下载录音小样文件</el-dropdown-item>
                 <el-dropdown-item @click.native="todownLoad(scope.row,'recPro')">下载录音工程文件</el-dropdown-item> 
-                    <el-dropdown-item @click.native="todownLoad(scope.row,'mix')">下载缩混</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row,'mix')">下载缩混小样文件</el-dropdown-item>
                 <el-dropdown-item @click.native="todownLoad(scope.row,'mixPro')">下载录缩混程文件</el-dropdown-item>
+                <el-dropdown-item @click.native="todownLoad(scope.row,'mixPro')">下载导唱文件</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','30')">通过</el-dropdown-item>
                 <el-dropdown-item @click.native="toReview(scope.row,'arrangement','20')">驳回</el-dropdown-item>
                 <el-dropdown-item @click.native="deleteClick(scope.row)">删除</el-dropdown-item>
-                <el-dropdown-item command="b">退出系统</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -175,6 +190,14 @@
     >
       <music-upload-mix :userInfo="userInfo" @editDistributeRecorder="editDistributeRecorder"></music-upload-mix>
     </el-dialog>
+     <el-dialog
+      :footer="false"
+      title="添加备注"
+      :visible.sync="dialogVisibleRemark"
+      customClass="customWidth-distribute"
+    >
+      <music-remark :userInfo="userInfo" @editRemark="editRemark"></music-remark>
+    </el-dialog>
   </div>
 </template>
 
@@ -199,6 +222,7 @@ import MusicDistribute from "./musiclistchildrens/MusicDistribute.vue";
 import MusicUpload from "./musiclistchildrens/MusicUpload.vue";
 import MusicUploadRecorder from "./musiclistchildrens/MusicUploadRecorder.vue";
 import MusicUploadMix from "./musiclistchildrens/MusicUploadMix.vue";
+import MusicRemark from "./musiclistchildrens/MusicRemark.vue";
 
 import fmtDate from "common/js/Date.js";
 import {
@@ -225,7 +249,8 @@ export default {
     MusicUpload,
     MusicUploadRecorder,
     MusicUploadMix,
-    MusicAddActive
+    MusicAddActive,
+    MusicRemark,
   },
 
   data() {
@@ -241,6 +266,7 @@ export default {
         musicSonger: null
       },
       getTotal:0,
+      dialogVisibleRemark:false,
       //音乐类型
       musicTypes: [],
 
@@ -277,13 +303,20 @@ export default {
       dialogVisibleUploadRecorder: false,
       dialogVisibleUploadMix:false,
       userInfo: {},
-      editInfo: {}
+      editInfo: {},
+            producerHideMain: false,
+            funcGroupArr:[],
+            seachName:'',
+            seachLyricist:'',
+            seachComposer:''
+
     };
   },
   created() {
     //获取音乐类型列表
     // this.musicTypeList();
     // 获取音乐列表
+    this.queryAuthInfo()
     this.musicList();
     //this.musicList1();
     this.queryInfoStyle();
@@ -291,44 +324,29 @@ export default {
     // this.getSingerList();
   },
   methods: {
-    /*
-        *功能： JS跳转页面，并已POST方式提交数据
-        *参数： URL 跳转地址 PARAMTERS 参数
-        */
-        // function ShowReport_Click() {
-
-        //     var parames = new Array();
-        //     parames.push({ name: "name", value: "张三"});
-        //     parames.push({ name: "code", value: "123456"});
-
-        //     Post("www.baidu.com", parames);
-
-        //     return false;
-        // }
-
-        /*
-        *功能： 模拟form表单的提交
-        *参数： URL 跳转地址 PARAMTERS 参数
-        */
-        postExcelFile(params, url) {
-      //params是post请求需要的参数，url是请求url地址
-      var form = document.createElement("form");
-      form.style.display = "none";
-      form.action = url;
-      form.method = "post";
-      document.body.appendChild(form);
-    // 动态创建input并给value赋值
-      for (var key in params) {
-        var input = document.createElement("input");
-        input.type = "hidden";
-        input.name = key+'';
-        input.value = params[key]+'';
-        form.appendChild(input);
-      }
-
-      form.submit();
-      form.remove();
+    seachInfo(){
+      this.currentPage=1
+      this.musicList()
     },
+    refreshInfo(){
+       this.currentPage=1
+      this.seachName=''
+          this.seachLyricist='',
+            this.seachComposer=''
+      this.musicList()
+    },
+    //添加备注
+    toRemark(row){
+            this.userInfo = { ...row };
+
+      this.dialogVisibleRemark=true
+    },
+    //权限查询
+    queryAuthInfo(){
+        this.funcGroupArr = localStorage.getItem("userInfo").split(",");
+    },
+      
+
 
     //下载小样
     todownLoad(val,item){
@@ -394,6 +412,11 @@ downloadFile(param).then(res=>{
     editDistributeRecorder() {
       this.dialogVisibleUploadRecorder = false;
       this.musicList();
+    },
+    //备注确认
+    editRemark(){
+      this.dialogVisibleRemark=false
+      this.musicList()
     },
     //审核
     toReview(row, type, typeNum) {
@@ -561,9 +584,9 @@ downloadFile(param).then(res=>{
         filter: {
           progressRateReg: [],
           createTimeReg: [],
-          songName: "",
-          lyricist: "",
-          composer: "",
+          songName: this.seachName,
+          lyricist:this.seachLyricist,
+          composer: this.seachComposer,
           tag: []
         }
       };
@@ -773,54 +796,15 @@ downloadFile(param).then(res=>{
         this.currentPage * this.pagesize
       );
     },
-    // getTotal() {
-    //   if (this.search.musicid) {
-    //     return this.tableData.filter(data => {
-    //       if (data.musicid == this.search.musicid) {
-    //         return data;
-    //       }
-    //     }).length;
-    //   }
-    //   if (this.search.musicname) {
-    //     return this.tableData.filter(data => {
-    //       if (
-    //         data.musicname
-    //           .toLowerCase()
-    //           .includes(this.search.musicname.toLowerCase())
-    //       ) {
-    //         return data;
-    //       }
-    //     }).length;
-    //   }
-    //   if (this.search.singer) {
-    //     return this.tableData.filter(data => {
-    //       if (
-    //         data.singer.singername
-    //           .toLowerCase()
-    //           .includes(this.search.singer.toLowerCase())
-    //       ) {
-    //         return data;
-    //       }
-    //     }).length;
-    //   }
-    //   if (this.search.musictype) {
-    //     return this.tableData.filter(data => {
-    //       if (
-    //         data.musictype.musictypename
-    //           .toLowerCase()
-    //           .includes(this.search.musictype.toLowerCase())
-    //       ) {
-    //         return data;
-    //       }
-    //     }).length;
-    //   }
-    //   return this.tableData.length;
-    // }
+ 
   }
 };
 </script>
 
 <style >
+.el-dialog__body{
+  padding-top:10px;
+}
 .customWidth-audition {
   width: 500px;
 }

@@ -9,7 +9,7 @@
     </div>
     <div class="center">
       <div class="test_two_box">
-        <video id="myVideo" class="video-js" width="100%">
+        <video controls="true" controlslist="nodownload" id="myVideo" class="video-js" width="100%">
           <source src="@/assets/oceans.mp4" type="video/mp4" />
         </video>
       </div>

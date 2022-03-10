@@ -771,7 +771,8 @@ export default {
             collaborate: items.publish.collaborate,
             copyright: items.publish.copyright,
             lyricsCode:items.submitter.lyricsFile,
-            demoCode:items.mix.auditionFile
+            demoCode:items.mix.auditionFile,
+            account:items.publish.account
           };
           this.tableData.push(obj);
         });

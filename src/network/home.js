@@ -55,7 +55,9 @@ export const queryAuditionList = (param) => post(baseUrl+'/audition/queryAuditio
 export const putLockIngList = (param) => post(baseUrl+'/sell/putLockIngList', param)
 export const updateSongInfo = (param) => post(baseUrl+'/productLine/updateSongInfo', param)
 export const updateDemo = (param) => post(baseUrl+'/productLine/updateDemo', param)
-export const updatePublish = (param) => post(baseUrl+'/sell/updatePublish', param)
+export const updatePublishData = (param) => post(baseUrl+'/sell/updatePublishData', param)
+export const remarkToSong = (param) => post(baseUrl+'/god/remarkToSong', param)
+
 // export const deleteSong = (param) => post(baseUrl+'/productLine/deleteSong', param)
 // sell/getPublishSong
 const method = "POST";
