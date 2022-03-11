@@ -1,6 +1,6 @@
 <template>
   <div id="add">
-    <el-button type="primary" size="small" @click="dialogFormVisible = true">上传成品</el-button>
+    <el-button type="primary" size="mini" @click="dialogFormVisible = true">上传成品</el-button>
     <el-dialog title="上传成品" customClass="customWidth-addSong" :visible.sync="dialogFormVisible">
       <el-form :model="music">
         <el-form-item label="歌曲名称:" :label-width="formLabelWidth">

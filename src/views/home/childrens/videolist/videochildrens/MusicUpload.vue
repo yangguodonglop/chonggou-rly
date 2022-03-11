@@ -81,10 +81,10 @@
           style="width:100%;"
           @change="onChangeMode"
           v-model="userInfo.collaborate"
-          placeholder="请选择歌曲风格"
+          placeholder="请选择版权方式"
         >
           <el-option
-            v-for="(item, index) in copyrightModeList"
+            v-for="(item, index) in  CooperativeList"
             :key="index"
             :label="item.name"
             :value="item.value"
@@ -96,10 +96,10 @@
           style="width:100%;"
           @change="onChangeRightMode"
           v-model="userInfo.copyright"
-          placeholder="请选择歌曲风格"
+          placeholder="请选择合作方式"
         >
           <el-option
-            v-for="(item, index) in CooperativeList"
+            v-for="(item, index) in copyrightModeList"
             :key="index"
             :label="item.name"
             :value="item.value"
@@ -434,7 +434,7 @@ export default {
 
       token: this.token,
     
-    songIDs:this.userInfo.id,
+    songID:this.userInfo.id,
     updateItem:{
         sellAccount:this.userInfo.account,
         publisher:this.userInfo.publisher,

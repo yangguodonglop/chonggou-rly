@@ -1,6 +1,6 @@
 <template>
   <div id="music-delete">
-    <el-button type="danger" size="small" @click="open">删除</el-button>
+    <el-button type="danger" size="mini" @click="open">删除</el-button>
   </div>
 </template>
 

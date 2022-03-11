@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { uploadFile, aboutMusicTag, commitDemo,commitArrangement,commitMix,remarkToSong } from "network/home.js";
+import { uploadFile, aboutMusicTag, commitDemo,commitArrangement,commitMix,remarkToSong,remarkToSongActive } from "network/home.js";
 
 export default {
   name: "MusicAdd",
@@ -214,7 +214,7 @@ export default {
 }
       
     
-      remarkToSong(param).then(res => {
+      remarkToSongActive(param).then(res => {
         console.log(res);
         if (res.status == 0) {
           this.$message({

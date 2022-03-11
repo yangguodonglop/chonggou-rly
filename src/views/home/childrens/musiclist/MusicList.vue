@@ -2,6 +2,20 @@
   <div id="musiclist">
     <search-header>
       <div class="option">
+            <div class="sing-id option-active">
+          <span>时间查询：</span>
+         <el-date-picker
+      v-model="timeValue"
+    value-format="timestamp"
+      type="daterange"
+      range-separator="至"
+      @change="timeChange"
+      size='mini'
+      start-placeholder="开始日期"
+      end-placeholder="结束日期">
+    </el-date-picker>
+        </div>
+        
         <div class="sing-id option-active">
           <span>歌曲名称：</span>
           <el-input
@@ -33,32 +47,32 @@
         <div class="sing-musictype option-active">
           <span>歌曲类型：</span>
           <el-select
-            v-model="search.musictype"
+            v-model="tagValue"
             placeholder="请选择歌曲类型"
             style="width: 150px"
             size="mini"
-            @change="Change('type', search.musictype)"
+            @change="changeMusic"
           >
             <el-option
-              v-for="(item, index) in musicTypes"
-              :label="item.musictypename"
-              :value="item.musictypename"
+              v-for="(item, index) in styleType"
+              :label="item.name"
+              :value="item.value"
               :key="index"
             ></el-option>
           </el-select>
         </div>
-        <div class="btn option-active">
+        <div class="btn option-active" style="margin:10px 0px 10px 0px;">
           <music-add-active style="margin-left:20px" :music-type-list="musicTypes" @addMusic="addMusic"></music-add-active>
           <music-add style="margin-left:20px" :music-type-list="musicTypes" @addMusic="addMusic"></music-add>
           <music-delete style="margin-left:20px" :multiple-selection="multipleSelection"></music-delete>
-          <div class="refresh" style="margin-left:20px">
-            <el-button type="info" @click="refresh" size="small" icon="el-icon-refresh"></el-button>
+          <!-- <div class="refresh" style="margin-left:20px">
+            <el-button type="info" @click="refresh" size="mini" icon="el-icon-refresh"></el-button>
+          </div> -->
+               <div class="refresh" style="margin-left:20px">
+            <el-button type="info"  size="mini" @click="seachInfo()" icon="el-icon-refresh">查询</el-button>
           </div>
                <div class="refresh" style="margin-left:20px">
-            <el-button type="info"  size="small" @click="seachInfo()" icon="el-icon-refresh">查询</el-button>
-          </div>
-               <div class="refresh" style="margin-left:20px">
-            <el-button type="info" size="small" @click="refreshInfo()" icon="el-icon-refresh">重置</el-button>
+            <el-button type="info" size="mini" @click="refreshInfo()" icon="el-icon-refresh">重置</el-button>
           </div>
         </div>
       </div>
@@ -308,7 +322,11 @@ export default {
             funcGroupArr:[],
             seachName:'',
             seachLyricist:'',
-            seachComposer:''
+            seachComposer:'',
+            timeValue:'',
+            startTime:0,
+            endTime:0,
+            tagValue:''
 
     };
   },
@@ -324,12 +342,33 @@ export default {
     // this.getSingerList();
   },
   methods: {
+    //选择歌曲类型
+    changeMusic(val){
+      console.log(val)
+      this.tagValue=val
+
+    },
+    //选择时间
+    timeChange(val){
+      console.log(val)
+      this.startTime= parseInt(val[0]/1000)
+      this.endTime= parseInt(val[1]/1000)
+
+      // console.log(fmtDate(val[0]))
+   //   console.log(this.$moment(val[0]).format.valueOf())
+
+    },
     seachInfo(){
       this.currentPage=1
+
       this.musicList()
     },
     refreshInfo(){
+            this.tagValue=''
        this.currentPage=1
+       this.timeValue=''
+             this.startTime=0
+
       this.seachName=''
           this.seachLyricist='',
             this.seachComposer=''
@@ -577,17 +616,31 @@ downloadFile(param).then(res=>{
 
     //获取音乐列表
     musicList() {
+      
+      let createTimeReg=[]
+      if(this.startTime==0){
+createTimeReg=[]
+      }else{
+          createTimeReg=[this.startTime,this.endTime]
+
+      }
+      let tagValue=[]
+      if(this.tagValue==''){
+        tagValue=[]
+      }else{
+        tagValue=[this.tagValue]
+      }
       const param = {
         token: this.token,
         pageSize: 10,
         curPage: this.currentPage-1,
         filter: {
           progressRateReg: [],
-          createTimeReg: [],
+          createTimeReg: createTimeReg,
           songName: this.seachName,
           lyricist:this.seachLyricist,
           composer: this.seachComposer,
-          tag: []
+          tag: tagValue
         }
       };
       getProductionSong(param).then(res => {

@@ -14,7 +14,8 @@ Vue.prototype.$video = Video
 
 Vue.config.productionTip = false;
 Vue.prototype.axios = axios;
-
+import moment from 'moment'//导入文件
+Vue.prototype.$moment = moment;//赋值使用
 Vue.use(ElementUI);
 
 const Base64 = require('js-base64').Base64
