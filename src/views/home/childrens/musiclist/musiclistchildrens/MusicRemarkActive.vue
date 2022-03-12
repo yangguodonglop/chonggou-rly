@@ -1,10 +1,8 @@
 <template>
   <div id="add">
-           <textarea
-          class="textarea-con"
-          v-model="remarkText"
-          placeholder="请输入歌曲备注"
-        ></textarea>
+        <p v-for="item in userInfo['remark']" :key="item">
+          {{item}}
+        </p>
       <div slot="footer" class="dialog-footer" style="display: flex;justify-content: center;">
         <el-button @click="close()">取 消</el-button>
         <el-button type="primary" @click="confirm()">确 定</el-button>
@@ -51,7 +49,7 @@ export default {
           fileCode: "",
     projectCode: "",
     daoChangCode: "",
-    remarkText:""
+    remarkText:"isfhdshfhdisfhidhfids"
     };
   },
 
@@ -68,7 +66,7 @@ export default {
       // this.keyArr = [];
       // this.keyArr = val.funcGroup;
       this.$nextTick(() => {
-       // this.findUserInfo()
+        //this.findUserInfo()
        // console.log(baseUrl)
        
         // this.musicListlyricsFile()
@@ -202,7 +200,7 @@ export default {
     },
    
     close(){
-          this.$emit('editRemark')
+          this.$emit('editRemarkActive')
     },
     confirm() {
       
@@ -223,7 +221,7 @@ export default {
           });
           this.dialogFormVisible=false
           //this.submitForm();//提交表单
-          this.$emit('editRemark')
+          this.$emit('editRemarkActive')
         } else {
 
           this.$message({

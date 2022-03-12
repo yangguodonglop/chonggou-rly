@@ -58,7 +58,7 @@ export const updateDemo = (param) => post(baseUrl+'/productLine/updateDemo', par
 export const updatePublishData = (param) => post(baseUrl+'/sell/updatePublishData', param)
 export const remarkToSong = (param) => post(baseUrl+'/god/remarkToSong', param)
 export const remarkToSongActive = (param) => post(baseUrl+'/productLine/putSongRemark', param)
-
+export const reCommitLyric = (param) => post(baseUrl+'/productLine/reCommitLyric', param)
 // export const deleteSong = (param) => post(baseUrl+'/productLine/deleteSong', param)
 // sell/getPublishSong
 const method = "POST";
