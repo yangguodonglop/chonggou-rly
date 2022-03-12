@@ -2,58 +2,87 @@
   <div id="musiclist">
     <search-header>
       <div class="option">
-        <div class="sing-id option-active">
-          <span>歌曲编号2：</span>
-          <el-input
-            v-model="search.musicid"
+         <div class="sing-id option-active">
+          <span>时间查询：</span>
+          <el-date-picker
+            v-model="timeValue"
+            value-format="timestamp"
+            type="daterange"
+            range-separator="至"
+            @change="timeChange"
             size="mini"
-            placeholder="请输入歌曲编号"
-            style="width: 150px"
-            @focus="inputchange('musicid')"
-          />
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          >
+          </el-date-picker>
         </div>
-        <div class="sing-name option-active">
+
+        <div class="sing-id option-active">
           <span>歌曲名称：</span>
           <el-input
-            v-model="search.musicname"
+            v-model="seachName"
             size="mini"
             placeholder="请输入歌曲名称"
             style="width: 150px"
-            @focus="inputchange('musicname')"
+          />
+        </div>
+        <div class="sing-name option-active">
+          <span>作词者：</span>
+          <el-input
+            v-model="seachLyricist"
+            size="mini"
+            placeholder="请输入作词者"
+            style="width: 150px"
           />
         </div>
         <div class="sing-singer option-active">
-          <span>歌手名称：</span>
-          <search-input
-            :search="search.singer"
-            :list="singerNameList"
-            @sentSearch="getSearch"
-            :singerContent="singerContent"
-            @sentFocus="getFocus"
-          ></search-input>
+          <span>作曲者:</span>
+
+          <el-input
+            v-model="seachComposer"
+            size="mini"
+            placeholder="请输入作词者"
+            style="width: 150px"
+          />
         </div>
-        <div class="sing-musictype option-active">
+        <div class="sing-musictype option-active" style="margin-right:200px">
           <span>歌曲类型：</span>
           <el-select
-            v-model="search.musictype"
+            v-model="tagValue"
             placeholder="请选择歌曲类型"
             style="width: 150px"
             size="mini"
-            @change="Change('type', search.musictype)"
+            @change="changeMusic"
           >
             <el-option
-              v-for="(item, index) in musicTypes"
-              :label="item.musictypename"
-              :value="item.musictypename"
+              v-for="(item, index) in styleType"
+              :label="item.name"
+              :value="item.value"
               :key="index"
             ></el-option>
           </el-select>
         </div>
-        <div class="btn option-active">
-          <music-add style="margin-left:20px" :music-type-list="musicTypes" @addMusic="addMusic"></music-add>
-          <music-delete style="margin-left:20px" :multiple-selection="multipleSelection"></music-delete>
+        <div class="btn option-active" style="margin:10px 0px 10px 0px;">
+           <div class="refresh" style="margin-left:20px;">
+            <el-button type="primary"  @click="toUploadMix()" size="mini">查询有效歌单</el-button>
+          </div>
+            <div class="refresh" style="margin-left:20px">
+            <el-button
+              type="info"
+              size="mini"
+              @click="seachInfo()"
+              icon="el-icon-refresh"
+              >查询</el-button
+            >
+          </div>
           <div class="refresh" style="margin-left:20px">
-            <el-button type="info" @click="refresh" size="small" icon="el-icon-refresh"></el-button>
+            <el-button
+              type="info"
+              size="mini"
+              @click="refreshInfo()"
+              icon="el-icon-refresh"
+              >重置</el-button
+            >
           </div>
         </div>
       </div>
@@ -81,7 +110,7 @@
       <el-table-column prop="startLockTime" label="确定意向时间" width="140" align="center"></el-table-column>
       <el-table-column prop="contractTime" label="签合同时间" width="140" align="center">
         <template slot-scope="scope">
-          <span>{{scope.row.startLockTime}}{{scope.row.progressRate}}</span>
+          <span>{{scope.row.startLockTime}}</span>
           <el-button
             :disabled="scope.row.progressRate!==720"
             type="primary"
@@ -92,7 +121,7 @@
       </el-table-column>
       <el-table-column prop="cashDepositTime" label="收到首笔款时间" width="140" align="center">
         <template slot-scope="scope">
-          <span>{{scope.row.cashDepositTime}}{{scope.row.progressRate}}</span>
+          <span>{{scope.row.cashDepositTime}}</span>
           <el-button
             :disabled="scope.row.progressRate!==730"
             type="primary"
@@ -103,7 +132,7 @@
       </el-table-column>
       <el-table-column prop="publishTime" label="发布时间" width="140" align="center">
         <template slot-scope="scope">
-          <span>{{scope.row.publishTime}}{{scope.row.progressRate}}</span>
+          <span>{{scope.row.publishTime}}</span>
           <el-button
             :disabled="scope.row.progressRate!==740"
             type="primary"
@@ -143,21 +172,7 @@
                 <el-dropdown-item @click.native="toDistribute(scope.row,'producer','200')">查看试听情况</el-dropdown-item>
                 <el-dropdown-item @click.native="toUploadArrangemen(scope.row)">更新信息</el-dropdown-item>
 
-                <!-- <el-dropdown-item
-                  @click.native="toDistribute(scope.row,'arrangementM','300')"
-                >分配编曲组长</el-dropdown-item>
-                <el-dropdown-item @click.native="toDistribute(scope.row,'arrangement','351')">分配编曲师</el-dropdown-item>
-                <el-dropdown-item @click.native="toDistribute(scope.row,'recorderM','400')">分配录音组长</el-dropdown-item>
-                <el-dropdown-item @click.native="toDistribute(scope.row,'recorder','451')">分配录音师</el-dropdown-item>
-                <el-dropdown-item @click.native="toDistribute(scope.row,'mixerM','500')">分配混音组长</el-dropdown-item>
-                <el-dropdown-item @click.native="toDistribute(scope.row,'mixer','551')">分配混音师</el-dropdown-item>
-                <el-dropdown-item @click.native="toUploadArrangemen(scope.row)">上传编曲</el-dropdown-item>
-                <el-dropdown-item @click.native="toUploadRecorder(scope.row)">上传录音</el-dropdown-item>
-                <el-dropdown-item @click.native="toUploadMix(scope.row)">上传缩混</el-dropdown-item>
-                <el-dropdown-item @click.native="toReview(scope.row,'arrangement','30')">通过</el-dropdown-item>
-                <el-dropdown-item @click.native="toReview(scope.row,'arrangement','20')">驳回</el-dropdown-item>
-                <el-dropdown-item @click.native="deleteClick(scope.row)">删除</el-dropdown-item>
-                <el-dropdown-item command="b">退出系统</el-dropdown-item>-->
+               
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -210,11 +225,11 @@
     </el-dialog>
     <el-dialog
       :footer="false"
-      title="上传缩混"
+      title="查看有效歌单"
       :visible.sync="dialogVisibleUploadMix"
       customClass="customWidth-distribute"
     >
-      <music-upload-mix :userInfo="userInfo" @editDistributeRecorder="editDistributeRecorder"></music-upload-mix>
+      <music-upload-mix :userInfo="userInfo" @editDistributeRecorderList="editDistributeRecorderList"></music-upload-mix>
     </el-dialog>
     <el-dialog
       :footer="true"
@@ -344,7 +359,15 @@ export default {
       songIDs: [],
       extendDays: 3,
       songName: "",
-      getTotal:0
+      getTotal:0,
+              seachName: '',
+      seachLyricist: '',
+      seachComposer: '',
+      timeValue: '',
+      startTime: 0,
+      endTime: 0,
+      tagValue: '',
+      
     };
   },
   created() {
@@ -358,6 +381,35 @@ export default {
     // this.getSingerList();
   },
   methods: {
+    //选择歌曲类型
+    changeMusic(val) {
+      console.log(val);
+      this.tagValue = val;
+    },
+    //选择时间
+    timeChange(val) {
+      console.log(val);
+      this.startTime = parseInt(val[0] / 1000);
+      this.endTime = parseInt(val[1] / 1000);
+
+      // console.log(fmtDate(val[0]))
+      //   console.log(this.$moment(val[0]).format.valueOf())
+    },
+    seachInfo() {
+      this.currentPage = 1;
+
+      this.musicList();
+    },
+    refreshInfo() {
+      this.tagValue = '';
+      this.currentPage = 1;
+      this.timeValue = '';
+      this.startTime = 0;
+
+      this.seachName = '';
+      (this.seachLyricist = ''), (this.seachComposer = '');
+      this.musicList();
+    },
     //取消更新信息
     editUpdateInfo(){
       this.dialogVisibleUpload=false
@@ -462,6 +514,10 @@ export default {
 
     editDistributeRecorder() {
       this.dialogVisibleUploadRecorder = false;
+      this.musicList();
+    },
+      editDistributeRecorderList() {
+      this.dialogVisibleUploadMix = false;
       this.musicList();
     },
     //发布操作
@@ -579,7 +635,7 @@ export default {
       this.dialogVisibleUploadRecorder = true;
     },
     toUploadMix(row) {
-      this.userInfo = { ...row };
+      // this.userInfo = { ...row };
       this.dialogVisibleUploadMix = true;
     },
     //新增成功查询列表
@@ -687,16 +743,28 @@ export default {
 
     //获取音乐列表
     musicList() {
+          let createTimeReg = [];
+      if (this.startTime == 0) {
+        createTimeReg = [];
+      } else {
+        createTimeReg = [this.startTime, this.endTime];
+      }
+      let tagValue = [];
+      if (this.tagValue == '') {
+        tagValue = [];
+      } else {
+        tagValue = [this.tagValue];
+      }
       const param = {
         token: this.token,
         pageSize: 10,
         curPage: this.currentPage-1,
         filter: {
           progressRateReg: [720, 1000],
-          publishTime: [],
-          songName: "",
+          publishTime:createTimeReg,
+          songName: this.seachName,
           publishe: "",
-          tag: []
+          tag:tagValue
         }
       };
       getPublishSongSell(param).then(res => {

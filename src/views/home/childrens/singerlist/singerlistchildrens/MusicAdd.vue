@@ -1,6 +1,6 @@
 <template>
   <div id="add">
-    <el-button type="primary" size="small" @click="dialogFormVisible = true">生成试听列表</el-button>
+    <el-button type="primary" size="mini" @click="dialogFormVisible = true">生成试听列表</el-button>
     <el-dialog title="添加歌曲" customClass="customWidth-addSong" :visible.sync="dialogFormVisible">
       <el-form :model="music">
         <el-form-item label="歌单名称:" :label-width="formLabelWidth">

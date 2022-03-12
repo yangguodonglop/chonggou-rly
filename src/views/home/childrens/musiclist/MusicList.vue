@@ -77,9 +77,7 @@
             style="margin-left:20px"
             :multiple-selection="multipleSelection"
           ></music-delete>
-          <!-- <div class="refresh" style="margin-left:20px">
-            <el-button type="info" @click="refresh" size="mini" icon="el-icon-refresh"></el-button>
-          </div> -->
+
           <div class="refresh" style="margin-left:20px">
             <el-button
               type="info"
@@ -107,8 +105,6 @@
       style="width: 100%;height:auto;"
       stripe
       size="mini"
-      :default-sort="{ prop: 'musicid', order: 'ascending' }"
-      @selection-change="handleSelectionChange"
     >
       <template slot="empty">
         <p>{{ dataText }}</p>
@@ -118,16 +114,17 @@
         prop="musicid"
         label="歌曲编号"
         width="100"
-        align="center"
+        align="left"
       ></el-table-column>
-      <el-table-column label="歌曲名称" align="center">
+      <el-table-column label="歌曲名称" align="left">
         <template slot-scope="scope">
           <div>
-            {{ scope.row.songName }}
-            <el-button type="primary" size="mini" @click="toRemark(scope.row)"
+           <span v-if="scope.row.progressRateActive>=720" style="color:green">{{ scope.row.songName }}(已发布)</span>
+           <span  v-if="scope.row.progressRateActive<720" style="color:red">{{ scope.row.songName }}(未发布)</span>
+            <el-button style="margin-left:20px;" type="primary" size="mini" @click="toRemark(scope.row)"
               >确 定</el-button
             >
-            <el-button type="primary" v-if="scope.row.remark.length>0" size="mini" @click="toCheck(scope.row)"
+            <el-button style="margin-left:20px;" type="primary" v-if="scope.row.remark.length>0" size="mini" @click="toCheck(scope.row)"
               >查看</el-button
             >
           </div>
@@ -137,45 +134,51 @@
         prop="tag"
         label="歌曲风格"
         width="150"
-        align="center"
+        align="left"
       ></el-table-column>
       <el-table-column
         prop="lyricist"
         label="作词人"
         width="120"
-        align="center"
+        align="left"
       ></el-table-column>
       <el-table-column
         prop="composer"
         label="作曲人"
         width="120"
-        align="center"
+        align="left"
       ></el-table-column>
       <el-table-column
         prop="producerNick"
         label="制作人"
         width="120"
-        align="center"
+        align="left"
       ></el-table-column>
       <el-table-column
-        prop="progressRate"
         label="歌曲状态"
         width="150"
-        align="center"
+        align="left"
+      >
+        <template slot-scope="scope">
+          <div>
+           <span style="color:#ffa500">{{ scope.row.progressRate }}</span>
+          </div>
+        </template>
+      </el-table-column>
+          <el-table-column
+        prop="createTime"
+        label="创建时间"
+        width="150"
+        align="left"
       ></el-table-column>
 
       <el-table-column
-        prop="lyricurl"
-        label="歌词地址"
-        width="80"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        prop="time"
-        label="创建时间"
+        prop="publishTime"
+        label="发布时间"
         width="150"
-        align="center"
+        align="left"
       ></el-table-column>
+  
       <el-table-column label="操作" align="center" width="150">
         <template slot-scope="scope">
           <!-- <el-button @click="checkClick(scope.row)" type="text" size="mini">查看</el-button>
@@ -285,7 +288,7 @@
         :current-page.sync="currentPage"
         :page-sizes="[10]"
         :page-size="pagesize"
-        layout="total, sizes, prev, pager, next, jumper"
+        layout="total, prev, pager, next, jumper"
         background
         :total="getTotal"
         style="textAlign: right"
@@ -876,6 +879,18 @@ export default {
             case 599:
               tempStatus = '缩混完成且已通过审核';
               break;
+                 case 720:
+              tempStatus = '客户已经买入';
+              break;
+                   case 730:
+              tempStatus = '已收到合同';
+              break;
+                   case 740:
+              tempStatus = '收到首笔款';
+              break;
+                   case 1000:
+              tempStatus = '发布等一系列流程完毕';
+              break;
           }
           let obj = {
             songName: items.submitter.songName,
@@ -889,7 +904,9 @@ export default {
             progressRate: tempStatus,
             progressRateActive: items.progressRate,
             mixFile: items.mix.auditionFile,
-            remark:items.remark
+            remark:items.remark,
+            createTime:this.dateFmt(items.createTime),
+            publishTime:this.dateFmt(items.publish.publishTime)
           };
           this.tableData.push(obj);
         });

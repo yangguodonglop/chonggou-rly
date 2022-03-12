@@ -1,9 +1,9 @@
 <template>
   <div id="add">
     <el-table :data="tableData" border style="width: 100%;height:auto;" stripe size="mini">
-      <el-table-column prop="creator" label="试听伙伴" width="100" align="center"></el-table-column>
-      <el-table-column prop="expiredTime" label="试听时间" width="200" align="center"></el-table-column>
-      <el-table-column prop="valid" label="试听次数" align="center"></el-table-column>
+      <el-table-column prop="publisherNick" label="试听伙伴" width="100" align="center"></el-table-column>
+      <el-table-column prop="timeActive" label="试听时间" width="200" align="center"></el-table-column>
+      <el-table-column prop="count" label="试听次数" align="center"></el-table-column>
     </el-table>
      <div class="block">
       <el-pagination
@@ -28,7 +28,8 @@
 </template>
 
 <script>
-import { queryAuditionList } from "network/home.js";
+import { queryAuditionList,getAuditionRec } from "network/home.js";
+import fmtDate from 'common/js/Date.js';
 
 export default {
   name: "MusicAdd",
@@ -65,6 +66,11 @@ export default {
     }
   },
   methods: {
+      //时间转化
+    dateFmt(date) {
+      let d = new Date(date);
+      return fmtDate(d, 'yyyy-MM-dd hh:mm:ss');
+    },
     //查询合作模式
     queryInfo() {
       const param = {
@@ -72,17 +78,17 @@ export default {
         pageSize: 10,
         curPage: this.currentPage-1,
 
-        filter: {
-          listName: "",
-          creatorID: "",
-          publisher: "",
-          songName: "",
-          isValid: true
-        }
+         filter:{
+        songName:this.userInfo.songName,
+        publisher:''
+    }
       };
-      queryAuditionList(param).then(res => {
+      getAuditionRec(param).then(res => {
         console.log(res);
         if (res.status == 0) {
+          res.data.item.filter((items=>{
+            items.timeActive=this.dateFmt(items.lastUpdateTime)
+          }))
           this.tableData = [];
           this.tableData = res.data.item;
           this.getTotal=res.data.count
