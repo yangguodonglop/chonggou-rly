@@ -3,7 +3,7 @@
     <search-header>
       <div class="option">
             <div class="sing-id option-active">
-          <span>时间查询：</span>
+          <span>时间查询1：</span>
          <el-date-picker
       v-model="timeValue"
     value-format="timestamp"
