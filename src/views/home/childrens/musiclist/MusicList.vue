@@ -200,36 +200,48 @@
                   >分配制作人</el-dropdown-item
                 >
                 <el-dropdown-item
+                v-if="producerHide"
                   @click.native="toDistribute(scope.row, 'arrangementM', '300')"
                   >分配编曲组长</el-dropdown-item
                 >
                 <el-dropdown-item
+                    v-if="arrangementHideM"
                   @click.native="toDistribute(scope.row, 'arrangement', '351')"
                   >分配编曲师</el-dropdown-item
                 >
                 <el-dropdown-item
+                 v-if="producerHide"
                   @click.native="toDistribute(scope.row, 'recorderM', '400')"
                   >分配录音组长</el-dropdown-item
                 >
                 <el-dropdown-item
+                v-if="recorderHideM"
                   @click.native="toDistribute(scope.row, 'recorder', '451')"
                   >分配录音师</el-dropdown-item
                 >
                 <el-dropdown-item
+                 v-if="producerHide"
                   @click.native="toDistribute(scope.row, 'mixerM', '500')"
                   >分配混音组长</el-dropdown-item
                 >
                 <el-dropdown-item
+                 v-if="mixerHideM"
                   @click.native="toDistribute(scope.row, 'mixer', '551')"
                   >分配混音师</el-dropdown-item
                 >
-                <el-dropdown-item @click.native="toUploadArrangemen(scope.row)"
+                <el-dropdown-item
+                v-if="arrangementHide"
+                 @click.native="toUploadArrangemen(scope.row)"
                   >上传编曲</el-dropdown-item
                 >
-                <el-dropdown-item @click.native="toUploadRecorder(scope.row)"
+                <el-dropdown-item
+                 v-if="recorderHide"
+                 @click.native="toUploadRecorder(scope.row)"
                   >上传录音</el-dropdown-item
                 >
-                <el-dropdown-item @click.native="toUploadMix(scope.row)"
+                <el-dropdown-item
+                v-if="mixerHide" 
+                @click.native="toUploadMix(scope.row)"
                   >上传缩混</el-dropdown-item
                 >
                 <el-dropdown-item
@@ -237,6 +249,7 @@
                   >下载小样文件</el-dropdown-item
                 >
                 <el-dropdown-item
+                v-if="lyricsZzHide"
                   @click.native="todownLoadText(scope.row)"
                   >重新上传歌词</el-dropdown-item
                 >
@@ -266,14 +279,18 @@
                   >下载导唱文件</el-dropdown-item
                 >
                 <el-dropdown-item
+                v-if="producerHide"
                   @click.native="toReview(scope.row, 'arrangement', '30')"
                   >通过</el-dropdown-item
                 >
                 <el-dropdown-item
+                v-if="producerHide"
                   @click.native="toReview(scope.row, 'arrangement', '20')"
                   >驳回</el-dropdown-item
                 >
-                <el-dropdown-item @click.native="deleteClick(scope.row)"
+                <el-dropdown-item
+                v-if="producerHide"
+                 @click.native="deleteClick(scope.row)"
                   >删除</el-dropdown-item
                 >
               </el-dropdown-menu>
@@ -503,9 +520,78 @@ export default {
       startTime: 0,
       endTime: 0,
       tagValue: '',
+       producerHide: false,
+      producerHideMain: false,
+      arrangementHide: false,
+      recorderHide: false,
+      mixerHide: false,
+      arrangementHideM: false,
+      lyricsZzHide: false,
+      recorderHideM: false,
+      mixerHideM: false,
     };
   },
   created() {
+    // console.log(JSON.parse(localStorage.getItem("userInfo")).account.funcGroup )
+     this.funcGroupArr = JSON.parse(localStorage.getItem("userInfo")).account.funcGroup
+     console.log(this.funcGroupArr)
+    if (
+      this.funcGroupArr.includes(150) == true ||
+      this.funcGroupArr.includes(100) == true
+    ) {
+      this.producerHideMain = true;
+    }
+       if (
+      this.funcGroupArr.includes(200) == true ||
+      this.funcGroupArr.includes(100) == true
+    ) {
+      this.producerHide = true;
+    }
+      if (
+      this.funcGroupArr.includes(300) == true ||
+      this.funcGroupArr.includes(100) == true
+    ) {
+      this.arrangementHideM = true;
+    }
+       if (
+      this.funcGroupArr.includes(251) == true ||
+      this.funcGroupArr.includes(100) == true
+    ) {
+      this.lyricsZzHide = true;
+    }
+        if (
+      this.funcGroupArr.includes(400) == true ||
+      this.funcGroupArr.includes(100) == true
+    ) {
+      this.recorderHideM = true;
+    }
+     if (
+      this.funcGroupArr.includes(500) == true ||
+      this.funcGroupArr.includes(100) == true
+    ) {
+      this.mixerHideM = true;
+    }
+     if (
+      this.funcGroupArr.includes(351) == true ||
+      this.funcGroupArr.includes(100) == true
+    ) {
+      this.arrangementHide = true;
+    }
+      if (
+      this.funcGroupArr.includes(451) == true ||
+      this.funcGroupArr.includes(100) == true
+    ) {
+      this.recorderHide = true;
+    }
+       if (
+      this.funcGroupArr.includes(551) == true ||
+      this.funcGroupArr.includes(100) == true
+    ) {
+      this.mixerHide = true;
+    }
+
+
+
     //获取音乐类型列表
     // this.musicTypeList();
     // 获取音乐列表
@@ -515,6 +601,9 @@ export default {
     this.queryInfoStyle();
     //获取歌手列表
     // this.getSingerList();
+  },
+  mounted(){
+
   },
   methods: {
     //选择歌曲类型
@@ -841,7 +930,7 @@ export default {
               tempStatus = '已提交小样';
               break;
             case 100:
-              tempStatus = '已提交小样';
+              tempStatus = '已分配制作人';
               break;
             case 150:
               tempStatus = '已分配编曲组长';

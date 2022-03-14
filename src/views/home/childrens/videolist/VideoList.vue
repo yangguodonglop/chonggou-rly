@@ -227,7 +227,7 @@
       :footer="false"
       title="查看有效歌单"
       :visible.sync="dialogVisibleUploadMix"
-      customClass="customWidth-distribute"
+      customClass="customWidth-distribute-list"
     >
       <music-upload-mix :userInfo="userInfo" @editDistributeRecorderList="editDistributeRecorderList"></music-upload-mix>
     </el-dialog>
@@ -763,8 +763,10 @@ export default {
           progressRateReg: [720, 1000],
           publishTime:createTimeReg,
           songName: this.seachName,
-          publishe: "",
-          tag:tagValue
+          publisher: "",
+          tag:tagValue,
+             lyricist:this.seachLyricist,
+        composer:this.seachComposer,
         }
       };
       getPublishSongSell(param).then(res => {
@@ -1004,6 +1006,9 @@ export default {
 }
 .customWidth-distribute {
   width: 500px;
+}
+.customWidth-distribute-list {
+  width: 900px;
 }
 .option {
   display: flex;

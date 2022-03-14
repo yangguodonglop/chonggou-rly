@@ -1,9 +1,13 @@
 <template>
   <div id="add">
     <el-table :data="tableData" border style="width: 100%;height:auto;" stripe size="mini">
-      <el-table-column prop="creator" label="试听伙伴" width="100" align="center"></el-table-column>
-      <el-table-column prop="expiredTime" label="试听时间" width="200" align="center"></el-table-column>
-      <el-table-column prop="valid" label="试听次数" align="center"></el-table-column>
+      <el-table-column prop="name" label="歌单名称" width="100" align="center"></el-table-column>
+      <el-table-column prop="creatorName" label="歌单创建者" width="100" align="center"></el-table-column>
+      <el-table-column prop="valid" label="有效时长(天)" width="100" align="center"></el-table-column>
+      <el-table-column prop="valid" label="锁定时长(天)" width="100" align="center"></el-table-column>
+      <el-table-column prop="publisherName" label="合作人账号" width="100" align="center"></el-table-column>
+      <el-table-column prop="createTime" label="创建歌单时间" width="200" align="center"></el-table-column>
+      <el-table-column prop="url" label="地址"  align="center"></el-table-column>
     </el-table>
      <div class="block">
       <el-pagination
@@ -29,6 +33,7 @@
 
 <script>
 import { queryAuditionList } from "network/home.js";
+import fmtDate from 'common/js/Date.js';
 
 export default {
   name: "MusicAdd",
@@ -83,6 +88,10 @@ export default {
       queryAuditionList(param).then(res => {
         console.log(res);
         if (res.status == 0) {
+           res.data.item.forEach((element) => {
+              element.createTime=this.dateFmt(element.createTime)
+           });
+
           this.tableData = [];
           this.tableData = res.data.item;
           this.getTotal=res.data.count
@@ -92,6 +101,11 @@ export default {
 
         }
       });
+    },
+        //时间转化
+    dateFmt(date) {
+      let d = new Date(date);
+      return fmtDate(d, 'yyyy-MM-dd hh:mm:ss');
     },
           //点击之后的当前页数
     handleCurrentChange(val) {
@@ -109,6 +123,6 @@ export default {
 
 <style>
 .customWidth-addSong {
-  width: 500px;
+  width: 900px;
 }
 </style>
