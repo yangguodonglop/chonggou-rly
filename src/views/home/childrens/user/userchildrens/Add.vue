@@ -68,9 +68,13 @@ export default {
     };
   },
   created() {
-    // this.$nextTick(() => {
-    //   this.$refs.ipt.focus();
-    // });
+     Object.assign(this.$data, this.$options.data.call(this))
+    this.$nextTick(() => {
+     console.log("*********")
+    });
+  },
+  mounted(){
+     console.log("999999")
   },
   methods: {
     back() {

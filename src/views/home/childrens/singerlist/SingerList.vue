@@ -1,4 +1,7 @@
 <template>
+<div style="display: flex;
+    justify-content: center;">
+<div v-if="permission">
   <div id="musiclist">
     <search-header>
       <div class="option">
@@ -62,8 +65,8 @@
             ></el-option>
           </el-select>
         </div>
-        <div class="btn option-active" style="margin:10px 0px 10px 0px;">
-          <div class="refresh" style="margin-left:20px">
+        <div class="btn option-active">
+          <div class="refresh" style="margin-left:0px">
             <el-button type="primary" @click="toUploadArrangemen" size="mini">生成试听列表</el-button>
           </div>
             <div class="refresh" style="margin-left:20px">
@@ -203,6 +206,12 @@
       </div>
     </el-dialog>
   </div>
+  </div>
+<div v-if="!permission">
+  <img class="permission-img" src="@/assets/permission.webp" width="900" height="420">
+  <div class="permission-text">对不起，您暂无权限访问该页面，请联系管理员授权！</div>
+</div>
+</div>
 </template>
 
 <script>
@@ -312,9 +321,17 @@ export default {
       startTime: 0,
       endTime: 0,
       tagValue: '',
+      permission:true
     };
   },
   created() {
+       this.funcGroupArr = JSON.parse(localStorage.getItem("userInfo")).account.funcGroup
+     console.log(this.funcGroupArr)
+      if (this.funcGroupArr.includes(100)){
+this.permission=true
+      } else{
+      this.permission= false;
+    }
     //获取音乐类型列表
     // this.musicTypeList();
     // 获取音乐列表
@@ -374,7 +391,7 @@ export default {
       console.log(val);
       // this.visibleUrl = true;
       this.customerAddress =
-        "http://47.114.141.171:8990/clientLogin.html?type=" + val.url;
+        "http://106.53.61.91:8990/clientLogin.html?type=" + val.url;
     },
     //删除歌曲
     deleteClick(row) {
@@ -781,8 +798,11 @@ export default {
   margin-top: 5px;
 } */
 .option .option-active {
-  margin-left: 20px;
-  margin-top: 5px;
+  /* margin-left: 20px;
+  margin-top: 5px; */
+  display: flex;
+  align-items: center;
+  height: 40px;
 }
 
 .option .btn {
@@ -804,5 +824,15 @@ span {
 img {
   width: 50px;
   height: 50px;
+}
+.permission-img{
+  width: 900px;
+  height: 420px;
+}
+.permission-text{
+  display: flex;
+    justify-content: center;
+    font-size: 30px;
+    color: #9abee3;
 }
 </style>

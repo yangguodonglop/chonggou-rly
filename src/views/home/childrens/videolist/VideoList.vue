@@ -1,4 +1,7 @@
 <template>
+<div style="display: flex;
+    justify-content: center;">
+<div v-if="permission">
   <div id="musiclist">
     <search-header>
       <div class="option">
@@ -45,7 +48,7 @@
             style="width: 150px"
           />
         </div>
-        <div class="sing-musictype option-active" style="margin-right:200px">
+        <div class="sing-musictype option-active" >
           <span>歌曲类型：</span>
           <el-select
             v-model="tagValue"
@@ -62,8 +65,24 @@
             ></el-option>
           </el-select>
         </div>
-        <div class="btn option-active" style="margin:10px 0px 10px 0px;">
-           <div class="refresh" style="margin-left:20px;">
+         <div class="sing-musictype option-active" >
+          <span>发布状态：</span>
+             <el-select
+             size="mini"
+          v-model="publishstate"
+          style="width:150px"
+          placeholder="请选择发布状态查询"
+          @change="handleChangeState"
+        >
+          <el-option label="全部" value="0">全部</el-option>
+          <el-option label="收到合同" value="1">收到合同</el-option>
+          <el-option label="收到首笔款" value="2">收到首笔款</el-option>
+          <el-option label="已发布" value="3">已发布</el-option>
+        </el-select>
+        </div>
+          
+        <div class="btn option-active">
+           <div class="refresh" style="margin-left:0px;">
             <el-button type="primary"  @click="toUploadMix()" size="mini">查询有效歌单</el-button>
           </div>
             <div class="refresh" style="margin-left:20px">
@@ -101,12 +120,12 @@
       </template>
       <el-table-column type="selection" width="55"></el-table-column>
       <!-- <el-table-column prop="musicid" label="歌曲编号" width="100" align="center" sortable></el-table-column> -->
-      <el-table-column prop="songName" label="歌曲名称" sortable width="120" align="center"></el-table-column>
-      <el-table-column prop="tag" label="歌曲风格" width="150" align="center"></el-table-column>
+      <el-table-column prop="songName" label="歌曲名称" align="center"></el-table-column>
+      <el-table-column prop="tag" label="歌曲风格" width="100" align="center"></el-table-column>
       <el-table-column prop="lyricist" label="作词人" width="120" align="center"></el-table-column>
       <el-table-column prop="composer" label="作曲人" width="120" align="center"></el-table-column>
-      <el-table-column prop="collaborateName" label="合作模式" width="120" align="center"></el-table-column>
-      <el-table-column prop="copyrightName" label="版权模式" width="120" align="center"></el-table-column>
+      <el-table-column prop="collaborateName" label="合作模式" width="80" align="center"></el-table-column>
+      <el-table-column prop="copyrightName" label="版权模式" width="80" align="center"></el-table-column>
       <el-table-column prop="startLockTime" label="确定意向时间" width="140" align="center"></el-table-column>
       <el-table-column prop="contractTime" label="签合同时间" width="140" align="center">
         <template slot-scope="scope">
@@ -143,17 +162,8 @@
       </el-table-column>
       <el-table-column prop="finishLockTime" label="锁定到期时间" width="140" align="center"></el-table-column>
       <el-table-column prop="account" label="发行人员" width="120" align="center"></el-table-column>
-
-      <!-- <el-table-column prop="producerNick" label="制作人" width="120" align="center"></el-table-column>
-      <el-table-column prop="progressRate" label="歌曲状态" width="150" align="center"></el-table-column>-->
-
-      <!-- <el-table-column prop="lyricurl" label="歌词地址" width="80" align="center"></el-table-column>
-      <el-table-column prop="time" label="创建时间" width="150" align="center" sortable></el-table-column>-->
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" width="120">
         <template slot-scope="scope">
-          <!-- <el-button @click="checkClick(scope.row)" type="text" size="mini">查看</el-button>
-          <el-button type="text" size="mini" @click="updateClick(scope.row)">修改</el-button>
-          <el-button type="text" size="mini" @click="deleteClick(scope.row)">删除</el-button>-->
           <div>
             <el-dropdown trigger="click" @command="handleCommand">
               <span class="el-dropdown-link" style="color:#409eff;">
@@ -225,9 +235,11 @@
     </el-dialog>
     <el-dialog
       :footer="false"
+            :modal="false"
       title="查看有效歌单"
       :visible.sync="dialogVisibleUploadMix"
       customClass="customWidth-distribute-list"
+      style="z-index:2000"
     >
       <music-upload-mix :userInfo="userInfo" @editDistributeRecorderList="editDistributeRecorderList"></music-upload-mix>
     </el-dialog>
@@ -253,6 +265,12 @@
       </div>
     </el-dialog>
   </div>
+  </div>
+<div v-if="!permission">
+  <img class="permission-img" src="@/assets/permission.webp" width="900" height="420">
+  <div class="permission-text">对不起，您暂无权限访问该页面，请联系管理员授权！</div>
+</div>
+</div>
 </template>
 
 <script>
@@ -367,10 +385,20 @@ export default {
       startTime: 0,
       endTime: 0,
       tagValue: '',
+      publishstate:"",
+      progressRateReg:[720, 1000],
+      permission:true,
       
     };
   },
   created() {
+         this.funcGroupArr = JSON.parse(localStorage.getItem("userInfo")).account.funcGroup
+     console.log(this.funcGroupArr)
+      if (this.funcGroupArr.includes(100)){
+this.permission=true
+      } else{
+      this.permission= false;
+    }
     //获取音乐类型列表
     // this.musicTypeList();
     // 获取音乐列表
@@ -381,6 +409,27 @@ export default {
     // this.getSingerList();
   },
   methods: {
+    handleChangeState(val){
+      console.log(val)
+      this.publishstate=val
+      switch(val){
+        case '0':
+        this.progressRateReg=[720, 1000]
+        break;
+            case '1':
+        this.progressRateReg=[730, 1000]
+        break;
+            case '2':
+        this.progressRateReg=[740, 1000]
+        break;
+            case '3':
+        this.progressRateReg=[10000, 1000]
+        break;
+        
+      }
+      this.currentPage=1
+      this.musicList()
+    },
     //选择歌曲类型
     changeMusic(val) {
       console.log(val);
@@ -760,10 +809,10 @@ export default {
         pageSize: 10,
         curPage: this.currentPage-1,
         filter: {
-          progressRateReg: [720, 1000],
+          progressRateReg: this.progressRateReg,
           publishTime:createTimeReg,
           songName: this.seachName,
-          publisher: "",
+          publisher: this.publishstate,
           tag:tagValue,
              lyricist:this.seachLyricist,
         composer:this.seachComposer,
@@ -772,7 +821,8 @@ export default {
       getPublishSongSell(param).then(res => {
         console.log(res);
         this.tableData = [];
-        res.data.item.forEach((items, index) => {
+        if( res.data.item.length>0){
+           res.data.item.forEach((items, index) => {
           let tempStatus = "";
           switch (items.progressRate) {
             case 0:
@@ -847,6 +897,11 @@ export default {
           this.tableData.push(obj);
         });
         this.getTotal=res.data.count
+        }else{
+          this.tableData=[]
+            this.getTotal=res.data.count
+        }
+       
       });
     },
     //获取歌手列表
@@ -1021,8 +1076,10 @@ export default {
   margin-top: 5px;
 } */
 .option .option-active {
-  margin-left: 20px;
-  margin-top: 5px;
+display: flex;
+align-items: center;
+height: 40px;
+margin-left: 20px
 }
 
 .option .btn {
@@ -1044,5 +1101,15 @@ span {
 img {
   width: 50px;
   height: 50px;
+}
+.permission-img{
+  width: 900px;
+  height: 420px;
+}
+.permission-text{
+  display: flex;
+    justify-content: center;
+    font-size: 30px;
+    color: #9abee3;
 }
 </style>

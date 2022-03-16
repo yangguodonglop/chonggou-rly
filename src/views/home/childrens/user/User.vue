@@ -1,5 +1,8 @@
 <template>
-  <div id="user">
+<div style="display: flex;
+    justify-content: center;width:100%;">
+<div v-if="permission" style="width:100%;">
+  <div id="user" style="width:100%;">
     <!-- 头部 -->
     <search-header>
       <div class="option">
@@ -124,6 +127,12 @@
       </el-form>
     </el-dialog>
   </div>
+  </div>
+  <div v-if="!permission">
+  <img class="permission-img" src="@/assets/permission.webp" width="900" height="420">
+  <div class="permission-text">对不起，您暂无权限访问该页面，请联系管理员授权！</div>
+</div>
+</div>
 </template>
 
 
@@ -175,7 +184,8 @@ export default {
       multipleSelection: [],
       token: JSON.parse(localStorage.getItem("userInfo")).token,
       loading: true,
-      getTotal: 0
+      getTotal: 0,
+      permission:false
     };
   },
   components: {
@@ -191,6 +201,16 @@ export default {
   created() {
     //加载用户列表
     this.findUserInfo();
+  },
+  mounted(){
+         this.funcGroupArr = JSON.parse(localStorage.getItem("userInfo")).account.funcGroup
+     console.log(this.funcGroupArr)
+      if (this.funcGroupArr.includes(100)){
+this.permission=true
+      } else{
+      this.permission= false;
+    }
+
   },
   methods: {
     //编辑用户回调
@@ -435,15 +455,15 @@ export default {
 }
 
 .option .option-active {
+  display: flex;
+  height: 40px;
   margin-left: 20px;
-  margin-top: 5px;
 }
 
 .option .btn {
   display: flex;
   justify-content: space-around;
   margin-left: 20px;
-  margin-top: 5px;
 }
 
 span {
@@ -452,5 +472,15 @@ span {
 
 .block {
   margin-top: 15px;
+}
+.permission-img{
+  width: 900px;
+  height: 420px;
+}
+.permission-text{
+  display: flex;
+    justify-content: center;
+    font-size: 30px;
+    color: #9abee3;
 }
 </style>

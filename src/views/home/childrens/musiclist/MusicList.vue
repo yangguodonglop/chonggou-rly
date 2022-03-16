@@ -1,4 +1,5 @@
 <template>
+
   <div id="musiclist">
     <search-header>
       <div class="option">
@@ -62,9 +63,9 @@
             ></el-option>
           </el-select>
         </div>
-        <div class="btn option-active" style="margin:10px 0px 10px 0px;">
+        <div class="btn option-active">
           <music-add-active
-            style="margin-left:20px"
+            style="margin-left:0px"
             :music-type-list="musicTypes"
             @addMusic="addMusic"
           ></music-add-active>
@@ -181,9 +182,6 @@
   
       <el-table-column label="操作" align="center" width="150">
         <template slot-scope="scope">
-          <!-- <el-button @click="checkClick(scope.row)" type="text" size="mini">查看</el-button>
-          <el-button type="text" size="mini" @click="updateClick(scope.row)">修改</el-button>
-          <el-button type="text" size="mini" @click="deleteClick(scope.row)">删除</el-button>-->
           <div>
             <el-dropdown trigger="click" @command="handleCommand">
               <span class="el-dropdown-link" style="color:#409eff;">
@@ -400,6 +398,10 @@
       ></music-remark-active>
     </el-dialog>
   </div>
+
+
+
+ 
 </template>
 
 <script>
@@ -529,12 +531,18 @@ export default {
       lyricsZzHide: false,
       recorderHideM: false,
       mixerHideM: false,
+      permission:true,
     };
   },
   created() {
     // console.log(JSON.parse(localStorage.getItem("userInfo")).account.funcGroup )
      this.funcGroupArr = JSON.parse(localStorage.getItem("userInfo")).account.funcGroup
      console.log(this.funcGroupArr)
+      if (this.funcGroupArr.includes(100)){
+this.permission=true
+      } else{
+      this.permission= false;
+    }
     if (
       this.funcGroupArr.includes(150) == true ||
       this.funcGroupArr.includes(100) == true
@@ -1164,8 +1172,10 @@ export default {
   margin-top: 5px;
 } */
 .option .option-active {
-  margin-left: 20px;
-  margin-top: 5px;
+
+display: flex;
+align-items: center;
+height: 40px;
 }
 
 .option .btn {
@@ -1187,5 +1197,15 @@ span {
 img {
   width: 50px;
   height: 50px;
+}
+.permission-img{
+  width: 900px;
+  height: 420px;
+}
+.permission-text{
+  display: flex;
+    justify-content: center;
+    font-size: 30px;
+    color: #9abee3;
 }
 </style>

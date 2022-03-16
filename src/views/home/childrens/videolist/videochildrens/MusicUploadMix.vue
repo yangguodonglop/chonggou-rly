@@ -7,7 +7,15 @@
       <el-table-column prop="valid" label="锁定时长(天)" width="100" align="center"></el-table-column>
       <el-table-column prop="publisherName" label="合作人账号" width="100" align="center"></el-table-column>
       <el-table-column prop="createTime" label="创建歌单时间" width="200" align="center"></el-table-column>
-      <el-table-column prop="url" label="地址"  align="center"></el-table-column>
+      <el-table-column  label="操作"  align="center">
+        <template slot-scope="scope">
+               <el-button
+            type="primary"
+         
+            @click="CopyUrl(scope.row.url)"
+          >复制地址</el-button>
+        </template>
+      </el-table-column>
     </el-table>
      <div class="block">
       <el-pagination
@@ -28,7 +36,31 @@
     >
       <el-button @click="close()">取 消</el-button>
     </div>
+     <el-dialog
+      :footer="false"
+      :modal="false"
+      title="复制地址"
+       style="z-index:2002"
+      :visible.sync="dialogVisibleUrl"
+      customClass="customWidth-distribute"
+    >
+      <div style="display: flex;justify-content: center;flex-direction: column;">
+        <div style="display: flex;justify-content: center;align-items: center;">
+          <div
+            style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:250px;"
+          >{{customerAddress}}</div>
+          <el-button
+            type="primary"
+            style="margin-left:20px"
+            v-clipboard:copy="customerAddress"
+            v-clipboard:success="onCopy"
+            v-clipboard:error="onError"
+          >复制地址</el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
+  
 </template>
 
 <script>
@@ -52,6 +84,8 @@ export default {
           currentPage: 1,
       //1页10个数据
       pagesize: 10,
+      customerAddress:'',
+      dialogVisibleUrl:false,
     };
   },
 
@@ -70,6 +104,30 @@ export default {
     }
   },
   methods: {
+    CopyUrl(val){
+      this.dialogVisibleUrl=true
+ this.customerAddress =
+        "http://106.53.61.91:8990/clientLogin.html?type=" + val;
+   
+    },
+     // 复制成功时的回调函数
+    onCopy(e) {
+      debugger
+      this.$message.success("内容已复制到剪切板！");
+       this.dialogVisibleUrl=false
+    },
+
+    // 复制失败时的回调函数
+    onError(e) {
+      this.$message.error("抱歉，复制失败！");
+    },
+    //复制地址
+    copyAddress(val) {
+      console.log(val);
+      // this.visibleUrl = true;
+      this.customerAddress =
+        "http://106.53.61.91:8990/clientLogin.html?type=" + val;
+    },
     //查询合作模式
     queryInfo() {
       const param = {
