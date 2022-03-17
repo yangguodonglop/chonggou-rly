@@ -6,7 +6,7 @@
     <!-- 头部 -->
     <search-header>
       <div class="option">
-        <div class="user-id option-active">
+        <!-- <div class="user-id option-active">
           <span>用户编号：</span>
           <el-input
             v-model="search.uid"
@@ -35,16 +35,17 @@
             style="width: 150px"
             @focus="inputchange('address')"
           />
-        </div>
+        </div> -->
         <div class="btn option-active">
-          <add @quryInfo="findUserInfo"></add>
-          <addMode @quryInfo="findUserInfo"></addMode>
+          <el-button type="primary" size="small" @click="addSong()">添加用户</el-button>
+
+          <addMode @quryInfo="findUserInfo" :dialogFormVisible='dialogFormVisible'></addMode>
           <add-style @quryInfo="findUserInfo"></add-style>
           <add-song-style @quryInfo="findUserInfo"></add-song-style>
 
           <!-- <delete :multiple-selection="multipleSelection"></delete> -->
           <div style="margin-left:20px;">
-            <el-button type="info" @click="refresh" size="small" icon="el-icon-refresh"></el-button>
+            <el-button type="info" @click="refresh" size="small" icon="el-icon-refresh">刷新</el-button>
           </div>
         </div>
       </div>
@@ -53,7 +54,7 @@
     <el-table
       :data="tableData"
       border
-      style="width: 100%"
+      style="width: 100%;margin-top:20px;"
       stripe
       :default-sort="{ prop: 'uid', order: 'ascending' }"
       size="mini"
@@ -121,11 +122,18 @@
           <el-input v-model="formPassword.newPassword" type="password"></el-input>
         </el-form-item>
         <el-form-item style=" display: flex;justify-content: center;">
+           <el-button type="primary" @click="back">退出</el-button>
           <el-button type="primary" @click="onSubmitOk">保存</el-button>
-          <el-button type="primary" @click="back">退出</el-button>
+         
         </el-form-item>
       </el-form>
     </el-dialog>
+   
+         <add @addUserInfo="addUserInfo" @userInfo="userInfo" ref="child" v-if="childType">
+                
+
+          </add>
+ 
   </div>
   </div>
   <div v-if="!permission">
@@ -158,15 +166,25 @@ import AddSongStyle from "./userchildrens/AddSongStyle.vue";
 export default {
   name: "User",
   inject: ["reload"],
+
   data() {
     return {
       formLabelWidth: "80px",
+      childType:false,
+  
 
-      userInfo: {},
+      userInfo: {
+                user: "",
+        password: "",
+        nick: "",
+        telephone: "",
+        weiXin: ""
+      },
       formPassword: {
         account: "",
         newPassword: ""
       },
+      dialogFormVisible:false,
       dialogVisiblePassword: false,
       dialogVisible: false,
       dialogVisibleActive: false,
@@ -213,6 +231,25 @@ this.permission=true
 
   },
   methods: {
+    //新增歌曲
+    addSong(){
+      console.log(this.$refs.child)
+         this.userInfo={
+               user: "wewe",
+        password: "",
+        nick: "",
+        telephone: "",
+        weiXin: ""
+      }
+      // Object.assign(this.$refs.XXX.$data,this.$refs.XXX.$options.data());
+     this.childType=true
+      console.log("sdsd")
+   
+      
+    },
+    addUserInfo(){
+      this.childType=false
+    },
     //编辑用户回调
     editInfo() {
       this.dialogVisible = false;
@@ -224,20 +261,21 @@ this.permission=true
       this.dialogVisiblePassword = true;
     },
     back() {
-      this.$confirm("此操作将会退出, 请确认是否保存,是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.dialogVisiblePassword = false;
-        })
-        .catch(() => {
-          // this.$message({
-          //   type: "info",
-          //   message: "已取消"
-          // });
-        });
+         this.dialogVisiblePassword = false;
+      // this.$confirm("此操作将会退出, 请确认是否保存,是否继续?", "提示", {
+      //   confirmButtonText: "确定",
+      //   cancelButtonText: "取消",
+      //   type: "warning"
+      // })
+      //   .then(() => {
+      //     this.dialogVisiblePassword = false;
+      //   })
+      //   .catch(() => {
+      //     // this.$message({
+      //     //   type: "info",
+      //     //   message: "已取消"
+      //     // });
+      //   });
     },
     //确认密码
     onSubmitOk() {
@@ -458,6 +496,7 @@ this.permission=true
   display: flex;
   height: 40px;
   margin-left: 20px;
+  align-items: center;
 }
 
 .option .btn {

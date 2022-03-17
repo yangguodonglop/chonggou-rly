@@ -65,22 +65,21 @@
 
 
 <script>
-import { insertUser, addUser,aboutMusicTag } from "network/home.js";
+import { insertUser, addUser, aboutMusicTag } from "network/home.js";
 export default {
   name: "Add",
   inject: ["reload"],
   data() {
     return {
-            token: JSON.parse(localStorage.getItem("userInfo")).token,
+      token: JSON.parse(localStorage.getItem("userInfo")).token,
 
       dialogFormVisible: false,
-      dialogVisibleEdit:false,
-      inputActive:"",
-      input:"",
-  
-        tableData: [],
-        editInfo:{}
+      dialogVisibleEdit: false,
+      inputActive: "",
+      input: "",
 
+      tableData: [],
+      editInfo: {}
     };
   },
   created() {
@@ -88,122 +87,105 @@ export default {
     //   this.$refs.ipt.focus();
     // });
   },
-  mounted(){
-    this.queryInfo()
+  mounted() {
+    this.queryInfo();
   },
   methods: {
     //确认编辑
-    addEdit(){
-        const param={
-        
-    token: this.token,
-     action:"update",
-     updateItem:this.editInfo.value,
-    updateValue:this.inputActive
+    addEdit() {
+      const param = {
+        token: this.token,
+        action: "update",
+        updateItem: this.editInfo.value,
+        updateValue: this.inputActive
+      };
+      aboutMusicTag(param).then(res => {
+        console.log(res);
+        if (res.status == 0) {
+          this.$message({
+            type: "success",
+            message: "修改成功！"
+          });
+          this.dialogVisibleEdit = false;
 
-
-      }
-      aboutMusicTag(param).then((res)=>{
-        console.log(res)
-         if (res.status == 0) {
-            this.$message({
-              type: "success",
-              message: "修改成功！"
-            });
-            this.dialogVisibleEdit=false
-
-            this.queryInfo()
-          }else{
-                  this.$message({
-              type: "error",
-              message: "修改失败！"
-            });
-          }
-     
-      })
+          this.queryInfo();
+        } else {
+          this.$message({
+            type: "error",
+            message: "修改失败！"
+          });
+        }
+      });
     },
     //编辑
-  
-    updateClick(row){
-      this.editInfo={...row}
-      this.inputActive=row.name
-this.dialogVisibleEdit=true
+
+    updateClick(row) {
+      this.editInfo = { ...row };
+      this.inputActive = row.name;
+      this.dialogVisibleEdit = true;
     },
     //确认删除
-    deleteClick(row){
-       const param={
-        
-    token: this.token,
-    delItem:row.value,
-      action:"del",
-
-
-      }
-      aboutMusicTag(param).then((res)=>{
-        console.log(res)
-         if (res.status == 0) {
-            this.$message({
-              type: "success",
-              message: "删除成功！"
-            });
-                        this.queryInfo()
-
-          }else{
-                  this.$message({
-              type: "error",
-              message: "删除失败！"
-            });
-          }
-     
-      })
-
+    deleteClick(row) {
+      const param = {
+        token: this.token,
+        delItem: row.value,
+        action: "del"
+      };
+      aboutMusicTag(param).then(res => {
+        console.log(res);
+        if (res.status == 0) {
+          this.$message({
+            type: "success",
+            message: "删除成功！"
+          });
+          this.queryInfo();
+        } else {
+          this.$message({
+            type: "error",
+            message: "删除失败！"
+          });
+        }
+      });
     },
     //查询合作模式
-    queryInfo(){
- const param={
-        
-    token: this.token,
-    "action":"get",
-
-
-      }
-      aboutMusicTag(param).then((res)=>{
-        console.log(res)
-         if (res.status == 0) {
-          this.tableData=[]
-          this.tableData=res.data
-          }else{
-               this.tableData=[]
-          }
-     
-      })
+    queryInfo() {
+      const param = {
+        token: this.token,
+        action: "get"
+      };
+      aboutMusicTag(param).then(res => {
+        console.log(res);
+        if (res.status == 0) {
+          this.tableData = [];
+          this.tableData = res.data;
+        } else {
+          this.tableData = [];
+        }
+      });
     },
     //新增合作方式确认
-    addMode(){
-      const param={
-        
-    token: this.token,
-    "action":"put",
+    addMode() {
+      const param = {
+        token: this.token,
+        action: "put",
 
-
-    "putValue":this.input
-      }
-      aboutMusicTag(param).then((res)=>{
-         if (res.status == 0) {
-            this.$message({
-              type: "success",
-              message: "添加成功！"
-            });
-            this.queryInfo()
-          }else{
-                  this.$message({
-              type: "error",
-              message: "添加失败！"
-            });
-          }
-     
-      })
-
+        putValue: this.input
+      };
+      aboutMusicTag(param).then(res => {
+        if (res.status == 0) {
+          this.$message({
+            type: "success",
+            message: "添加成功！"
+          });
+          this.input = "";
+          this.queryInfo();
+        } else {
+          this.$message({
+            type: "error",
+            message: "添加失败！"
+          });
+        }
+      });
     },
     back() {
       this.$confirm("此操作将会退出, 请确认是否保存,是否继续?", "提示", {

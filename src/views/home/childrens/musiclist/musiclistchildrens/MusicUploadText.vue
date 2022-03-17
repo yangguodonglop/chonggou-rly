@@ -83,7 +83,7 @@ export default {
       // this.keyArr = [];
       // this.keyArr = val.funcGroup;
       this.$nextTick(() => {
-        this.findUserInfo()
+        this.queryInfo()
        // console.log(baseUrl)
        
         // this.musicListlyricsFile()

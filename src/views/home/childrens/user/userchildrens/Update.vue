@@ -17,8 +17,9 @@
           <el-input v-model="form.weiXin"></el-input>
         </el-form-item>
         <el-form-item style="    display: flex;justify-content: center;" >
+              <el-button type="primary" @click="back">取消</el-button>
           <el-button type="primary" @click="onSubmit">保存</el-button>
-          <el-button type="primary" @click="back">退出</el-button>
+      
         </el-form-item>
       </el-form>
   </div>
@@ -80,6 +81,15 @@ export default {
     console.log(this.userInfo)
     this.form={...this.userInfo}
   },
+   watch: {
+    userInfo(val) {
+     
+      this.$nextTick(()=>{
+ console.log(val)
+ this.form={...val}
+      })
+    }
+   },
   created() {
     // this.$nextTick(() => {
     //   this.$refs.ipt.focus();
@@ -87,20 +97,22 @@ export default {
   },
   methods: {
     back() {
-      this.$confirm("此操作将会退出, 请确认是否保存,是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          this.dialogFormVisible = false;
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
-        });
+                this.$emit("editInfo");
+
+      // this.$confirm("此操作将会退出, 请确认是否保存,是否继续?", "提示", {
+      //   confirmButtonText: "确定",
+      //   cancelButtonText: "取消",
+      //   type: "warning"
+      // })
+      //   .then(() => {
+      //     this.dialogFormVisible = false;
+      //   })
+      //   .catch(() => {
+      //     this.$message({
+      //       type: "info",
+      //       message: "已取消"
+      //     });
+      //   });
     },
     onSubmit() {
       this.$refs.form.validate(valid => {
