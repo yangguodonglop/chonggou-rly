@@ -43,7 +43,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer" style="display: flex;justify-content: center;">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="back()">取 消</el-button>
         <el-button type="primary" @click="confirm()">确 定</el-button>
       </div>
   </div>
@@ -106,7 +106,6 @@ export default {
       // this.keyArr = [];
       // this.keyArr = val.funcGroup;
       this.$nextTick(() => {
-        this.findUserInfo()
        // console.log(baseUrl)
        
         // this.musicListlyricsFile()
@@ -238,6 +237,10 @@ export default {
     refresh() {
       this.reload();
     },
+    back(){
+          this.$emit('editDistributeBq')
+
+    },
    
     confirm() {
       
@@ -260,7 +263,7 @@ export default {
           });
           this.dialogFormVisible=false
           //this.submitForm();//提交表单
-          this.$emit('addMusic')
+          this.$emit('editDistributeBq')
         } else {
           this.lyricsCode = "";
 

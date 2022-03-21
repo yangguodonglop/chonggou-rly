@@ -1,6 +1,5 @@
 <template>
   <div id="add">
-    <el-button type="primary" size="mini" @click="dialogFormVisible = true">上传成品</el-button>
     <el-dialog title="上传成品" customClass="customWidth-addSong" :visible.sync="dialogFormVisible">
       <el-form :model="music">
         <el-form-item label="歌曲名称:" :label-width="formLabelWidth">
@@ -48,7 +47,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="back()">取 消</el-button>
         <el-button type="primary" @click="confirm()">确 定</el-button>
       </div>
     </el-dialog>
@@ -77,7 +76,7 @@ export default {
         musicAdress: "",
         musicLric: ""
       },
-      dialogFormVisible: false,
+      dialogFormVisible: true,
       formLabelWidth: "120px",
       headers: {
         "Content-Type": "multipart/form-data"
@@ -209,6 +208,10 @@ export default {
     // handleRemove1(file, filesList) {
     //   this.param.delete("music");
     // },
+    back(){
+          this.$emit('addMusicCp')
+
+    },
     confirm() {
       //利用表单数据传值，后端用RequestParam接收表单的值
       // 注意 headers: {
@@ -262,7 +265,7 @@ export default {
           });
           this.dialogFormVisible=false
           //this.submitForm();//提交表单
-          this.$emit('addMusic')
+          this.$emit('addMusicCp')
         } else {
           this.lyricsCode = "";
 

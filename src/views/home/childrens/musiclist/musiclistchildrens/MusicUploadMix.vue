@@ -238,7 +238,7 @@ export default {
     },
    
     close(){
-          this.$emit('editDistributeRecorder')
+          this.$emit('editDistributeSh')
     },
     confirm() {
       
@@ -260,7 +260,7 @@ export default {
           });
           this.dialogFormVisible=false
           //this.submitForm();//提交表单
-          this.$emit('editDistributeRecorder')
+          this.$emit('editDistributeSh')
         } else {
           this.lyricsCode = "";
 

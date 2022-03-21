@@ -64,16 +64,10 @@
           </el-select>
         </div>
         <div class="btn option-active">
-          <music-add-active
-            style="margin-left:0px"
-            :music-type-list="musicTypes"
-            @addMusic="addMusic"
-          ></music-add-active>
-          <music-add
-            style="margin-left:20px"
-            :music-type-list="musicTypes"
-            @addMusic="addMusic"
-          ></music-add>
+              <el-button type="primary" size="mini" @click="addMusicActive()">上传成品</el-button>
+              <el-button type="primary" style="margin-left:20px;" size="mini" @click="addMusic()">上传小样</el-button>
+
+
           <music-delete
             style="margin-left:20px"
             :multiple-selection="multipleSelection"
@@ -278,7 +272,7 @@
                 >
                 <el-dropdown-item
                 v-if="producerHide"
-                  @click.native="toReview(scope.row, 'arrangement', '30')"
+                  @click.native="toReview(scope.row, '30')"
                   >通过</el-dropdown-item
                 >
                 <el-dropdown-item
@@ -322,7 +316,7 @@
     </el-dialog>
     <el-dialog
       :footer="false"
-      title="分配制作人"
+      :title="titleFp"
       :visible.sync="dialogVisibleDistribute"
       customClass="customWidth-distribute"
     >
@@ -339,7 +333,7 @@
     >
       <music-upload
         :userInfo="userInfo"
-        @editDistribute="editDistribute"
+        @editDistributeBq="editDistributeBq"
       ></music-upload>
     </el-dialog>
     <el-dialog
@@ -372,7 +366,7 @@
     >
       <music-upload-mix
         :userInfo="userInfo"
-        @editDistributeRecorder="editDistributeRecorder"
+        @editDistributeSh="editDistributeSh"
       ></music-upload-mix>
     </el-dialog>
     <el-dialog
@@ -397,6 +391,19 @@
         @editRemarkActive="editRemarkActive"
       ></music-remark-active>
     </el-dialog>
+
+       <music-add-active v-if="addMusicTypeCp"
+            style="margin-left:0px"
+            :music-type-list="musicTypes"
+            @addMusicCp="addMusicCp"
+          ></music-add-active>
+             
+          <music-add
+          v-if="addMusicTypeXy"
+            style="margin-left:20px"
+            :music-type-list="musicTypes"
+            @addMusicXy="addMusicXy"
+          ></music-add>
   </div>
 
 
@@ -532,6 +539,10 @@ export default {
       recorderHideM: false,
       mixerHideM: false,
       permission:true,
+
+      addMusicTypeCp:false,
+      addMusicTypeXy:false,
+      titleFp:'分配制作人',
     };
   },
   created() {
@@ -745,8 +756,9 @@ this.permission=true
       this.musicList();
     },
     //审核
-    toReview(row, type, typeNum) {
-      // console.log(row)
+    toReview(row, typeNum) {
+       console.log(row)
+       console.log(typeNum)
       // let tempType=''
       // if(row.producerNick=='录音完成'){
       //   tempType='record'
@@ -758,11 +770,11 @@ this.permission=true
       // }
       // return false
       let tempType = '';
-      if (row.progressRate == '录音师已提交') {
+      if (row.progressRateActive == 370) {
         tempType = 'record';
-      } else if (row.progressRate == '编曲师已提交') {
+      } else if (row.progressRateActive == 220) {
         tempType = 'arrangement';
-      } else {
+      } else if(row.progressRateActive == 570) {
         tempType = 'mix';
       }
       console.log(row);
@@ -803,9 +815,33 @@ this.permission=true
       this.userInfo = { ...row };
       this.dialogVisibleUploadMix = true;
     },
-    //新增成功查询列表
+    editDistributeBq(){
+            this.dialogVisibleUpload = false
+                 this.musicList();
+    },
+    editDistributeSh(){
+  this.dialogVisibleUploadMix = false
+               this.musicList();
+    },
+    //上传成品
+    addMusicActive() {
+      this.addMusicTypeCp=true
+     // this.musicList();
+    },
+      //上传小样
     addMusic() {
-      this.musicList();
+      this.addMusicTypeXy=true
+     // this.musicList();
+    },
+    //成品返回确认查询
+    addMusicCp(){
+ this.addMusicTypeCp=false
+     this.musicList();
+    },
+    //小样返回确认查询
+      addMusicXy(){
+ this.addMusicTypeXy=false
+     this.musicList();
     },
     editDistribute() {
       this.dialogVisibleDistribute = false;
@@ -813,6 +849,31 @@ this.permission=true
     },
     //分配制作人
     toDistribute(row, type, group) {
+      console.log(group)
+      switch (group){
+        case '200':
+        this.titleFp='分配制作人';
+        break;
+           case '300':
+        this.titleFp='分配编曲组长';
+        break;
+              case '351':
+        this.titleFp='分配编曲师';
+        break;
+              case '400':
+        this.titleFp='分配录音组长';
+        break;
+              case '451':
+        this.titleFp='分配录音师';
+        break;
+              case '500':
+        this.titleFp='分配混音组长';
+        break;
+              case '551':
+        this.titleFp='分配混音师';
+        break;
+
+      }
       const param = {
         selecttype: type,
         fFuncGroup: group,
@@ -941,37 +1002,37 @@ this.permission=true
               tempStatus = '已分配制作人';
               break;
             case 150:
-              tempStatus = '已分配编曲组长';
+              tempStatus = `已分配编曲组长--${items.producer}`;
               break;
             case 200:
-              tempStatus = '已分配编曲师';
+              tempStatus = `已分配编曲师--${items.arrangement.workerNick}`;
               break;
             case 220:
-              tempStatus = '编曲师已提交';
+              tempStatus = `编曲师已提交--${items.arrangement.workerNick}`;
               break;
             case 299:
               tempStatus = '编曲已完成且已通过审核';
               break;
             case 300:
-              tempStatus = '已分配录音组长';
+              tempStatus = `已分配录音组长--${items.recording.leaderNick}`
               break;
             case 350:
-              tempStatus = '已分配录音师';
+              tempStatus = `已分配录音师--${items.recording.workerNick}`;
               break;
             case 370:
-              tempStatus = '录音师已提交';
+              tempStatus = `录音师已提交--${items.recording.workerNick}`;
               break;
             case 499:
               tempStatus = '录音完成且已通过审核';
               break;
             case 500:
-              tempStatus = '已分配缩混组长';
+              tempStatus = `已分配缩混组长--${items.mix.leaderNick}` ;
               break;
             case 550:
-              tempStatus = '已分配缩混师';
+              tempStatus = `已分配缩混师--${items.mix.workerNick}`;
               break;
             case 570:
-              tempStatus = '缩混师已提交';
+              tempStatus = `缩混师已提交--${items.mix.workerNick}`;
               break;
             case 599:
               tempStatus = '缩混完成且已通过审核';
@@ -1176,6 +1237,8 @@ this.permission=true
 display: flex;
 align-items: center;
 height: 40px;
+  margin-left: 20px;
+
 }
 
 .option .btn {
