@@ -48,7 +48,7 @@
             style="width: 150px"
           />
         </div>
-        <div class="sing-musictype option-active" style="margin-right:200px">
+        <div class="sing-musictype option-active" >
           <span>歌曲类型：</span>
           <el-select
             v-model="tagValue"
@@ -93,8 +93,8 @@
     <el-table
       :data="tableData"
       border
-      style="width: 100%;height:auto;"
-      stripe
+  style="width: 100%;margin-top:20px;"
+        stripe
       size="mini"
       :default-sort="{ prop: 'musicid', order: 'ascending' }"
       @selection-change="handleSelectionChange"

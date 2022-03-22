@@ -47,8 +47,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="back()">取 消</el-button>
-        <el-button type="primary" @click="confirm()">确 定</el-button>
+        <el-button @click="back()" size="small">取 消</el-button>
+        <el-button type="primary" @click="confirm()" size="small">确 定</el-button>
       </div>
     </el-dialog>
   </div>

@@ -1,6 +1,5 @@
 <template>
-<div style="display: flex;
-    justify-content: center;">
+<div style="">
 <div v-if="permission">
   <div id="musiclist">
     <search-header>
@@ -8,6 +7,7 @@
          <div class="sing-id option-active">
           <span>时间查询：</span>
           <el-date-picker
+          style="300px"
             v-model="timeValue"
             value-format="timestamp"
             type="daterange"
@@ -65,19 +65,19 @@
             ></el-option>
           </el-select>
         </div>
-         <div class="sing-musictype option-active" >
+         <div class="sing-musictype option-active"  >
           <span>发布状态：</span>
              <el-select
              size="mini"
-          v-model="publishstate"
+          v-model="notDone"
           style="width:150px"
           placeholder="请选择发布状态查询"
           @change="handleChangeState"
         >
           <el-option label="全部" value="0">全部</el-option>
-          <el-option label="收到合同" value="1">收到合同</el-option>
-          <el-option label="收到首笔款" value="2">收到首笔款</el-option>
-          <el-option label="已发布" value="3">已发布</el-option>
+          <el-option label="未收到合同" value="4">未收到合同</el-option>
+          <el-option label="未收到首笔款" value="5">未收到首笔款</el-option>
+          <el-option label="未发布" value="6">未发布</el-option>
         </el-select>
         </div>
           
@@ -109,8 +109,8 @@
     <el-table
       :data="tableData"
       border
-      style="width: 100%;height:auto;"
-      stripe
+  style="width: 100%;margin-top:20px;"
+        stripe
       size="mini"
       :default-sort="{ prop: 'musicid', order: 'ascending' }"
       @selection-change="handleSelectionChange"
@@ -388,6 +388,7 @@ export default {
       publishstate:"",
       progressRateReg:[720, 1000],
       permission:true,
+      notDone:'0'
       
     };
   },
@@ -412,21 +413,22 @@ this.permission=true
     handleChangeState(val){
       console.log(val)
       this.publishstate=val
-      switch(val){
-        case '0':
-        this.progressRateReg=[720, 1000]
-        break;
-            case '1':
-        this.progressRateReg=[730, 1000]
-        break;
-            case '2':
-        this.progressRateReg=[740, 1000]
-        break;
-            case '3':
-        this.progressRateReg=[10000, 1000]
-        break;
+        this.notDone=val
+      // switch(val){
+      //   case '0':
+      //   this.notDone=0
+      //   break;
+      //       case '4':
+      //   this.notDone=4
+      //   break;
+      //       case '5':
+      //   this.notDone=5
+      //   break;
+      //       case '6':
+      //   this.notDone=6
+      //   break;
         
-      }
+      // }
       this.currentPage=1
       this.musicList()
     },
@@ -454,6 +456,7 @@ this.permission=true
       this.currentPage = 1;
       this.timeValue = '';
       this.startTime = 0;
+      this.notDone='0'
 
       this.seachName = '';
       (this.seachLyricist = ''), (this.seachComposer = '');
@@ -816,6 +819,7 @@ this.permission=true
           tag:tagValue,
              lyricist:this.seachLyricist,
         composer:this.seachComposer,
+        notDone:parseInt(this.notDone) 
         }
       };
       getPublishSongSell(param).then(res => {
@@ -1111,5 +1115,8 @@ img {
     justify-content: center;
     font-size: 30px;
     color: #9abee3;
+}
+.el-range-editor.el-input__inner{
+  width: 300px!important;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div id="add">
     <el-table :data="tableData" border style="width: 100%;height:auto;" stripe size="mini">
-      <el-table-column prop="name" label="歌单名称" width="100" align="center"></el-table-column>
+      <el-table-column prop="name" label="歌单名称" width="150" align="center"></el-table-column>
       <el-table-column prop="creatorName" label="歌单创建者" width="100" align="center"></el-table-column>
       <el-table-column prop="valid" label="有效时长(天)" width="100" align="center"></el-table-column>
       <el-table-column prop="valid" label="锁定时长(天)" width="100" align="center"></el-table-column>
@@ -10,6 +10,7 @@
       <el-table-column  label="操作"  align="center">
         <template slot-scope="scope">
                <el-button
+               size="small"
             type="primary"
          
             @click="CopyUrl(scope.row.url)"
@@ -49,7 +50,7 @@
           <div
             style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:250px;"
           >{{customerAddress}}</div>
-          <el-button
+          <el-button size="small"
             type="primary"
             style="margin-left:20px"
             v-clipboard:copy="customerAddress"

@@ -66,12 +66,10 @@
       </template>
       <!-- <el-table-column type="selection" width="55"> </el-table-column> -->
       <el-table-column prop="account" label="账户名" width="200" align="center"></el-table-column>
-      <el-table-column prop="nick" label="用户名" width="120" align="center" sortable></el-table-column>
+      <el-table-column prop="nick" label="用户名" width="180" align="center" sortable></el-table-column>
       <!-- <el-table-column prop="password" label="密码" width="120" align="center"></el-table-column> -->
-      <el-table-column prop="email" label="邮箱" width="150" align="center"></el-table-column>
-      <el-table-column prop="telephone" label="手机" width="120" align="center"></el-table-column>
-      <el-table-column prop="weiXin" label="微信" width="120" align="center"></el-table-column>
-      <el-table-column prop="status" label="状态" width="80" align="center"></el-table-column>
+      <el-table-column prop="telephone" label="手机" width="150" align="center"></el-table-column>
+      <el-table-column prop="weiXin" label="微信" width="150" align="center"></el-table-column>
       <el-table-column prop="createTime" label="创建时间" width="160" align="center" sortable></el-table-column>
       <el-table-column prop="lastLogin" label="更新时间" width="160" align="center" sortable></el-table-column>
       <el-table-column prop="remark" label="备注" width="200" align="center"></el-table-column>

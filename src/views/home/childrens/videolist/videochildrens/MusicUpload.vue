@@ -106,9 +106,8 @@
           ></el-option>
         </el-select>
       </el-form-item>
-  <el-form-item label="" :label-width="formLabelWidth" style="display: flex;
-    justify-content: end;">
-      <el-button type="primary" size="small" @click="confirmActive()">确 定</el-button>
+  <el-form-item label="" :label-width="formLabelWidth" style="display: flex;justify-content:flex-end;">
+      <el-button type="primary"  @click="confirmActive()" size="small">确 定</el-button>
       </el-form-item>
       
        </div>

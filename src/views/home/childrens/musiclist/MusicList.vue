@@ -97,8 +97,8 @@
     <el-table
       :data="tableData"
       border
-      style="width: 100%;height:auto;"
-      stripe
+  style="width: 100%;margin-top:20px;"
+        stripe
       size="mini"
     >
       <template slot="empty">

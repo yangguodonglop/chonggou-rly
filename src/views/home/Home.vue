@@ -248,4 +248,14 @@ body{
 .customWidth3{
   width: 400px;
 }
+.el-submenu span{
+  font-size: 14px;
+  color: rgb(255, 165, 0);
+
+}
+.el-submenu.is-active .el-submenu__title span{
+}
+.el-menu-item-group__title{
+  padding: 0px;
+}
 </style>
