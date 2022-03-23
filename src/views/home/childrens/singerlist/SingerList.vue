@@ -1,217 +1,183 @@
 <template>
-<div style="display: flex;
+  <div style="display: flex;
     justify-content: center;">
-<div v-if="permission">
-  <div id="musiclist">
-    <search-header>
-      <div class="option">
-         <div class="sing-id option-active">
-          <span>时间查询：</span>
-          <el-date-picker
-            v-model="timeValue"
-            value-format="timestamp"
-            type="daterange"
-            range-separator="至"
-            @change="timeChange"
-            size="mini"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          >
-          </el-date-picker>
+    <div v-if="permission">
+      <div id="musiclist">
+        <search-header>
+          <div class="option">
+            <div class="sing-id option-active">
+              <span>时间查询：</span>
+              <el-date-picker
+                v-model="timeValue"
+                value-format="timestamp"
+                type="daterange"
+                range-separator="至"
+                @change="timeChange"
+                size="mini"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              ></el-date-picker>
+            </div>
+
+            <div class="sing-id option-active">
+              <span>歌曲名称：</span>
+              <el-input v-model="seachName" size="mini" placeholder="请输入歌曲名称" style="width: 150px" />
+            </div>
+            <div class="sing-name option-active">
+              <span>作词者：</span>
+              <el-input
+                v-model="seachLyricist"
+                size="mini"
+                placeholder="请输入作词者"
+                style="width: 150px"
+              />
+            </div>
+            <div class="sing-singer option-active">
+              <span>作曲者:</span>
+
+              <el-input
+                v-model="seachComposer"
+                size="mini"
+                placeholder="请输入作词者"
+                style="width: 150px"
+              />
+            </div>
+            <div class="sing-musictype option-active">
+              <span>歌曲类型：</span>
+              <el-select
+                v-model="tagValue"
+                placeholder="请选择歌曲类型"
+                style="width: 150px"
+                size="mini"
+                @change="changeMusic"
+              >
+                <el-option
+                  v-for="(item, index) in styleType"
+                  :label="item.name"
+                  :value="item.value"
+                  :key="index"
+                ></el-option>
+              </el-select>
+            </div>
+            <div class="btn option-active">
+              <div class="refresh" style="margin-left:0px">
+                <el-button type="primary" @click="toUploadArrangemen" size="mini">生成试听列表</el-button>
+              </div>
+              <div class="refresh" style="margin-left:20px">
+                <el-button type="info" size="mini" @click="seachInfo()" icon="el-icon-refresh">查询</el-button>
+              </div>
+              <div class="refresh" style="margin-left:20px">
+                <el-button type="info" size="mini" @click="refreshInfo()" icon="el-icon-refresh">重置</el-button>
+              </div>
+            </div>
+          </div>
+        </search-header>
+        <el-table
+          :data="tableData"
+          border
+          style="width: 100%;margin-top:20px;"
+          stripe
+          size="mini"
+          :default-sort="{ prop: 'musicid', order: 'ascending' }"
+          @selection-change="handleSelectionChange"
+        >
+          <template slot="empty">
+            <p>{{ dataText }}</p>
+          </template>
+          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column prop="musicid" label="歌曲编号" width="100" align="center"></el-table-column>
+          <el-table-column prop="songName" label="歌曲名称" width="300" align="center"></el-table-column>
+          <el-table-column prop="lyricist" label="作词人" width="120" align="center"></el-table-column>
+          <el-table-column prop="composer" label="作曲人" width="120" align="center"></el-table-column>
+          <el-table-column prop="tag" label="歌曲风格" width="200" align="center"></el-table-column>
+
+          <el-table-column prop="createTime" label="创建时间" width="200" align="center"></el-table-column>
+          <el-table-column prop="lastUpdateTime" label="结束时间" width="200" align="center"></el-table-column>
+          <el-table-column label="操作" align="center">
+            <template slot-scope="scope">
+              <div>
+                <el-dropdown trigger="click">
+                  <span class="el-dropdown-link" style="color:#409eff;">
+                    操作
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item @click.native="toLock(scope.row)">锁定</el-dropdown-item>
+                    <el-dropdown-item @click.native="toAudition(scope.row)">选择试听</el-dropdown-item>
+                    <el-dropdown-item @click.native="toUploadRecorder(scope.row)">查看试听情况</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+          <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page.sync="currentPage"
+            :page-sizes="[10]"
+            :page-size="pagesize"
+            layout="total, prev, pager, next, jumper"
+            background
+            :total="getTotal"
+            style="textAlign: right"
+          ></el-pagination>
         </div>
 
-        <div class="sing-id option-active">
-          <span>歌曲名称：</span>
-          <el-input
-            v-model="seachName"
-            size="mini"
-            placeholder="请输入歌曲名称"
-            style="width: 150px"
-          />
-        </div>
-        <div class="sing-name option-active">
-          <span>作词者：</span>
-          <el-input
-            v-model="seachLyricist"
-            size="mini"
-            placeholder="请输入作词者"
-            style="width: 150px"
-          />
-        </div>
-        <div class="sing-singer option-active">
-          <span>作曲者:</span>
+        <music-audition :userInfo="userInfo" @editaudition="editaudition" v-if="auditionType"></music-audition>
 
-          <el-input
-            v-model="seachComposer"
-            size="mini"
-            placeholder="请输入作词者"
-            style="width: 150px"
-          />
-        </div>
-        <div class="sing-musictype option-active" >
-          <span>歌曲类型：</span>
-          <el-select
-            v-model="tagValue"
-            placeholder="请选择歌曲类型"
-            style="width: 150px"
-            size="mini"
-            @change="changeMusic"
-          >
-            <el-option
-              v-for="(item, index) in styleType"
-              :label="item.name"
-              :value="item.value"
-              :key="index"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="btn option-active">
-          <div class="refresh" style="margin-left:0px">
-            <el-button type="primary" @click="toUploadArrangemen" size="mini">生成试听列表</el-button>
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+          title="生成试听列表"
+          :visible.sync="dialogVisibleUpload"
+          customClass="customWidth-distribute"
+        >
+          <music-upload :userInfo="userInfo" @editDistributeActive="editDistributeActive"></music-upload>
+        </el-dialog>
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+          title="查看试听情况"
+          :visible.sync="dialogVisibleUploadRecorder"
+          customClass="customWidth-distribute"
+        >
+          <music-upload-recorder
+            :userInfo="userInfo"
+            @editDistributeRecorder="editDistributeRecorder"
+          ></music-upload-recorder>
+        </el-dialog>
+     
+          <music-upload-mix :userInfo="userInfo" @editLock="editLock" v-if="lockType"></music-upload-mix>
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+          title="复制地址"
+          :visible.sync="dialogVisibleUrl"
+          customClass="customWidth-distribute"
+        >
+          <div style="display: flex;justify-content: center;flex-direction: column;">
+            <div style="display: flex;justify-content: center;align-items: center;">
+              <div
+                style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:250px;"
+              >{{customerAddress}}</div>
+              <el-button
+                type="primary"
+                style="margin-left:20px"
+                v-clipboard:copy="customerAddress"
+                v-clipboard:success="onCopy"
+                v-clipboard:error="onError"
+              >复制地址</el-button>
+            </div>
           </div>
-            <div class="refresh" style="margin-left:20px">
-            <el-button
-              type="info"
-              size="mini"
-              @click="seachInfo()"
-              icon="el-icon-refresh"
-              >查询</el-button
-            >
-          </div>
-          <div class="refresh" style="margin-left:20px">
-            <el-button
-              type="info"
-              size="mini"
-              @click="refreshInfo()"
-              icon="el-icon-refresh"
-              >重置</el-button
-            >
-          </div>
-        </div>
+        </el-dialog>
       </div>
-    </search-header>
-    <el-table
-      :data="tableData"
-      border
-  style="width: 100%;margin-top:20px;"
-        stripe
-      size="mini"
-      :default-sort="{ prop: 'musicid', order: 'ascending' }"
-      @selection-change="handleSelectionChange"
-    >
-      <template slot="empty">
-        <p>{{ dataText }}</p>
-      </template>
-      <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="musicid" label="歌曲编号" width="100" align="center"></el-table-column>
-      <el-table-column prop="songName" label="歌曲名称" width="300" align="center"></el-table-column>
-      <el-table-column prop="lyricist" label="作词人" width="120" align="center"></el-table-column>
-      <el-table-column prop="composer" label="作曲人" width="120" align="center"></el-table-column>
-      <el-table-column prop="tag" label="歌曲风格" width="200" align="center"></el-table-column>
-
-      <el-table-column prop="createTime" label="创建时间" width="200" align="center"></el-table-column>
-      <el-table-column prop="lastUpdateTime" label="结束时间" width="200" align="center"></el-table-column>
-      <el-table-column label="操作" align="center">
-        <template slot-scope="scope">
-          <!-- <el-button @click="checkClick(scope.row)" type="text" size="mini">查看</el-button>
-          <el-button type="text" size="mini" @click="updateClick(scope.row)">修改</el-button>
-          <el-button type="text" size="mini" @click="deleteClick(scope.row)">删除</el-button>-->
-          <div>
-            <el-dropdown trigger="click" @command="handleCommand">
-              <span class="el-dropdown-link" style="color:#409eff;">
-                操作
-                <i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="toLock(scope.row)">锁定</el-dropdown-item>
-                <el-dropdown-item @click.native="toAudition(scope.row)">选择试听</el-dropdown-item>
-                <el-dropdown-item @click.native="toUploadRecorder(scope.row)">查看试听情况</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="block">
-      <el-pagination
-        @current-change="handleCurrentChange"
-        :current-page.sync="currentPage"
-        :page-sizes="[10]"
-        :page-size="pagesize"
-        layout="total, prev, pager, next, jumper"
-        background
-        :total="getTotal"
-        style="textAlign: right"
-      ></el-pagination>
     </div>
-    <el-dialog
-      :footer="false"
-      title="试听"
-      :visible.sync="dialogVisibleAudition"
-      customClass="customWidth-audition"
-    >
-      <music-audition :userInfo="userInfo" @editInfo="editInfo"></music-audition>
-    </el-dialog>
-    <el-dialog
-      :footer="false"
-      title="分配制作人"
-      :visible.sync="dialogVisibleDistribute"
-      customClass="customWidth-distribute"
-    >
-      <music-distribute :userInfo="userInfo" @editDistribute="editDistribute"></music-distribute>
-    </el-dialog>
-    <el-dialog
-      :footer="false"
-      title="生成试听列表"
-      :visible.sync="dialogVisibleUpload"
-      customClass="customWidth-distribute"
-    >
-      <music-upload :userInfo="userInfo" @editDistributeActive="editDistributeActive"></music-upload>
-    </el-dialog>
-    <el-dialog
-      :footer="false"
-      title="查看试听情况"
-      :visible.sync="dialogVisibleUploadRecorder"
-      customClass="customWidth-distribute"
-    >
-      <music-upload-recorder :userInfo="userInfo" @editDistributeRecorder="editDistributeRecorder"></music-upload-recorder>
-    </el-dialog>
-    <el-dialog
-      :footer="false"
-      title="锁定歌曲"
-      :visible.sync="dialogVisibleUploadMix"
-      customClass="customWidth-distribute"
-    >
-      <music-upload-mix :userInfo="userInfo" @editLock="editLock"></music-upload-mix>
-    </el-dialog>
-    <el-dialog
-      :footer="false"
-      title="复制地址"
-      :visible.sync="dialogVisibleUrl"
-      customClass="customWidth-distribute"
-    >
-      <div style="display: flex;justify-content: center;flex-direction: column;">
-        <div style="display: flex;justify-content: center;align-items: center;">
-          <div
-            style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:250px;"
-          >{{customerAddress}}</div>
-          <el-button
-            type="primary"
-            style="margin-left:20px"
-            v-clipboard:copy="customerAddress"
-            v-clipboard:success="onCopy"
-            v-clipboard:error="onError"
-          >复制地址</el-button>
-        </div>
-      </div>
-    </el-dialog>
+    <div v-if="!permission">
+      <img class="permission-img" src="@/assets/permission.webp" width="900" height="420" />
+      <div class="permission-text">对不起，您暂无权限访问该页面，请联系管理员授权！</div>
+    </div>
   </div>
-  </div>
-<div v-if="!permission">
-  <img class="permission-img" src="@/assets/permission.webp" width="900" height="420">
-  <div class="permission-text">对不起，您暂无权限访问该页面，请联系管理员授权！</div>
-</div>
-</div>
 </template>
 
 <script>
@@ -313,24 +279,28 @@ export default {
       editInfo: {},
       songIdArr: [],
       customerAddress: "2323232323232",
-      getTotal:0,
-           seachName: '',
-      seachLyricist: '',
-      seachComposer: '',
-      timeValue: '',
+      getTotal: 0,
+      seachName: "",
+      seachLyricist: "",
+      seachComposer: "",
+      timeValue: "",
       startTime: 0,
       endTime: 0,
-      tagValue: '',
-      permission:true
+      tagValue: "",
+      permission: true,
+      auditionType: false,
+      lockType:false
     };
   },
   created() {
-       this.funcGroupArr = JSON.parse(localStorage.getItem("userInfo")).account.funcGroup
-     console.log(this.funcGroupArr)
-      if (this.funcGroupArr.includes(100)){
-this.permission=true
-      } else{
-      this.permission= false;
+    this.funcGroupArr = JSON.parse(
+      localStorage.getItem("userInfo")
+    ).account.funcGroup;
+    console.log(this.funcGroupArr);
+    if (this.funcGroupArr.includes(100) || this.funcGroupArr.includes(651) ) {
+      this.permission = true;
+    } else {
+      this.permission = false;
     }
     //获取音乐类型列表
     // this.musicTypeList();
@@ -338,11 +308,9 @@ this.permission=true
     this.musicList();
     //this.musicList1();
     this.queryInfoStyle();
-    //获取歌手列表
-    // this.getSingerList();
   },
   methods: {
-     //选择歌曲类型
+    //选择歌曲类型
     changeMusic(val) {
       console.log(val);
       this.tagValue = val;
@@ -362,20 +330,20 @@ this.permission=true
       this.musicList();
     },
     refreshInfo() {
-      this.tagValue = '';
+      this.tagValue = "";
       this.currentPage = 1;
-      this.timeValue = '';
+      this.timeValue = "";
       this.startTime = 0;
 
-      this.seachName = '';
-      (this.seachLyricist = ''), (this.seachComposer = '');
+      this.seachName = "";
+      (this.seachLyricist = ""), (this.seachComposer = "");
       this.musicList();
     },
     //锁定歌曲
     toLock(row) {
       this.userInfo = { ...row };
 
-      this.dialogVisibleUploadMix = true;
+      this.lockType = true;
     },
     // 复制成功时的回调函数
     onCopy(e) {
@@ -393,35 +361,7 @@ this.permission=true
       this.customerAddress =
         "http://106.53.61.91:8990/clientLogin.html?type=" + val.url;
     },
-    //删除歌曲
-    deleteClick(row) {
-      const param = {
-        token: this.token,
-        songID: row.id
-      };
-      this.$confirm("完成信息核对, 确认删除?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          deleteSong(param).then(res => {
-            if (res.status == 0) {
-              this.$message({
-                type: "success",
-                message: "删除成功!"
-              });
-              this.findUserInfo();
-            } else {
-              this.$message({
-                type: "error",
-                message: "删除失败!"
-              });
-            }
-          });
-        })
-        .catch(() => {});
-    },
+
     //上传编曲取消
 
     editDistributeRecorder() {
@@ -429,7 +369,7 @@ this.permission=true
       this.musicList();
     },
     editLock() {
-      this.dialogVisibleUploadMix = false;
+      this.lockType = false;
       this.musicList();
     },
     editDistributeActive(data) {
@@ -493,68 +433,25 @@ this.permission=true
     //上传录音文件
     toUploadRecorder(row) {
       this.userInfo = { ...row };
-      this.dialogVisibleUploadRecorder = true;
+      this.lockType = true;
     },
-    toUploadMix(row) {
-      this.userInfo = { ...row };
-      this.dialogVisibleUploadMix = true;
-    },
-    //新增成功查询列表
-    addMusic() {
-      this.musicList();
-    },
+
     editDistribute() {
       this.dialogVisibleDistribute = false;
       this.musicList();
     },
-    //分配制作人
-    toDistribute(row, type, group) {
-      const param = {
-        selecttype: type,
-        fFuncGroup: group
-      };
-      this.userInfo = { ...row, ...param };
-      this.dialogVisibleDistribute = true;
-    },
+
     //试听
     toAudition(row) {
       console.log("***8");
       this.userInfo = { ...row };
-      this.dialogVisibleAudition = true;
+      this.auditionType = true;
     },
-    // 操作
-    handleCommand() {},
-    //删除
-    deleteClick(row) {
-      console.log(row);
-      const param = {
-        token: this.token,
-        songID: row.id
-      };
-      // console.log(row);
-      this.$confirm("完成信息核对, 确认提交?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      })
-        .then(() => {
-          deleteSong(param).then(res => {
-            if (res.status == 0) {
-              this.$message({
-                type: "success",
-                message: "删除成功!"
-              });
-              this.musicList();
-            } else {
-              this.$message({
-                type: "error",
-                message: "删除失败!"
-              });
-            }
-          });
-        })
-        .catch(() => {});
+    //取消试听
+    editaudition() {
+      this.auditionType = false;
     },
+
     //查询合作模式
     queryInfoStyle() {
       const param = {
@@ -572,23 +469,6 @@ this.permission=true
         }
       });
     },
-    checkClick(row) {
-      this.$router.push({
-        path: "/musiccheck",
-        query: {
-          mid: row.musicid
-        }
-      });
-    },
-
-    updateClick(row) {
-      this.$router.push({
-        path: "/musicupdate",
-        query: {
-          mid: row.musicid
-        }
-      });
-    },
 
     //获得音乐类型列表
     musicTypeList() {
@@ -599,27 +479,26 @@ this.permission=true
 
     //获取音乐列表
     musicList() {
-       let createTimeReg = [];
+      let createTimeReg = [];
       if (this.startTime == 0) {
         createTimeReg = [];
       } else {
         createTimeReg = [this.startTime, this.endTime];
       }
       let tagValue = [];
-      if (this.tagValue == '') {
+      if (this.tagValue == "") {
         tagValue = [];
       } else {
         tagValue = [this.tagValue];
       }
       const param = {
-        
         token: this.token,
         pageSize: 10,
         curPage: 0,
         filter: {
           progressRateReg: [599, 599],
           createTimeReg: createTimeReg,
-            songName: this.seachName,
+          songName: this.seachName,
           lyricist: this.seachLyricist,
           composer: this.seachComposer,
           tag: tagValue
@@ -629,7 +508,7 @@ this.permission=true
         console.log(res);
         console.log(this.styleType);
         this.tableData = [];
-        this.getTotal=res.data.count
+        this.getTotal = res.data.count;
         res.data.item.forEach((items, index) => {
           let tempStatus = "";
           switch (items.progressRate) {
@@ -696,50 +575,6 @@ this.permission=true
         });
       });
     },
-    //获取歌手列表
-    getSingerList() {
-      singerList().then(res => {
-        // console.log(res);
-        this.singerList = res;
-        for (var i = 0; i < res.length; i++) {
-          //将其转化为value：singername的形式
-          this.singerNameList.push({ value: res[i].singername });
-        }
-        // console.log(this.singerNameList);
-      });
-    },
-
-    //从搜索框的子组件的事件获取search值
-    getSearch(value) {
-      this.search.singer = value;
-    },
-    //当表单下拉框有值时，消除其余的表单下拉框的值
-    Change(param, val) {
-      if (param === "type" && val != "") {
-        this.search.musicid = "";
-        this.search.musicname = "";
-        this.search.singer = "";
-      }
-    },
-    //当表单搜索框有值时，消除其余的表单搜索框的值
-    inputchange(param) {
-      if (param === "musicid") {
-        this.search.musicname = "";
-        this.search.musictype = "";
-        this.search.singer = "";
-      } else if (param === "musicname") {
-        this.search.musicid = "";
-        this.search.singer = "";
-        this.search.musictype = "";
-      }
-    },
-    //获取歌手搜索框的焦点
-    getFocus() {
-      this.search.musicid = "";
-      this.search.musicname = "";
-      this.search.musictype = "";
-      this.search.singer = "";
-    },
 
     handleSelectionChange(val) {
       console.log(val);
@@ -757,15 +592,6 @@ this.permission=true
       this.currentPage = val;
     },
 
-    hotFilter(val) {
-      if (val < 10000) {
-        return val;
-      } else if (10000 <= val < 100000000) {
-        return val / 10000 + "万";
-      } else {
-        return val / 100000000 + "亿";
-      }
-    },
     //时间转化
     dateFmt(date) {
       let d = new Date(date);
@@ -775,8 +601,7 @@ this.permission=true
     refresh() {
       this.reload();
     }
-  },
-
+  }
 };
 </script>
 
@@ -825,14 +650,14 @@ img {
   width: 50px;
   height: 50px;
 }
-.permission-img{
+.permission-img {
   width: 900px;
   height: 420px;
 }
-.permission-text{
+.permission-text {
   display: flex;
-    justify-content: center;
-    font-size: 30px;
-    color: #9abee3;
+  justify-content: center;
+  font-size: 30px;
+  color: #9abee3;
 }
 </style>

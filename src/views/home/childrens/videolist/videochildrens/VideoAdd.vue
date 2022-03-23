@@ -3,7 +3,7 @@
     <el-button type="primary" size="small" @click="dialogFormVisible = true"
       >添加</el-button
     >
-    <el-dialog title="添加视频" :visible.sync="dialogFormVisible">
+    <el-dialog :close-on-click-modal='false' title="添加视频" :visible.sync="dialogFormVisible">
       <el-form :model="form">
         <el-form-item label="视频名称" :label-width="formLabelWidth">
           <el-input

@@ -6,7 +6,7 @@
       style="margin-left:20px;"
       @click="dialogFormVisible = true"
     >新增版权合作</el-button>
-    <el-dialog
+    <el-dialog :close-on-click-modal='false'
       :modal-append-to-body="false"
       title="新增版权合作"
       customClass="customWidthMode"
@@ -40,7 +40,7 @@
         </el-table-column>
       </el-table>
     </el-dialog>
-    <el-dialog
+    <el-dialog :close-on-click-modal='false'
       customClass="customWidthMode1"
       :modal-append-to-body="false"
       title="编辑版权合作"

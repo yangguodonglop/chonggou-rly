@@ -201,7 +201,7 @@
         style="textAlign: right"
       ></el-pagination>
     </div>
-    <el-dialog
+    <el-dialog :close-on-click-modal='false'
       :footer="false"
       title="试听"
       :visible.sync="dialogVisibleAudition"
@@ -209,7 +209,7 @@
     >
       <music-audition :userInfo="userInfo" @editInfo="editInfo"></music-audition>
     </el-dialog>
-    <el-dialog
+    <el-dialog :close-on-click-modal='false'
       :footer="false"
       title="查看试听记录"
       :visible.sync="dialogVisibleDistribute"
@@ -217,7 +217,7 @@
     >
       <music-distribute :userInfo="userInfo" @editDistribute="editDistribute"></music-distribute>
     </el-dialog>
-    <el-dialog
+    <el-dialog :close-on-click-modal='false'
       :footer="false"
       title="更新信息"
       :visible.sync="dialogVisibleUpload"
@@ -225,7 +225,7 @@
     >
       <music-upload :userInfo="userInfo" @editUpdateInfo="editUpdateInfo"></music-upload>
     </el-dialog>
-    <el-dialog
+    <el-dialog :close-on-click-modal='false'
       :footer="false"
       title="上传录音"
       :visible.sync="dialogVisibleUploadRecorder"
@@ -233,7 +233,7 @@
     >
       <music-upload-recorder :userInfo="userInfo" @editDistributeRecorder="editDistributeRecorder"></music-upload-recorder>
     </el-dialog>
-    <el-dialog
+    <el-dialog :close-on-click-modal='false'
       :footer="false"
             :modal="false"
       title="查看有效歌单"
@@ -243,7 +243,7 @@
     >
       <music-upload-mix :userInfo="userInfo" @editDistributeRecorderList="editDistributeRecorderList"></music-upload-mix>
     </el-dialog>
-    <el-dialog
+    <el-dialog :close-on-click-modal='false'
       :footer="true"
       title="延迟锁定"
       :visible.sync="lockType"

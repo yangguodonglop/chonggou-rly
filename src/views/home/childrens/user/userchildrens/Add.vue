@@ -1,6 +1,6 @@
 <template>
   <div id="add1" style="width:700px;overflow:hidden;">
-    <el-dialog title="添加账户" :visible="dialogFormVisible" @close="closeDialog"   customClass="customWidthaddSong" >
+    <el-dialog :close-on-click-modal='false' title="添加账户" :visible="dialogFormVisible"  :before-close="handleDialogClose"  customClass="customWidthaddSong" >
       <el-form class="userfrom">
         <el-form-item label="账号" :label-width="formLabelWidth">
           <el-input v-model="form.user" ref="ipt"></el-input>
@@ -18,9 +18,9 @@
           <el-input v-model="form.weiXin"></el-input>
         </el-form-item>
         <el-form-item style=" display: flex;justify-content: center;">
-          <el-button type="primary" @click="back">取消</el-button>
+          <el-button type="primary" size="small" @click="back()">取消</el-button>
 
-          <el-button type="primary" @click="onSubmit">保存</el-button>
+          <el-button type="primary" size="small" @click="onSubmit">保存</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -67,6 +67,10 @@ export default {
     back() {
       this.$emit("addUserInfo");
     },
+    handleDialogClose(){
+      this.$emit("addUserInfo");
+
+    },
     closeDialog() {
       this.$emit("addUserInfo");
     },
@@ -85,6 +89,7 @@ export default {
     refresh() {
       this.reload();
     },
+  
     insertUser() {
       const param = {
         user: this.form.user,

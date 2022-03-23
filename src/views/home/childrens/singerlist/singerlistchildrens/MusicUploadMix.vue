@@ -1,4 +1,12 @@
 <template>
+   <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+           :before-close="handleDialogClose" 
+          title="锁定歌曲"
+          :visible="true"
+          customClass="customWidth-distribute"
+        >
   <div id="add">
     <el-form :model="music">
       <el-form-item label="歌曲名称:" :label-width="formLabelWidth">
@@ -56,6 +64,7 @@
       <el-button type="primary" @click="confirm()" size="small">确 定</el-button>
     </div>
   </div>
+   </el-dialog>
 </template>
 
 
@@ -274,8 +283,8 @@ export default {
           });
           // this.dialogFormVisible=false
           //this.submitForm();//提交表单
-          this.$emit("editLock");
-        } else {
+  this.$emit('editLock')
+          } else {
           this.lyricsCode = "";
 
           this.$message({
@@ -287,8 +296,11 @@ export default {
     },
     //取消锁定
     closeMoadl() {
-      debugger;
-      this.$emit("editLock");
+
+      this.$emit('editLock')
+    },
+    handleDialogClose(){
+ this.$emit('editLock')
     }
   }
 };

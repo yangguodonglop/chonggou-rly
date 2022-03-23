@@ -84,7 +84,7 @@
         </el-main>
       </el-container>
     </el-container>
-    <el-dialog
+    <el-dialog :close-on-click-modal='false'
   title="修改密码"
   :visible.sync="dialogVisible"
   customClass="customWidth3"

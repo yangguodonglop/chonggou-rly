@@ -1,4 +1,12 @@
 <template>
+  <el-dialog
+      :close-on-click-modal="false"
+      :footer="false"
+      title="试听"
+      :visible="true"
+      :before-close="handleDialogClose" 
+      customClass="customWidth-audition"
+    >
   <div id="music-check">
     <div style="display: flex;justify-content: center;flex-direction: column;">
       <div style="display: flex;justify-content: center;">
@@ -9,6 +17,7 @@
       >{{songText}}</div>
     </div>
   </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -63,6 +72,12 @@ export default {
     }
   },
   methods: {
+    handleDialogClose(){
+    var audio = document.getElementById("music1");
+      audio.pause();
+      this.$emit('editaudition')
+    },
+      
     //获取歌曲
     musicListDemo() {
       debugger

@@ -1,4 +1,5 @@
 <template>
+
   <div id="music-check">
     <div style="display: flex;justify-content: center;flex-direction: column;">
      <el-select style="width:100%;"  @change="onChange"  v-model="distributeType" placeholder="请选择歌曲风格">

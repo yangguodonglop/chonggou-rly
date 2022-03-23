@@ -1,4 +1,13 @@
 <template>
+<div>
+    <el-dialog
+      :close-on-click-modal="false"
+      :footer="false"
+      :title="userInfo.process.processType"
+      :visible="true"
+      :before-close="handleDialogClose"
+      customClass="customWidth-distribute"
+    >
   <div id="music-check">
     <div style="display: flex;justify-content: center;flex-direction: column;">
      <el-select style="width:100%;"  @change="onChange"  v-model="distributeType" placeholder="请选择">
@@ -11,11 +20,13 @@
           </el-select>
       
       </div>
-            <div slot="footer" class="dialog-footer" style="margin-top: 20px;display: flex;justify-content: center;">
-        <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+      <div slot="footer" class="dialog-footer" style="margin-top: 20px;display: flex;justify-content: center;">
+        <el-button @click="back()" size="small">取 消</el-button>
         <el-button type="primary" @click="confirm()" size="small">确 定</el-button>
       </div>
   </div>
+    </el-dialog>
+    </div>
 </template>
 
 <script>
@@ -80,6 +91,14 @@ export default {
       console.log(val)
 
     },
+    back(){
+ this.$emit('editProcess')
+    },
+    handleDialogClose(){
+      
+ this.$emit('editProcess')
+
+    },
     //确定
     confirm(){
       const param=
@@ -95,7 +114,7 @@ export default {
             type: "success",
             message: "分配成功！"
           });
-          this.$emit('editDistribute')
+          this.$emit('editProcess')
           //this.submitForm();//提交表单
         } else {
           this.demoCode = "";
@@ -132,9 +151,7 @@ export default {
         console.log(this.distributeTypeList)
       });
     },
-    back() {
-      this.$router.back();
-    },
+  
     findMusicById(mid) {
       findMusicById(mid).then(res => {
         // console.log(res);

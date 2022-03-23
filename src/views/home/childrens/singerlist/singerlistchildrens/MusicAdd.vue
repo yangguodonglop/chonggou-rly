@@ -1,7 +1,7 @@
 <template>
   <div id="add">
     <el-button type="primary" size="mini" @click="dialogFormVisible = true">生成试听列表</el-button>
-    <el-dialog title="添加歌曲" customClass="customWidth-addSong" :visible.sync="dialogFormVisible">
+    <el-dialog :close-on-click-modal='false' title="添加歌曲" customClass="customWidth-addSong" :visible.sync="dialogFormVisible">
       <el-form :model="music">
         <el-form-item label="歌单名称:" :label-width="formLabelWidth">
           <el-input v-model="music.musicName" autocomplete="off" placeholder="请输入歌曲名称"></el-input>

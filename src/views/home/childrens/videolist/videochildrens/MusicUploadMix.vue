@@ -37,7 +37,7 @@
     >
       <el-button @click="close()">取 消</el-button>
     </div>
-     <el-dialog
+     <el-dialog :close-on-click-modal='false'
       :footer="false"
       :modal="false"
       title="复制地址"
