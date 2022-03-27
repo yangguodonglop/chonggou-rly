@@ -1,7 +1,10 @@
 <template>
-  <div id="add">
-    <el-dialog :close-on-click-modal='false' title="上传成品" customClass="customWidth-addSong" :visible.sync="dialogFormVisible">
-      <el-form :model="music">
+  <div id="add"   >
+    <el-dialog :close-on-click-modal='false' title="上传小样" customClass="customWidth-addSong" :visible.sync="dialogFormVisible" >
+      <el-form :model="music" v-loading="loading"
+    element-loading-text="上传中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)">
         <el-form-item label="歌曲名称:" :label-width="formLabelWidth">
           <el-input v-model="music.musicName" autocomplete="off" placeholder="请输入歌曲名称"></el-input>
         </el-form-item>
@@ -85,7 +88,8 @@ export default {
       param: {},
       musicTypeList: [],
       lyricsCode: "",
-      demoCode: ""
+      demoCode: "",
+      loading:false
     };
   },
   props: {
@@ -127,6 +131,8 @@ export default {
 
     // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
     httpRequest(param) {
+      debugger
+      this.loading=true
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
@@ -141,6 +147,8 @@ export default {
       // }
       uploadFile(fd).then(res => {
         if (res.status == 0) {
+                this.loading=false
+
           this.demoCode = res.data;
           this.$message({
             type: "success",
@@ -148,6 +156,8 @@ export default {
           });
           //this.submitForm();//提交表单
         } else {
+                          this.loading=false
+
           this.demoCode = "";
           this.$message({
             type: "error",
@@ -161,6 +171,7 @@ export default {
     },
     // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
     httpRequestLyric(param) {
+         this.loading=true
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
@@ -175,6 +186,7 @@ export default {
       // }
       uploadFile(fd).then(res => {
         if (res.status == 0) {
+             this.loading=false
           this.lyricsCode = res.data;
           this.$message({
             type: "success",
@@ -182,6 +194,7 @@ export default {
           });
           //this.submitForm();//提交表单
         } else {
+             this.loading=false
           this.lyricsCode = "";
 
           this.$message({

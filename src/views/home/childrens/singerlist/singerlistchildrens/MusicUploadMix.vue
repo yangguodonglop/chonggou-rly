@@ -23,7 +23,7 @@
           style="width:100%;"
           @change="onChangeMode"
           v-model="collaborateMode"
-          placeholder="请选择歌曲风格"
+          placeholder="请选择版权方式"
         >
           <el-option
             v-for="(item, index) in copyrightModeList"
@@ -38,7 +38,7 @@
           style="width:100%;"
           @change="onChangeRightMode"
           v-model="copyrightMode"
-          placeholder="请选择歌曲风格"
+          placeholder="请选择合作方式"
         >
           <el-option
             v-for="(item, index) in CooperativeList"
@@ -165,9 +165,13 @@ export default {
       this.publisher = val;
     },
     onChangeMode(val) {
+      debugger
+      console.log(this.copyrightModeList)
       this.collaborateMode = val;
     },
     onChangeRightMode(val) {
+      debugger
+      console.log(this.CooperativeList)
       this.copyrightMode = val;
     },
     findCopyrightModeList() {
@@ -266,11 +270,12 @@ export default {
     },
 
     confirm() {
+      debugger
       const param = {
         token: this.token,
         songIDs: [this.userInfo.id],
-        collaborateMode: this.collaborateMode,
-        copyrightMode: this.copyrightMode,
+        collaborateMode:this.copyrightMode,
+        copyrightMode: this.collaborateMode,
         godAccount: this.publisher
       };
 

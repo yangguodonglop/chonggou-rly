@@ -404,6 +404,7 @@ export default {
       titleFp: "分配制作人",
       processType:false,
       auditionType:false,
+      plIds:[]
     };
   },
   created() {
@@ -539,6 +540,10 @@ export default {
     //批量勾选
     handleSelectionChange(val){
       console.log(val)
+      this.plIds=[]
+      if(val.length>0){
+        this.plIds.push(val.id)
+      }
         this.multipleSelection = val;
       console.log(this.multipleSelection);
       console.log(this.$refs.multipleTable.selection)
@@ -649,7 +654,7 @@ export default {
       console.log(row);
       const param = {
         token: this.token,
-        songID: row.id,
+        songID: [row.id],
         step: tempType,
         operation: parseInt(typeNum),
         remark: "暂无备注"
@@ -718,6 +723,7 @@ export default {
     },
     //分配制作人
     toDistribute(row, type, group) {
+    
       console.log(group);
       switch (group) {
         case "200":
@@ -747,7 +753,8 @@ export default {
         fFuncGroup: group
       };
       const process={
-        processType:this.titleFp
+        processType:this.titleFp,
+        plIds:this.plIds
       }
       this.userInfo = { ...row, ...param,process };
       this.processType = true;
@@ -773,7 +780,7 @@ export default {
       console.log(row);
       const param = {
         token: this.token,
-        songID: row.id
+        songID: [row.id]
       };
       // console.log(row);
       this.$confirm("完成信息核对, 确认提交?", "提示", {
@@ -1094,6 +1101,7 @@ export default {
 <style>
 .el-dialog__body {
   padding-top: 10px;
+  padding-bottom: 10px;
 }
 .customWidth-audition {
   width: 500px;

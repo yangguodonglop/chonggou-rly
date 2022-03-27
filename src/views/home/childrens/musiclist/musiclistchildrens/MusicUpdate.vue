@@ -1,6 +1,9 @@
 <template>
   <div id="music-update">
-    <el-form ref="form" :model="form" label-width="80px" style="width: 600px">
+    <el-form ref="form" :model="form" label-width="80px" style="width: 600px" v-loading="loading"
+    element-loading-text="上传中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)">
       <el-form-item label="歌曲编号">
         <el-input v-model="form.musicid" disabled></el-input>
       </el-form-item>
@@ -89,7 +92,8 @@ export default {
         "Content-Type": "multipart/form-data"
       },
       fileList: [],
-      param: {}
+      param: {},
+      loading:false
     };
   },
   created() {

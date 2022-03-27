@@ -131,7 +131,8 @@ import {
   updateSongInfo,
   updateDemo,
   updatePublish,
-  updatePublishData
+  updatePublishData,
+  getAccountIntro
 
 } from "network/home.js";
 
@@ -163,6 +164,7 @@ export default {
         musicLric: ""
       },
       dialogFormVisible: false,
+      funcGroupArr:[],
       formLabelWidth: "120px",
       headers: {
         "Content-Type": "multipart/form-data"
@@ -187,6 +189,8 @@ export default {
     this.querystyleList();
     this.findCopyrightModeList();
     this.findcooperativeList();
+             this.funcGroupArr = JSON.parse(localStorage.getItem("userInfo")).account.funcGroup
+
 
     console.log(this.userInfo);
   },
@@ -289,7 +293,7 @@ export default {
       };
       this.loading = true;
       //向后端发送请求并接受数据库中的用户列表
-      userListActive(param).then(res => {
+      getAccountIntro(param).then(res => {
         console.log(res);
         if (res.status == 0) {
           this.loading = false;

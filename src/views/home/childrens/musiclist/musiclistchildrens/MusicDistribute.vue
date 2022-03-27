@@ -101,10 +101,11 @@ export default {
     },
     //确定
     confirm(){
+      console.log(this.userInfo)
       const param=
             {
     "token": this.token,
-    "songID": this.userInfo.id,
+    "songID": [this.userInfo.id],
     "work": this.userInfo.selecttype,
     "to": this.distributeType
 }

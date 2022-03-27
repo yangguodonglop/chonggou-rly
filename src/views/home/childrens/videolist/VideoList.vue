@@ -87,19 +87,19 @@
           </div>
             <div class="refresh" style="margin-left:20px">
             <el-button
-              type="info"
+              type="primary"
               size="mini"
               @click="seachInfo()"
-              icon="el-icon-refresh"
+            icon="el-icon-zoom-in"
               >查询</el-button
             >
           </div>
           <div class="refresh" style="margin-left:20px">
             <el-button
-              type="info"
+              type=""
               size="mini"
               @click="refreshInfo()"
-              icon="el-icon-refresh"
+            icon="el-icon-zoom-in"
               >重置</el-button
             >
           </div>
@@ -215,7 +215,7 @@
       :visible.sync="dialogVisibleDistribute"
       customClass="customWidth-distribute"
     >
-      <music-distribute :userInfo="userInfo" @editDistribute="editDistribute"></music-distribute>
+      <music-distribute :userInfo="userInfo" @editDistributeSt="editDistributeSt"></music-distribute>
     </el-dialog>
     <el-dialog :close-on-click-modal='false'
       :footer="false"
@@ -395,7 +395,8 @@ export default {
   created() {
          this.funcGroupArr = JSON.parse(localStorage.getItem("userInfo")).account.funcGroup
      console.log(this.funcGroupArr)
-      if (this.funcGroupArr.includes(100)){
+     debugger
+      if (this.funcGroupArr.includes(100)||this.funcGroupArr.includes(600) || this.funcGroupArr.includes(651)){
 this.permission=true
       } else{
       this.permission= false;
@@ -522,6 +523,7 @@ this.permission=true
                 message: "解除锁定成功!"
               });
               this.findUserInfo();
+                    this.musicList();
             } else {
               this.$message({
                 type: "error",
@@ -567,6 +569,10 @@ this.permission=true
     editDistributeRecorder() {
       this.dialogVisibleUploadRecorder = false;
       this.musicList();
+    },
+    //取消试听记录查看
+    editDistributeSt(){
+this.dialogVisibleDistribute=false
     },
       editDistributeRecorderList() {
       this.dialogVisibleUploadMix = false;

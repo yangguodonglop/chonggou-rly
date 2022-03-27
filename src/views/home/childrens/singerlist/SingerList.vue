@@ -1,6 +1,5 @@
 <template>
-  <div style="display: flex;
-    justify-content: center;">
+  <div style="">
     <div v-if="permission">
       <div id="musiclist">
         <search-header>
@@ -64,7 +63,7 @@
                 <el-button type="primary" @click="toUploadArrangemen" size="mini">生成试听列表</el-button>
               </div>
               <div class="refresh" style="margin-left:20px">
-                <el-button type="info" size="mini" @click="seachInfo()" icon="el-icon-refresh">查询</el-button>
+                <el-button type="primary" size="mini" @click="seachInfo()" icon="el-icon-zoom-in">查询</el-button>
               </div>
               <div class="refresh" style="margin-left:20px">
                 <el-button type="info" size="mini" @click="refreshInfo()" icon="el-icon-refresh">重置</el-button>
@@ -126,15 +125,8 @@
 
         <music-audition :userInfo="userInfo" @editaudition="editaudition" v-if="auditionType"></music-audition>
 
-        <el-dialog
-          :close-on-click-modal="false"
-          :footer="false"
-          title="生成试听列表"
-          :visible.sync="dialogVisibleUpload"
-          customClass="customWidth-distribute"
-        >
-          <music-upload :userInfo="userInfo" @editDistributeActive="editDistributeActive"></music-upload>
-        </el-dialog>
+     
+          <music-upload :userInfo="userInfo" @editToAuditionList="editToAuditionList" v-if='toAuditionListType'></music-upload>
         <el-dialog
           :close-on-click-modal="false"
           :footer="false"
@@ -289,7 +281,8 @@ export default {
       tagValue: "",
       permission: true,
       auditionType: false,
-      lockType:false
+      lockType:false,
+      toAuditionListType:false
     };
   },
   created() {
@@ -297,7 +290,7 @@ export default {
       localStorage.getItem("userInfo")
     ).account.funcGroup;
     console.log(this.funcGroupArr);
-    if (this.funcGroupArr.includes(100) || this.funcGroupArr.includes(651) ) {
+    if (this.funcGroupArr.includes(100) || this.funcGroupArr.includes(651) || this.funcGroupArr.includes(600) ) {
       this.permission = true;
     } else {
       this.permission = false;
@@ -359,7 +352,7 @@ export default {
       console.log(val);
       // this.visibleUrl = true;
       this.customerAddress =
-        "http://106.53.61.91:8990/clientLogin.html?type=" + val.url;
+        "http://106.53.61.91:8990/html/clientLogin.html?type=" + val.url;
     },
 
     //上传编曲取消
@@ -377,7 +370,7 @@ export default {
       this.dialogVisibleUpload = false;
       this.dialogVisibleUrl = true;
       this.customerAddress =
-        "http://106.53.61.91:8990/clientLogin.html?type=" + data;
+        "http://106.53.61.91:8990/html/clientLogin.html?type=" + data;
       this.musicList();
     },
     //审核
@@ -427,13 +420,39 @@ export default {
     //上传编曲文件
     toUploadArrangemen(row) {
       console.log(this.songIdArr);
+      if(this.songIdArr.length==0){
+            this.$message({
+            type: "error",
+            message: "请至少选择一首歌！"
+          });
+          return false
+      }
       this.userInfo = { ...row, songIdArr: this.songIdArr };
-      this.dialogVisibleUpload = true;
+      this.toAuditionListType = true;
+    },
+    //取消生成试听列表
+    editToAuditionList(val){
+      console.log(val)
+      if(val){
+    this.toAuditionListType = false;
+       this.customerAddress =
+        "http://106.53.61.91:8990/html/clientLogin.html?type=" + val;
+            this.dialogVisibleUrl = true;
+            
+      }
+      else{
+            this.toAuditionListType = false;
+      }
+  
+
+     // this.musicList();
+
     },
     //上传录音文件
     toUploadRecorder(row) {
       this.userInfo = { ...row };
-      this.lockType = true;
+      this.dialogVisibleUploadRecorder=true
+      //this.lockType = true;
     },
 
     editDistribute() {

@@ -1,6 +1,9 @@
 <template>
   <div id="add">
-      <el-form :model="music">
+      <el-form :model="music"  v-loading="loading"
+    element-loading-text="上传中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)">
         <el-form-item label="歌曲名称:" :label-width="formLabelWidth">
           <el-input :disabled="true" v-model="userInfo.songName" autocomplete="off" placeholder="请输入歌曲名称"></el-input>
         </el-form-item>
@@ -89,7 +92,8 @@ export default {
       demoCode: "",
           fileCode: "",
     projectCode: "",
-    daoChangCode: ""
+    daoChangCode: "",
+    loading:false,
     };
   },
 
@@ -138,6 +142,7 @@ export default {
 
     // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
     httpRequest(param) {
+      this.loading=true
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
@@ -152,6 +157,7 @@ export default {
       // }
       uploadFile(fd).then(res => {
         if (res.status == 0) {
+            this.loading=false
           this.fileCode = res.data;
           this.$message({
             type: "success",
@@ -159,6 +165,8 @@ export default {
           });
           //this.submitForm();//提交表单
         } else {
+                      this.loading=false
+
           this.fileCode = "";
           this.$message({
             type: "error",
@@ -172,6 +180,8 @@ export default {
     },
     // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
     httpRequestPro(param) {
+                  this.loading=true
+
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
@@ -186,6 +196,8 @@ export default {
       // }
       uploadFile(fd).then(res => {
         if (res.status == 0) {
+                      this.loading=false
+
           this.projectCode = res.data;
           this.$message({
             type: "success",
@@ -193,6 +205,8 @@ export default {
           });
           //this.submitForm();//提交表单
         } else {
+                      this.loading=false
+
           this.projectCode = "";
 
           this.$message({
@@ -203,6 +217,8 @@ export default {
       });
     },
       httpRequestDchang(param) {
+                    this.loading=true
+
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
@@ -217,6 +233,8 @@ export default {
       // }
       uploadFile(fd).then(res => {
         if (res.status == 0) {
+                      this.loading=false
+
           this.daoChangCode = res.data;
           this.$message({
             type: "success",
@@ -224,6 +242,8 @@ export default {
           });
           //this.submitForm();//提交表单
         } else {
+                      this.loading=false
+
           this.daoChangCode = "";
 
           this.$message({

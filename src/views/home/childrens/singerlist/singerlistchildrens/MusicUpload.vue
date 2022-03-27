@@ -1,4 +1,12 @@
 <template>
+   <el-dialog
+          :close-on-click-modal="false"
+           :before-close="handleDialogClose"
+          :footer="false"
+          title="生成试听列表"
+          :visible="true"
+          customClass="customWidth-distribute"
+        >
   <div id="add">
       <el-form :model="music">
         <el-form-item label="歌单名称:" :label-width="formLabelWidth">
@@ -23,10 +31,11 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer" style="display: flex;justify-content: center;">
-        <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+        <el-button @click="toBack()" size="small">取 消</el-button>
         <el-button type="primary" @click="confirm()" size="small">确 定</el-button>
       </div>
   </div>
+   </el-dialog>
 </template>
 
 
@@ -105,6 +114,14 @@ export default {
     }
    },
   methods: {
+    handleDialogClose(){
+                this.$emit('editToAuditionList')
+
+    },
+    toBack(){
+                this.$emit('editToAuditionList')
+
+    },
     onChange(val){
       console.log(val)
       this.publisher=val
@@ -282,9 +299,10 @@ export default {
             type: "success",
             message: "生成试听列表成功！"
           });
+         // this.$emit('editToAuditionList')
           this.dialogFormVisible=false
           //this.submitForm();//提交表单
-          this.$emit('editDistributeActive',res.data.url)
+          this.$emit('editToAuditionList',res.data.url)
         } else {
           this.lyricsCode = "";
 
