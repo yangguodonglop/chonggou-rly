@@ -101,14 +101,17 @@ export default {
     },
     //确定
     confirm(){
+      debugger
       console.log(this.userInfo)
+      console.log(JSON.parse(JSON.stringify(this.userInfo.process.plIds)))
       const param=
             {
     "token": this.token,
-    "songID": [this.userInfo.id],
+    "songID": JSON.parse(JSON.stringify(this.userInfo.process.plIds)),
     "work": this.userInfo.selecttype,
     "to": this.distributeType
 }
+console.log(param)
   assignWork(param).then(res => {
         if (res.status == 0) {
           this.$message({

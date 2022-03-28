@@ -83,8 +83,8 @@
           <template slot="empty">
             <p>{{ dataText }}</p>
           </template>
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="musicid" label="歌曲编号" width="100" align="center"></el-table-column>
+          <el-table-column type="selection" width="40"></el-table-column>
+          <el-table-column prop="idActive" label="歌曲编号" width="100" align="center"></el-table-column>
           <el-table-column prop="songName" label="歌曲名称" width="300" align="center"></el-table-column>
           <el-table-column prop="lyricist" label="作词人" width="120" align="center"></el-table-column>
           <el-table-column prop="composer" label="作曲人" width="120" align="center"></el-table-column>
@@ -583,6 +583,8 @@ export default {
             lyricist: items.submitter.lyricist,
             tag: items.submitter.tagName.join(","),
             id: items.id,
+                        idActive: items.id.substring(items.id.length-5),
+
             demoFile: items.submitter.demoFile,
             lyricsFile: items.submitter.lyricsFile,
             producerNick: items.producerNick,
