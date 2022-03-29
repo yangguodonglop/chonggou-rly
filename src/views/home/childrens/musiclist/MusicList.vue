@@ -211,7 +211,7 @@
                   @click.native="toUploadRecorder(scope.row)"
                 >上传录音</el-dropdown-item>
                 <el-dropdown-item v-if="mixerHide" @click.native="toUploadMix(scope.row)">上传缩混</el-dropdown-item>
-                <el-dropdown-item @click.native="todownLoad(scope.row, 'arractive')">下载小样文件</el-dropdown-item>
+                <el-dropdown-item @click.native="todownLoad(scope.row, 'demo')">下载小样文件</el-dropdown-item>
                 <el-dropdown-item
                   v-if="lyricsZzHide"
                   @click.native="todownLoadText(scope.row)"
@@ -982,14 +982,6 @@ export default {
       });
     },
 
-    updateClick(row) {
-      this.$router.push({
-        path: "/musicupdate",
-        query: {
-          mid: row.musicid
-        }
-      });
-    },
 
     //获得音乐类型列表
     musicTypeList() {

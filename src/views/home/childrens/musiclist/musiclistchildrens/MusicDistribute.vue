@@ -124,7 +124,8 @@ console.log(param)
           this.demoCode = "";
           this.$message({
             type: "error",
-            message: "分配失败,请查看歌曲状态!"
+            message: `分配失败！请查看歌曲状态!错误码：${res.status}--错误原因：${res.des}`
+
           });
         }
         //  if(res.code===0){

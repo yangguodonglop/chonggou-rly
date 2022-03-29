@@ -162,7 +162,12 @@ export default {
             });
             this.refresh();
           } else {
-            this.$message.error("更新失败！已存在歌曲！");
+                   this.$message({
+            type: "error",
+            message: `更新失败！错误码：${res.status}--错误原因：${res.des}`
+          });
+
+
           }
           this.refresh();
         })

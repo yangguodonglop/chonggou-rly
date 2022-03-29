@@ -6,19 +6,10 @@
       <h2>绕梁音后台管理系统</h2>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="用户名" prop="username">
-          <el-input
-            type="text"
-            v-model="form.username"
-            placeholder="请输入用户名"
-            autofocus="true"
-          ></el-input>
+          <el-input type="text" v-model="form.username" placeholder="请输入用户名" autofocus="true"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input
-            type="password"
-            v-model="form.password"
-            placeholder="请输入密码"
-          ></el-input>
+          <el-input type="password" v-model="form.password" placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">登录</el-button>
@@ -58,31 +49,41 @@ export default {
       //用axios向后端发送ajax请求
       this.$refs.form.validate(valid => {
         if (valid) {
-          const param={
-            "user": this.form.username,
-    "pwd": this.form.password
-          }
+          const param = {
+            user: this.form.username,
+            pwd: this.form.password
+          };
           //post请求
           adminLogin(param).then(res => {
-             console.log(res);
+            console.log(res);
             //后端验证用户名和密码是否正确
             //登陆成功则跳转到首页
-              //     this.$router.push({
-              //   path: "/MusicList"
-              // });
-              //               this.$store.commit("saveUserName", this.form.username);
+            //     this.$router.push({
+            //   path: "/MusicList"
+            // });
+            //               this.$store.commit("saveUserName", this.form.username);
 
-             // return false
+            // return false
             if (res.status == "0") {
+              debugger;
               this.$message({
                 message: "登录成功!",
                 type: "success"
               });
-              localStorage.setItem('userInfo', JSON.stringify(res.data) )
+              localStorage.setItem("userInfo", JSON.stringify(res.data));
               this.$store.commit("saveUserName", this.form.username);
-              this.$router.push({
-                path: "/MusicList"
-              });
+              console.log(res.data);
+              let funGroup = res.data.account.funcGroup;
+              console.log(funGroup);
+              if (funGroup.includes(1000)) {
+                this.$router.push({
+                  path: "/SingerkhList"
+                });
+              } else {
+                this.$router.push({
+                  path: "/MusicList"
+                });
+              }
             } else {
               this.$message.error("用户名或密码不正确");
             }

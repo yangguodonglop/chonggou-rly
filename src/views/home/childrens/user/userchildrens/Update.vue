@@ -1,48 +1,44 @@
 <template>
-  <div id="add"  >
-      <el-form class="userfrom" ref="form" :model="form">
-        <el-form-item label="账号" prop="userName" :label-width="formLabelWidth">
-          <el-input v-model="form.account" :disabled="true"></el-input>
-        </el-form-item>
-        <el-form-item label="用户名" prop="email" :label-width="formLabelWidth">
-          <el-input v-model="form.nick"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password" :label-width="formLabelWidth">
-          <el-input v-model="form.password" type="password" :disabled="true"></el-input>
-        </el-form-item>
-        <el-form-item label="手机" prop="phone" :label-width="formLabelWidth">
-          <el-input v-model="form.telephone"></el-input>
-        </el-form-item>
-        <el-form-item label="微信" prop="address" :label-width="formLabelWidth">
-          <el-input v-model="form.weiXin"></el-input>
-        </el-form-item>
-        <el-form-item style="    display: flex;justify-content: center;" >
-              <el-button type="primary" @click="back">取消</el-button>
-          <el-button type="primary" @click="onSubmit">保存</el-button>
-      
-        </el-form-item>
-      </el-form>
+  <div id="add">
+    <el-form class="userfrom" ref="form" :model="form">
+      <el-form-item label="账号" prop="userName" :label-width="formLabelWidth">
+        <el-input v-model="form.account" :disabled="true"></el-input>
+      </el-form-item>
+      <el-form-item label="用户名" prop="email" :label-width="formLabelWidth">
+        <el-input v-model="form.nick"></el-input>
+      </el-form-item>
+      <el-form-item label="密码" prop="password" :label-width="formLabelWidth">
+        <el-input v-model="form.password" type="password" :disabled="true"></el-input>
+      </el-form-item>
+      <el-form-item label="手机" prop="phone" :label-width="formLabelWidth">
+        <el-input v-model="form.telephone"></el-input>
+      </el-form-item>
+      <el-form-item label="微信" prop="address" :label-width="formLabelWidth">
+        <el-input v-model="form.weiXin"></el-input>
+      </el-form-item>
+      <el-form-item style="    display: flex;justify-content: center;">
+        <el-button size="small" type="primary" @click="back">取消</el-button>
+        <el-button size="small" type="primary" @click="onSubmit">保存</el-button>
+      </el-form-item>
+    </el-form>
   </div>
-  
 </template>
 
 
 <script>
-import { insertUser, addUser,rewriteInfo } from "network/home.js";
+import { insertUser, addUser, rewriteInfo } from "network/home.js";
 export default {
   name: "Add",
   inject: ["reload"],
-   props:{
-      userInfo:{
-        type:Object,
-        default:()=>{}
-
-      }
-},
+  props: {
+    userInfo: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
-     
     return {
-            token: JSON.parse(localStorage.getItem("userInfo")).token,
+      token: JSON.parse(localStorage.getItem("userInfo")).token,
 
       dialogFormVisible: false,
       formLabelWidth: "100px",
@@ -77,19 +73,18 @@ export default {
       }
     };
   },
-  mounted(){
-    console.log(this.userInfo)
-    this.form={...this.userInfo}
+  mounted() {
+    console.log(this.userInfo);
+    this.form = { ...this.userInfo };
   },
-   watch: {
+  watch: {
     userInfo(val) {
-     
-      this.$nextTick(()=>{
- console.log(val)
- this.form={...val}
-      })
+      this.$nextTick(() => {
+        console.log(val);
+        this.form = { ...val };
+      });
     }
-   },
+  },
   created() {
     // this.$nextTick(() => {
     //   this.$refs.ipt.focus();
@@ -97,22 +92,9 @@ export default {
   },
   methods: {
     back() {
-                this.$emit("editInfo");
+      this.$emit("editInfo");
 
-      // this.$confirm("此操作将会退出, 请确认是否保存,是否继续?", "提示", {
-      //   confirmButtonText: "确定",
-      //   cancelButtonText: "取消",
-      //   type: "warning"
-      // })
-      //   .then(() => {
-      //     this.dialogFormVisible = false;
-      //   })
-      //   .catch(() => {
-      //     this.$message({
-      //       type: "info",
-      //       message: "已取消"
-      //     });
-      //   });
+
     },
     onSubmit() {
       this.$refs.form.validate(valid => {
@@ -129,14 +111,14 @@ export default {
     },
     rewriteInfo() {
       const param = {
-        token:this.token,
-    account: this.form.account,
+        token: this.token,
+        account: this.form.account,
 
-    item: {
-        nick: this.form.nick,
-        telephone: this.form.telephone,
-        weiXin:this.form.weiXin
-    }
+        item: {
+          nick: this.form.nick,
+          telephone: this.form.telephone,
+          weiXin: this.form.weiXin
+        }
         // user: this.form.user,
         // password: this.form.password,
         // nick: this.form.nick,
@@ -152,13 +134,17 @@ export default {
               type: "success",
               message: "修改成功！"
             });
-          }
-          this.dialogFormVisible = false;
+                      this.dialogFormVisible = false;
           this.$emit("editInfo");
+          } else {
+            this.$message({
+              type: "error",
+              message: `操作失败！错误码：${res.status}--错误原因：${res.des}`
+            });
+          }
+
         })
-        .catch(() => {
-          this.$message.error("添加失败！");
-        });
+
     }
   }
 };

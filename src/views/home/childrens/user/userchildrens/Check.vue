@@ -119,19 +119,20 @@ export default {
         funcGroup: this.$refs.tree.getCheckedKeys()
       };
       //发送请求更新用户
-      authorization(param)
-        .then(res => {
-          if (res.status == 0) {
-            this.$message({
-              type: "success",
-              message: "授权成功！"
-            });
-          }
+      authorization(param).then(res => {
+        if (res.status == 0) {
+          this.$message({
+            type: "success",
+            message: "授权成功！"
+          });
           this.$emit("authorizationInfo");
-        })
-        .catch(() => {
-          this.$message.error("授权失败！");
-        });
+        } else {
+          this.$message({
+            type: "error",
+            message: `添加失败！错误码：${res.status}--错误原因：${res.des}`
+          });
+        }
+      });
     },
     back() {
       this.$confirm("此操作将会退出, 请确认是否保存,是否继续?", "提示", {
@@ -179,13 +180,15 @@ export default {
               type: "success",
               message: "添加成功！"
             });
+            this.dialogFormVisible = false;
+            this.$emit("quryInfo");
+          } else {
+            this.$message({
+              type: "error",
+              message: `添加失败！错误码：${res.status}--错误原因：${res.des}`
+            });
           }
-          this.dialogFormVisible = false;
-          this.$emit("quryInfo");
         })
-        .catch(() => {
-          this.$message.error("添加失败！");
-        });
     }
   }
 };

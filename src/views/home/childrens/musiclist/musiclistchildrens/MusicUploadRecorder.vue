@@ -169,7 +169,7 @@ export default {
           this.fileCode = "";
           this.$message({
             type: "error",
-            message: "上传录音失败！"
+            message: `上传录音失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
         //  if(res.code===0){
@@ -210,7 +210,7 @@ export default {
 
           this.$message({
             type: "error",
-            message: "上传录音工程文件失败！"
+            message: `上传录音工程文件失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
       });
@@ -247,7 +247,7 @@ export default {
 
           this.$message({
             type: "error",
-            message: "上传导唱文件失败！"
+            message: `上传导唱文件失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
       });
@@ -286,7 +286,7 @@ export default {
 
           this.$message({
             type: "error",
-            message: "上传录音失败！"
+            message: `上传录音失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
       });

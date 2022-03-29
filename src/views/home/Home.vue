@@ -33,8 +33,8 @@
             >
               <el-submenu index="1">
                 <template slot="title">
-                  <i class="el-icon-service"></i>
-                  <span>音乐管理</span>
+                  <i class="el-icon-s-tools"></i>
+                  <span>制作管理</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="/musiclist">歌曲列表</el-menu-item>
@@ -43,8 +43,8 @@
               </el-submenu>
               <el-submenu index="2">
                 <template slot="title">
-                  <i class="el-icon-microphone"></i>
-                  <span slot="title">生成管理</span>
+                  <i class="el-icon-headset"></i>
+                  <span slot="title">歌单管理</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="/singerlist">生成试听歌单</el-menu-item>
@@ -53,16 +53,25 @@
               </el-submenu>
               <el-submenu index="3">
                 <template slot="title">
-                  <i class="el-icon-video-camera"></i>
+                  <i class="el-icon-shopping-cart-1"></i>
                   <span slot="title">发布管理</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="/videolist">发布列表</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-              <el-submenu index="4">
+                <el-submenu index="4">
                 <template slot="title">
-                  <i class="el-icon-user"></i>
+                  <i class="el-icon-s-custom"></i>
+                  <span slot="title">客户管理</span>
+                </template>
+                <el-menu-item-group>
+                  <el-menu-item index="/singerkhList">试听列表</el-menu-item>
+                </el-menu-item-group>
+              </el-submenu>
+              <el-submenu index="5">
+                <template slot="title">
+                  <i class="el-icon-user-solid"></i>
                   <span slot="title">用户管理</span>
                 </template>
                 <el-menu-item-group>

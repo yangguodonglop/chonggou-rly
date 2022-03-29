@@ -1,7 +1,7 @@
 <template>
   <div style="display: flex;
     justify-content: center;width:100%;">
-    <div v-if="permission" style="width:100%">
+    <div v-if="permission" style="width:100%;">
       <div id="musiclist">
         <search-header>
           <div class="option">
@@ -96,7 +96,8 @@
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
               <div>
-                <el-dropdown trigger="click">
+                <el-button size="mini" @click="toAudition(scope.row)">试听</el-button>
+                <!-- <el-dropdown trigger="click">
                   <span class="el-dropdown-link" style="color:#409eff;">
                     操作
                     <i class="el-icon-arrow-down el-icon--right"></i>
@@ -106,7 +107,7 @@
                     <el-dropdown-item @click.native="toAudition(scope.row)">选择试听</el-dropdown-item>
                     <el-dropdown-item @click.native="toUploadRecorder(scope.row)">查看试听情况</el-dropdown-item>
                   </el-dropdown-menu>
-                </el-dropdown>
+                </el-dropdown> -->
               </div>
             </template>
           </el-table-column>
@@ -291,7 +292,7 @@ export default {
       localStorage.getItem("userInfo")
     ).account.funcGroup;
     console.log(this.funcGroupArr);
-    if (this.funcGroupArr.includes(100) || this.funcGroupArr.includes(651) || this.funcGroupArr.includes(600) ) {
+    if (this.funcGroupArr.includes(100) || this.funcGroupArr.includes(1000) ) {
       this.permission = true;
     } else {
       this.permission = false;
@@ -677,7 +678,6 @@ img {
   height: 420px;
    display: flex;
   justify-content: center;
-  text-align: center
 }
 .permission-text {
   display: flex;

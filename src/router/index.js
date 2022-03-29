@@ -16,6 +16,8 @@ const SingerType = () =>
   import("views/home/childrens/singertype/SingerType.vue");
 const SingerList = () =>
   import("views/home/childrens/singerlist/SingerList.vue");
+  const SingerkhList = () =>
+  import("views/home/childrens/singerlist/SingerkhList.vue");
 const SingerCheck = () =>
   import("views/home/childrens/singerlist/singerlistchildrens/SingerCheck.vue");
 const SingerUpdate = () =>
@@ -85,6 +87,11 @@ const routes = [
         path: "/singerlist",
         component: SingerList
       },
+      {
+        path: "/SingerkhList",
+        component: SingerkhList
+      },
+      
       {
         path: "/singertype",
         component: SingerType

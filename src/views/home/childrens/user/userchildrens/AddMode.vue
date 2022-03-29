@@ -113,7 +113,8 @@ export default {
         } else {
           this.$message({
             type: "error",
-            message: "修改失败！"
+            message: `操作失败！错误码：${res.status}--错误原因：${res.des}`
+
           });
         }
       });
@@ -143,7 +144,7 @@ export default {
         } else {
           this.$message({
             type: "error",
-            message: "删除失败！"
+            message: `操作失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
       });
@@ -183,7 +184,7 @@ export default {
         } else {
           this.$message({
             type: "error",
-            message: "添加失败！"
+            message: `操作失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
       });
@@ -234,14 +235,18 @@ export default {
               type: "success",
               message: "添加成功！"
             });
-          }
-          this.input = "";
+                      this.input = "";
           this.dialogFormVisible = false;
           this.$emit("quryInfo");
+          }else{
+             this.$message({
+              type: "success",
+                        message: `操作失败！错误码：${res.status}--错误原因：${res.des}`
+            });
+
+          }
+
         })
-        .catch(() => {
-          this.$message.error("添加失败！");
-        });
     }
   }
 };

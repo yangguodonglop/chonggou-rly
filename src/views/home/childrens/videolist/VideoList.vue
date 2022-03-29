@@ -1,6 +1,7 @@
 <template>
-<div style="">
-<div v-if="permission">
+<div style="display: flex;
+    justify-content: center;width:100%;">
+<div v-if="permission" style="width:100%">
   <div id="musiclist">
     <search-header>
       <div class="option">

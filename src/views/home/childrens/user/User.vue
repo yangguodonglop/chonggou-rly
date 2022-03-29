@@ -36,13 +36,12 @@
           </template>
           <!-- <el-table-column type="selection" width="55"> </el-table-column> -->
           <el-table-column prop="account" label="账户名" width="200" align="center"></el-table-column>
-          <el-table-column prop="nick" label="用户名" width="180" align="center" sortable></el-table-column>
+          <el-table-column prop="nick" label="用户名" width="200" align="center" sortable></el-table-column>
           <!-- <el-table-column prop="password" label="密码" width="120" align="center"></el-table-column> -->
-          <el-table-column prop="telephone" label="手机" width="150" align="center"></el-table-column>
-          <el-table-column prop="weiXin" label="微信" width="150" align="center"></el-table-column>
-          <el-table-column prop="createTime" label="创建时间" width="160" align="center" sortable></el-table-column>
-          <el-table-column prop="lastLogin" label="更新时间" width="160" align="center" sortable></el-table-column>
-          <el-table-column prop="remark" label="备注" width="200" align="center"></el-table-column>
+          <el-table-column prop="telephone" label="手机" width="200" align="center"></el-table-column>
+          <el-table-column prop="weiXin" label="微信" width="200" align="center"></el-table-column>
+          <el-table-column prop="createTime" label="创建时间" width="200" align="center" sortable></el-table-column>
+          <el-table-column prop="lastLogin" label="最近登录时间" width="200" align="center" sortable></el-table-column>
           <el-table-column fixed="right" label="操作" align="center">
             <template slot-scope="scope">
               <el-button type="text" size="mini" @click="updateClick(scope.row)">修改</el-button>
@@ -65,7 +64,8 @@
             style="textAlign: right"
           ></el-pagination>
         </div>
-        <el-dialog :close-on-click-modal='false'
+        <el-dialog
+          :close-on-click-modal="false"
           :footer="false"
           title="编辑信息"
           :visible.sync="dialogVisible"
@@ -73,7 +73,8 @@
         >
           <update :userInfo="userInfo" @editInfo="editInfo"></update>
         </el-dialog>
-        <el-dialog :close-on-click-modal='false'
+        <el-dialog
+          :close-on-click-modal="false"
           :footer="false"
           title="授权"
           :visible.sync="dialogVisibleActive"
@@ -81,7 +82,12 @@
         >
           <authorization :userInfo="userInfo" @authorizationInfo="authorizationInfo"></authorization>
         </el-dialog>
-        <el-dialog :close-on-click-modal='false' title="修改密码" :visible.sync="dialogVisiblePassword" customClass="customWidth3">
+        <el-dialog
+          :close-on-click-modal="false"
+          title="修改密码"
+          :visible.sync="dialogVisiblePassword"
+          customClass="customWidth3"
+        >
           <el-form class="userfrom" ref="form" :model="formPassword">
             <el-form-item label="账号" prop="userName" :label-width="formLabelWidth">
               <el-input v-model="formPassword.account" :disabled="true"></el-input>
@@ -90,8 +96,8 @@
               <el-input v-model="formPassword.newPassword" type="password"></el-input>
             </el-form-item>
             <el-form-item style=" display: flex;justify-content: center;">
-              <el-button type="primary" @click="back">退出</el-button>
-              <el-button type="primary" @click="onSubmitOk">保存</el-button>
+              <el-button size="small" type="primary" @click="back">退出</el-button>
+              <el-button size="small" type="primary" @click="onSubmitOk">保存</el-button>
             </el-form-item>
           </el-form>
         </el-dialog>
@@ -246,22 +252,21 @@ export default {
         account: this.formPassword.account,
         newPassword: this.formPassword.newPassword
       };
-      adminSetPassword(param)
-        .then(res => {
-          if (res.status == 0) {
-            this.$message({
-              type: "success",
-              message: "修改成功！"
-            });
-            this.dialogVisiblePassword = false;
-            this.$emit("quryInfo");
-          } else {
-            this.$message.error("修改失败！");
-          }
-        })
-        .catch(() => {
-          this.$message.error("修改失败！");
-        });
+      adminSetPassword(param).then(res => {
+        if (res.status == 0) {
+          this.$message({
+            type: "success",
+            message: "修改成功！"
+          });
+          this.dialogVisiblePassword = false;
+          this.$emit("quryInfo");
+        } else {
+          this.$message({
+            type: "error",
+            message: `操作失败！错误码：${res.status}--错误原因：${res.des}`
+          });
+        }
+      });
     },
     //授权用户回调
     authorizationInfo() {
@@ -287,9 +292,17 @@ export default {
         if (res.status == 0) {
           this.loading = false;
           res.data.item.forEach(item => {
+            let lastLoginActive = "";
+
+            if (item.lastLogin.indexOf("0001") > -1) {
+              lastLoginActive = "还未登陆";
+            } else {
+              lastLoginActive = this.dateFmt(item.lastLogin);
+            }
+            console.log(lastLoginActive);
             //改变时间日期的格式
             item.createTime = this.dateFmt(item.createTime);
-            item.lastLogin = this.dateFmt(item.lastLogin);
+            item.lastLogin = lastLoginActive;
             // 将用户状态和类型做转换
             // if (item.status === 1) {
             //   item.status = "正常";
@@ -305,18 +318,7 @@ export default {
         }
       });
     },
-    //查看
-    checkClick(row) {
-      //row是一个对象，里面保存所选行的所有信息
-      //使用路由传参，参数为对象时，需要先将其转化为JSON字符串
-      this.$router.push({
-        path: "/usercheck",
-        query: {
-          // row: JSON.stringify(row)
-          uid: row.uid
-        }
-      });
-    },
+
     //更新
     updateClick(row) {
       // this.userInfo="999999"
@@ -343,42 +345,28 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          delAccount(param).then(res => {
-            if (res.status == 0) {
-              this.$message({
-                type: "success",
-                message: "删除成功!"
-              });
-              this.findUserInfo();
-            } else {
-              this.$message({
-                type: "error",
-                message: "删除失败!"
-              });
-            }
-          });
-        })
-        .catch(() => {});
+      }).then(() => {
+        delAccount(param).then(res => {
+          if (res.status == 0) {
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+            this.findUserInfo();
+          } else {
+            this.$message({
+              type: "error",
+              message: `操作失败！错误码：${res.status}--错误原因：${res.des}`
+            });
+          }
+        });
+      });
     },
     //添加
     insertUser() {
       this.$router.push("/userinsert");
     },
-    //查询的结果
-    handleSearch() {
-      //利用正则表达式的构造方法去判断是否为一个单词
-      var reg = new RegExp("^\\b" + this.form.name + "\\b$");
-      //利用数组的filter方法，过滤该数组里每个对象的userName是否和查询表单里的name对应，如果对应
-      // 最后返回的是一个数组
-      return this.tableData.filter(item => {
-        if (reg.test(item.userName)) {
-          // 字符串索引有关键字值,返回true
-          return item;
-        }
-      });
-    },
+
     //刷新
     refresh() {
       this.reload();
@@ -394,40 +382,7 @@ export default {
       this.currentPage = val;
       this.findUserInfo();
     },
-    //当表单下拉框有值时，消除其余的表单下拉框的值
-    Change(param, val) {
-      if (param === "status" && val != "") {
-        this.search.type = "";
-        this.search.uid = "";
-        this.search.userName = "";
-        this.search.address = "";
-      }
-      if (param === "type" && val != "") {
-        this.search.status = "";
-        this.search.uid = "";
-        this.search.userName = "";
-        this.search.address = "";
-      }
-    },
-    //当表单搜索框有值时，消除其余的表单搜索框的值
-    inputchange(param) {
-      if (param === "uid") {
-        this.search.userName = "";
-        this.search.address = "";
-        this.search.status = "";
-        this.search.type = "";
-      } else if (param === "userName") {
-        this.search.uid = "";
-        this.search.address = "";
-        this.search.status = "";
-        this.search.type = "";
-      } else if (param === "address") {
-        this.search.uid = "";
-        this.search.userName = "";
-        this.search.status = "";
-        this.search.type = "";
-      }
-    },
+
     handleSelectionChange(val) {
       this.multipleSelection = val;
     }

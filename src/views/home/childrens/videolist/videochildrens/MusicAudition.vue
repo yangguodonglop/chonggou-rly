@@ -5,7 +5,7 @@
           <audio :src="auditionCodeUrl" controls="controls" id="music1" controlslist="nodownload"></audio>
         </div>
         <div
-          style="margin-top: 20px;text-indent: 20px;max-height: 600px;white-space: pre-wrap;overflow-y: auto;padding: 10px 20px;"
+          style="margin-top: 20px;text-indent: 20px;max-height: 500px;white-space: pre-wrap;overflow-y: auto;padding: 10px 20px;"
         >{{songText}}</div>
       </div>
   </div>

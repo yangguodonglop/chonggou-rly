@@ -133,7 +133,7 @@ export default {
           this.fileCode = "";
           this.$message({
             type: "error",
-            message: "上传歌词失败！"
+            message: `上传歌词失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
       });
@@ -166,7 +166,7 @@ export default {
 
           this.$message({
             type: "error",
-            message: "重新上传歌词失败!"
+            message: `重新上传歌词失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
       });

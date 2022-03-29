@@ -77,13 +77,6 @@ export default {
     onSubmit() {
       this.insertUser();
 
-      // this.$refs.form.validate(valid => {
-      //   if (valid) {
-      //     this.insertUser();
-      //   } else {
-      //     this.$message.error("请输入完整的用户信息!");
-      //   }
-      // });
     },
     //刷新
     refresh() {
@@ -91,6 +84,42 @@ export default {
     },
   
     insertUser() {
+      if(this.form.user==''){
+              this.$message({
+              type: "error",
+              message: "请输入正确的账户名！"
+            });
+            return  false
+      }
+
+        if(this.form.nick==''){
+              this.$message({
+              type: "error",
+              message: "请输入正确的昵称！"
+            });
+            return  false
+      }
+              if(this.form.password==''){
+              this.$message({
+              type: "error",
+              message: "请输入正确的密码！"
+            });
+            return  false
+      }
+        if(this.form.telephone=='' || this.form.telephone.length!=11){
+              this.$message({
+              type: "error",
+              message: "请输入正确的手机号！"
+            });
+            return  false
+      }
+         if(this.form.weiXin==''){
+              this.$message({
+              type: "error",
+              message: "请输入正确的微信号！"
+            });
+            return  false
+      }
       const param = {
         user: this.form.user,
         password: this.form.password,
@@ -108,11 +137,13 @@ export default {
               message: "添加成功！"
             });
             this.$emit("addUserInfo");
+          }else{
+                this.$message({
+              type: "error",
+              message: `添加失败！错误码：${res.status}--错误原因：${res.des}`
+            });
           }
         })
-        .catch(() => {
-          this.$message.error("添加失败！");
-        });
     }
   }
 };

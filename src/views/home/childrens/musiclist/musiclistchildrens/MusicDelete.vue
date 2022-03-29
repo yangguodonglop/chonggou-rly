@@ -46,7 +46,11 @@ export default {
                 });
                 this.refresh();
               } else {
-                this.$message.error("删除失败！");
+                      this.$message({
+                  type: "error",
+                                        message: `删除失败！错误码：${res.status}--错误原因：${res.des}`
+                });
+
               }
             });
             // this.axios({
