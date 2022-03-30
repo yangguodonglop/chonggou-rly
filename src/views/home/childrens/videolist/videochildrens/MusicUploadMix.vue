@@ -113,7 +113,7 @@ export default {
     },
      // 复制成功时的回调函数
     onCopy(e) {
-      debugger
+       
       this.$message.success("内容已复制到剪切板！");
        this.dialogVisibleUrl=false
     },

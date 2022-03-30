@@ -65,7 +65,7 @@ export default {
 
             // return false
             if (res.status == "0") {
-              debugger;
+               ;
               this.$message({
                 message: "登录成功!",
                 type: "success"

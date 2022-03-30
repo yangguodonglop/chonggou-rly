@@ -128,7 +128,7 @@ export default {
     },
       //查找用户列表
     findUserInfo() {
-      debugger
+       
       const param = {
         token: this.token,
         pageSize: 10,
@@ -172,103 +172,7 @@ export default {
       });
     },
 
-    // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
-    httpRequest(param) {
-      let fileObj = param.file; // 相当于input里取得的files
-      let fd = new FormData(); // FormData 对象
-      fd.append("files", fileObj); // 文件对象
-      fd.append("token", this.token);
-      fd.append("category", "arrPro");
-
-      // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
-      // let config = {
-      //   headers: {
-      //    'Content-Type': 'multipart/form-data'
-      //   }
-      // }
-      uploadFile(fd).then(res => {
-        if (res.status == 0) {
-          this.fileCode = res.data;
-          this.$message({
-            type: "success",
-            message: "上传编曲成功！"
-          });
-          //this.submitForm();//提交表单
-        } else {
-          this.fileCode = "";
-          this.$message({
-            type: "error",
-            message: "上传编曲失败！"
-          });
-        }
-        //  if(res.code===0){
-        //    this.submitForm();//提交表单
-        //  }
-      });
-    },
-    // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
-    httpRequestPro(param) {
-      let fileObj = param.file; // 相当于input里取得的files
-      let fd = new FormData(); // FormData 对象
-      fd.append("files", fileObj); // 文件对象
-      fd.append("token", this.token);
-      fd.append("category", "arrDC");
-
-      // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
-      // let config = {
-      //   headers: {
-      //    'Content-Type': 'multipart/form-data'
-      //   }
-      // }
-      uploadFile(fd).then(res => {
-        if (res.status == 0) {
-          this.projectCode = res.data;
-          this.$message({
-            type: "success",
-            message: "上传工程文件成功！"
-          });
-          //this.submitForm();//提交表单
-        } else {
-          this.projectCode = "";
-
-          this.$message({
-            type: "error",
-            message: "上传工程文件失败！"
-          });
-        }
-      });
-    },
-      httpRequestDchang(param) {
-      let fileObj = param.file; // 相当于input里取得的files
-      let fd = new FormData(); // FormData 对象
-      fd.append("files", fileObj); // 文件对象
-      fd.append("token", this.token);
-      fd.append("category", "rec");
-
-      // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
-      // let config = {
-      //   headers: {
-      //    'Content-Type': 'multipart/form-data'
-      //   }
-      // }
-      uploadFile(fd).then(res => {
-        if (res.status == 0) {
-          this.daoChangCode = res.data;
-          this.$message({
-            type: "success",
-            message: "上传导唱文件成功！"
-          });
-          //this.submitForm();//提交表单
-        } else {
-          this.daoChangCode = "";
-
-          this.$message({
-            type: "error",
-            message: "上传导唱文件失败！"
-          });
-        }
-      });
-    },
+ 
     
     refresh() {
       this.reload();
@@ -308,7 +212,8 @@ export default {
 
           this.$message({
             type: "error",
-            message: "生成试听列表失败！"
+                        message: `生成试听列表失败！错误码：${res.status}--错误原因：${res.des}`
+
           });
         }
       });

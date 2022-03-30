@@ -48,7 +48,6 @@
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="/singerlist">生成试听歌单</el-menu-item>
-                  <!-- <el-menu-item index="/singertype">歌手类型</el-menu-item> -->
                 </el-menu-item-group>
               </el-submenu>
               <el-submenu index="3">
@@ -86,7 +85,7 @@
       <el-container>
         <el-main>
           <keep-alive
-            exclude="User,Check,Add,Update,MusicList,MusicAdd,MusicType,MusicCheck,MusicUpdate,SingerType,SingerAdd,SingerList,SingerCheck,SingerUpdate,VideoList,VideoAdd,VideoCheck,VideoUpdate"
+            exclude="User,Check,Add,Update,MusicList,MusicAdd,MusicCheck,SingerType,SingerAdd,SingerList,SingerCheck,VideoList,VideoAdd"
           >
             <router-view></router-view>
           </keep-alive>

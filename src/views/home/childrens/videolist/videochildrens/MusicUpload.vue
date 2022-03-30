@@ -43,11 +43,11 @@
           action
           multiple
           ref="upload_img"
-          accept=".jpg, .jpeg, .png"
+           accept=""
           :http-request="httpRequest"
         >
           <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-          <span slot="tip" class="el-upload__tip">请选择.word格式的歌词文件上传</span>
+          <span slot="tip" class="el-upload__tip">请选择歌词文件上传</span>
         </el-upload>
       </el-form-item>
           <el-form-item label="" :label-width="formLabelWidth" style="display: flex;
@@ -357,7 +357,8 @@ export default {
 
           this.$message({
             type: "error",
-            message: "上传歌词失败！"
+                        message: `上传歌词失败！错误码：${res.status}--错误原因：${res.des}`
+
           });
         }
       });
@@ -376,18 +377,7 @@ export default {
         templyricsCode=this.lyricsCode
       }
      const param= {
-    //     token: this.token,
-    // songID:this.userInfo.id,
-    // updateFiled: {
-    //     songName:this.userInfo.songName,
-    //     lyricist: this.userInfo.lyricist,
-    //     lyricsCode:templyricsCode ,
-    //     composer:this.userInfo.composer,
-    //     tag: this.userInfo.tagActive,
-    //     publisher: this.userInfo.publisher,
-    //     collaborateMode: this.userInfo.collaborate,
-    //     copyright: this.userInfo.copyright
-    // }
+  
 
         token: this.token,
     id: this.userInfo.id,
@@ -414,7 +404,8 @@ export default {
 
           this.$message({
             type: "error",
-            message: "更新歌曲基本信息失败！"
+                                    message: `更新歌曲基本信息失败！错误码：${res.status}--错误原因：${res.des}`
+
           });
         }
       });
@@ -464,7 +455,9 @@ export default {
 
           this.$message({
             type: "error",
-            message: "更新歌曲发布信息失败！"
+                                                message: `更新歌曲发布信息失败！错误码：${res.status}--错误原因：${res.des}`
+
+            
           });
         }
       });

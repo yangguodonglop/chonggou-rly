@@ -290,8 +290,6 @@ import {
 import SearchHeader from "components/common/header/SearchHeader.vue";
 import SearchInput from "components/common/searchinput/SearchInput.vue";
 
-import MusicAdd from "./videochildrens/MusicAdd.vue";
-import MusicDelete from "./videochildrens/MusicDelete.vue";
 import MusicAudition from "./videochildrens/MusicAudition.vue";
 import MusicDistribute from "./videochildrens/MusicDistribute.vue";
 import MusicUpload from "./videochildrens/MusicUpload.vue";
@@ -314,8 +312,6 @@ export default {
   components: {
     SearchHeader,
     SearchInput,
-    MusicAdd,
-    MusicDelete,
     MusicAudition,
     MusicDistribute,
     MusicUpload,
@@ -396,7 +392,7 @@ export default {
   created() {
          this.funcGroupArr = JSON.parse(localStorage.getItem("userInfo")).account.funcGroup
      console.log(this.funcGroupArr)
-     debugger
+      
       if (this.funcGroupArr.includes(100)||this.funcGroupArr.includes(600) || this.funcGroupArr.includes(651)){
 this.permission=true
       } else{

@@ -165,12 +165,12 @@ export default {
       this.publisher = val;
     },
     onChangeMode(val) {
-      debugger
+       
       console.log(this.copyrightModeList)
       this.collaborateMode = val;
     },
     onChangeRightMode(val) {
-      debugger
+       
       console.log(this.CooperativeList)
       this.copyrightMode = val;
     },
@@ -184,7 +184,7 @@ export default {
       // this.loading = true;
       //向后端发送请求并接受数据库中的用户列表
       aboutCopyrightMode(param).then(res => {
-        debugger;
+         ;
         console.log(res);
         if (res.status == 0) {
           this.loading = false;
@@ -270,7 +270,6 @@ export default {
     },
 
     confirm() {
-      debugger
       const param = {
         token: this.token,
         songIDs: [this.userInfo.id],
@@ -294,7 +293,8 @@ export default {
 
           this.$message({
             type: "error",
-            message: "锁定失败！"
+                                    message: `锁定失败！错误码：${res.status}--错误原因：${res.des}`
+
           });
         }
       });

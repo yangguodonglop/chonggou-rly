@@ -80,7 +80,7 @@ export default {
       
     //获取歌曲
     musicListDemo() {
-      debugger
+       
       let fileCode=''
       if(this.userInfo.progressRateActive==0){
         fileCode=this.userInfo.demoFile

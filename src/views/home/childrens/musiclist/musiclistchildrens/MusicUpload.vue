@@ -13,11 +13,11 @@
             action
             multiple
             ref="upload_img"
-            accept=".jpg, .jpeg, .png"
+             accept=""
             :http-request="httpRequest"
           >
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <span slot="tip" class="el-upload__tip">请选择.MP3格式的文件上传</span>
+            <span slot="tip" class="el-upload__tip">请选择编曲文件上传</span>
           </el-upload>
         </el-form-item>
         <el-form-item label="上传工程文件:" prop="file" :label-width="formLabelWidth">
@@ -25,11 +25,11 @@
             action
             multiple
             ref="upload_img"
-            accept=".jpg, .jpeg, .png"
+             accept=""
             :http-request="httpRequestPro"
           >
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <span slot="tip" class="el-upload__tip">请选择.歌词文件上传</span>
+            <span slot="tip" class="el-upload__tip">请选择工程文件上传</span>
           </el-upload>
         </el-form-item>
          <el-form-item label="上传导唱文件:" prop="file" :label-width="formLabelWidth">
@@ -37,11 +37,11 @@
             action
             multiple
             ref="upload_img"
-            accept=".jpg, .jpeg, .png"
+             accept=""
             :http-request="httpRequestDchang"
           >
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <span slot="tip" class="el-upload__tip">请选择.歌词文件上传</span>
+            <span slot="tip" class="el-upload__tip">请选择导唱文件上传</span>
           </el-upload>
         </el-form-item>
       </el-form>

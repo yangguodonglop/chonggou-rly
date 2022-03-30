@@ -1,6 +1,6 @@
 //给Date类添加了一个新的实例方法format
 Date.prototype.format = function(fmt) {
-  //debugger;
+  // ;
   let o = {
     "M+": this.getMonth() + 1, //月份
     "d+": this.getDate(), //日

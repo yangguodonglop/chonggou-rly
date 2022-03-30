@@ -10,7 +10,7 @@
             action
             multiple
             ref="upload_img"
-            accept=".jpg, .jpeg, .png"
+             accept=""
             :http-request="httpRequest"
           >
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -142,7 +142,7 @@ export default {
       this.reload();
     },
     confirm() {
-      debugger
+       
       
       const param = {
         token: this.token,

@@ -101,7 +101,7 @@ export default {
     },
     //确定
     confirm(){
-      debugger
+       
       console.log(this.userInfo)
       console.log(JSON.parse(JSON.stringify(this.userInfo.process.plIds)))
       const param=

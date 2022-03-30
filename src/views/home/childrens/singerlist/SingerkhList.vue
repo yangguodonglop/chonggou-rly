@@ -189,7 +189,6 @@ import SearchHeader from "components/common/header/SearchHeader.vue";
 import SearchInput from "components/common/searchinput/SearchInput.vue";
 
 import MusicAdd from "./singerlistchildrens/MusicAdd.vue";
-import MusicDelete from "./singerlistchildrens/MusicDelete.vue";
 import MusicAudition from "./singerlistchildrens/MusicAudition.vue";
 import MusicDistribute from "./singerlistchildrens/MusicDistribute.vue";
 import MusicUpload from "./singerlistchildrens/MusicUpload.vue";
@@ -212,7 +211,6 @@ export default {
     SearchHeader,
     SearchInput,
     MusicAdd,
-    MusicDelete,
     MusicAudition,
     MusicDistribute,
     MusicUpload,

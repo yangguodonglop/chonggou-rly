@@ -1,7 +1,12 @@
 <template>
   <div id="add">
     <el-button type="primary" size="mini" @click="dialogFormVisible = true">生成试听列表</el-button>
-    <el-dialog :close-on-click-modal='false' title="添加歌曲" customClass="customWidth-addSong" :visible.sync="dialogFormVisible">
+    <el-dialog
+      :close-on-click-modal="false"
+      title="添加歌曲"
+      customClass="customWidth-addSong"
+      :visible.sync="dialogFormVisible"
+    >
       <el-form :model="music">
         <el-form-item label="歌单名称:" :label-width="formLabelWidth">
           <el-input v-model="music.musicName" autocomplete="off" placeholder="请输入歌曲名称"></el-input>
@@ -27,11 +32,11 @@
             action
             multiple
             ref="upload_img"
-            accept=".jpg, .jpeg, .png"
+             accept=""
             :http-request="httpRequest"
           >
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <span slot="tip" class="el-upload__tip">请选择.MP3格式的文件上传</span>
+            <span slot="tip" class="el-upload__tip">请选择歌曲文件上传</span>
           </el-upload>
         </el-form-item>
         <el-form-item label="上传歌词:" prop="file" :label-width="formLabelWidth">
@@ -39,14 +44,14 @@
             action
             multiple
             ref="upload_img"
-            accept=".jpg, .jpeg, .png"
+             accept=""
             :http-request="httpRequestLyric"
           >
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
             <span slot="tip" class="el-upload__tip">请选择.歌词文件上传</span>
           </el-upload>
         </el-form-item>-->
-      </el-form> 
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
         <el-button type="primary" @click="confirm()" size="small">确 定</el-button>
@@ -58,33 +63,37 @@
 
 
 <script>
-import { uploadFile, aboutMusicTag, commitDemo,userListActive } from "network/home.js";
+import {
+  uploadFile,
+  aboutMusicTag,
+  commitDemo,
+  userListActive
+} from "network/home.js";
 
 export default {
   name: "MusicAdd",
   inject: ["reload"],
-     props: {
+  props: {
     userInfo: {
       type: Object,
       default: () => {}
     }
   },
   data() {
-  
     return {
       token: JSON.parse(localStorage.getItem("userInfo")).token,
 
       music: {
         fileList: [],
         musicName: "",
-        musicType: '',
+        musicType: "",
         musicPicture: "",
         musicHot: "",
         musicSinger: "",
         musicAdress: "",
         musicLric: ""
       },
-      distributeTypeList:[],
+      distributeTypeList: [],
       dialogFormVisible: false,
       formLabelWidth: "150px",
       headers: {
@@ -110,12 +119,12 @@ export default {
   },
   mounted() {
     this.queryInfo();
-    this.findUserInfo()
+    this.findUserInfo();
   },
   methods: {
     //选择制作人
-    onChange(val){
-      console.log(val)
+    onChange(val) {
+      console.log(val);
     },
     //查询合作模式
     queryInfo() {
@@ -134,13 +143,13 @@ export default {
         }
       });
     },
-       //查找用户列表
+    //查找用户列表
     findUserInfo() {
       const param = {
         token: this.token,
         pageSize: 10,
         curPage: this.currentPage - 1,
-        fFuncGroup: 1000 
+        fFuncGroup: 1000
       };
       this.loading = true;
       //向后端发送请求并接受数据库中的用户列表
@@ -154,7 +163,7 @@ export default {
           this.distributeTypeList = [];
           //this.getTotal = 0;
         }
-        console.log(this.distributeTypeList)
+        console.log(this.distributeTypeList);
       });
     },
 
@@ -184,7 +193,7 @@ export default {
           this.demoCode = "";
           this.$message({
             type: "error",
-            message: "上传歌曲失败！"
+            message: `上传歌曲失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
         //  if(res.code===0){
@@ -219,7 +228,7 @@ export default {
 
           this.$message({
             type: "error",
-            message: "上传歌词失败！"
+            message: `上传歌曲失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
       });
@@ -271,14 +280,14 @@ export default {
         //   demoCode: this.demoCode,
         //   tag: this.music.musicType
         // }
-    
-    listName: this.music.musicName,
-    validTime: this.music.musicLric,
-    lockTime:this.music.musicSinger,
-    publisher: this.music.musicType,
-    "songID":["61baa9143790470b7935b544"]
+
+        listName: this.music.musicName,
+        validTime: this.music.musicLric,
+        lockTime: this.music.musicSinger,
+        publisher: this.music.musicType,
+        songID: ["61baa9143790470b7935b544"]
       };
-      console.log(param)
+      console.log(param);
       commitDemo(param).then(res => {
         console.log(res);
         if (res.status == 0) {
@@ -287,15 +296,15 @@ export default {
             type: "success",
             message: "上传小样成功！"
           });
-          this.dialogFormVisible=false
+          this.dialogFormVisible = false;
           //this.submitForm();//提交表单
-          this.$emit('addMusic')
+          this.$emit("addMusic");
         } else {
           this.lyricsCode = "";
 
           this.$message({
             type: "error",
-            message: "上传小样失败！"
+            message: `上传小样失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
       });

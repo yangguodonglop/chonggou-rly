@@ -8,28 +8,16 @@ const Home = () => import("views/home/Home.vue");
 const MusicList = () => import("views/home/childrens/musiclist/MusicList.vue");
 const MusicCheck = () =>
   import("views/home/childrens/musiclist/musiclistchildrens/MusicCheck.vue");
-const MusicUpdate = () =>
-  import("views/home/childrens/musiclist/musiclistchildrens/MusicUpdate.vue");
-const MusicType = () => import("views/home/childrens/musictype/MusicType.vue");
 
-const SingerType = () =>
-  import("views/home/childrens/singertype/SingerType.vue");
+
 const SingerList = () =>
   import("views/home/childrens/singerlist/SingerList.vue");
   const SingerkhList = () =>
   import("views/home/childrens/singerlist/SingerkhList.vue");
-const SingerCheck = () =>
-  import("views/home/childrens/singerlist/singerlistchildrens/SingerCheck.vue");
-const SingerUpdate = () =>
-  import(
-    "views/home/childrens/singerlist/singerlistchildrens/SingerUpdate.vue"
-  );
+
 
 const VideoList = () => import("views/home/childrens/videolist/VideoList.vue");
-const VideoCheck = () =>
-  import("views/home/childrens/videolist/videochildrens/VideoCheck.vue");
-const VideoUpdate = () =>
-  import("views/home/childrens/videolist/videochildrens/VideoUpdate.vue");
+
 
 const User = () => import("views/home/childrens/user/User.vue");
 const Check = () => import("views/home/childrens/user/userchildrens/Check.vue");
@@ -71,18 +59,12 @@ const routes = [
         path: "/musiclist",
         component: MusicList
       },
-      {
-        path: "/musictype",
-        component: MusicType
-      },
+
       {
         path: "/musiccheck",
         component: MusicCheck
       },
-      {
-        path: "/musicupdate",
-        component: MusicUpdate
-      },
+   
       {
         path: "/singerlist",
         component: SingerList
@@ -92,29 +74,10 @@ const routes = [
         component: SingerkhList
       },
       
-      {
-        path: "/singertype",
-        component: SingerType
-      },
-      {
-        path: "/singercheck",
-        component: SingerCheck
-      },
-      {
-        path: "/singerupdate",
-        component: SingerUpdate
-      },
+  
       {
         path: "/videolist",
         component: VideoList
-      },
-      {
-        path: "/videocheck",
-        component: VideoCheck
-      },
-      {
-        path: "/videoupdate",
-        component: VideoUpdate
       },
       {
         path: "/user",

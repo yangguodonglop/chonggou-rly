@@ -10,11 +10,11 @@
             action
             multiple
             ref="upload_img"
-            accept=".jpg, .jpeg, .png"
+             accept=""
             :http-request="httpRequest"
           >
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <span slot="tip" class="el-upload__tip">请选择.MP3格式的文件上传</span>
+            <span slot="tip" class="el-upload__tip">请选择录音文件上传</span>
           </el-upload>
         </el-form-item>
         <el-form-item label="上传工程文件:" prop="file" :label-width="formLabelWidth">
@@ -22,7 +22,7 @@
             action
             multiple
             ref="upload_img"
-            accept=".jpg, .jpeg, .png"
+             accept=""
             :http-request="httpRequestPro"
           >
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -34,7 +34,7 @@
             action
             multiple
             ref="upload_img"
-            accept=".jpg, .jpeg, .png"
+             accept=""
             :http-request="httpRequestDchang"
           >
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -161,7 +161,8 @@ export default {
           this.fileCode = "";
           this.$message({
             type: "error",
-            message: "上传录音失败！"
+                                                            message: `上传录音失败！错误码：${res.status}--错误原因：${res.des}`
+
           });
         }
         //  if(res.code===0){
@@ -196,7 +197,8 @@ export default {
 
           this.$message({
             type: "error",
-            message: "上传录音工程文件失败！"
+                                                message: `上传录音工程文件失败！错误码：${res.status}--错误原因：${res.des}`
+
           });
         }
       });
@@ -227,7 +229,7 @@ export default {
 
           this.$message({
             type: "error",
-            message: "上传导唱文件失败！"
+                                                message: `上传导唱文件失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
       });
@@ -266,7 +268,8 @@ export default {
 
           this.$message({
             type: "error",
-            message: "上传录音失败！"
+                                                            message: `上传录音失败！错误码：${res.status}--错误原因：${res.des}`
+
           });
         }
       });

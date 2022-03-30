@@ -1,4 +1,7 @@
 <template>
+  <div style="display: flex;
+    justify-content: center;width:100%;">
+    <div v-if="permission" style="width:100%">
   <div id="musiclist">
     <search-header>
       <div class="option">
@@ -60,34 +63,59 @@
             size="mini"
             @click="addMusic()"
           >上传小样</el-button>
-           <div class="refresh" style="margin-left:20px">
+          <div class="refresh" style="margin-left:20px">
             <el-dropdown trigger="click">
- 
-                  <el-button type="primary" size="mini" icon="el-icon-s-tools">批量分配</el-button>
+              <el-button type="primary" size="mini" icon="el-icon-s-tools">批量分配</el-button>
 
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item icon="el-icon-s-tools"   @click.native="toDistributeActive(plIds, 'producer', '200')">分配制作人</el-dropdown-item>
-        <el-dropdown-item icon="el-icon-s-tools" @click.native="toDistributeActive(plIds, 'arrangementM', '300')">分配编曲组长</el-dropdown-item>
-        <el-dropdown-item icon="el-icon-s-tools" @click.native="toDistributeActive(plIds, 'arrangement', '351')">分配编曲师</el-dropdown-item>
-        <el-dropdown-item icon="el-icon-s-tools" @click.native="toDistributeActive(plIds, 'recorderM', '400')">分配录音组长</el-dropdown-item>
-        <el-dropdown-item icon="el-icon-s-tools" @click.native="toDistributeActive(plIds, 'recorder', '451')">分配录音师</el-dropdown-item>
-        <el-dropdown-item icon="el-icon-s-tools" @click.native="toDistributeActive(plIds, 'mixerM', '500')">分配混音组长</el-dropdown-item>
-        <el-dropdown-item icon="el-icon-s-tools" @click.native="toDistributeActive(plIds,  'mixer', '551')">分配混音师</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  icon="el-icon-s-tools"
+                  @click.native="toDistributeActive(plIds, 'producer', '200')"
+                >分配制作人</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-s-tools"
+                  @click.native="toDistributeActive(plIds, 'arrangementM', '300')"
+                >分配编曲组长</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-s-tools"
+                  @click.native="toDistributeActive(plIds, 'arrangement', '351')"
+                >分配编曲师</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-s-tools"
+                  @click.native="toDistributeActive(plIds, 'recorderM', '400')"
+                >分配录音组长</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-s-tools"
+                  @click.native="toDistributeActive(plIds, 'recorder', '451')"
+                >分配录音师</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-s-tools"
+                  @click.native="toDistributeActive(plIds, 'mixerM', '500')"
+                >分配混音组长</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-s-tools"
+                  @click.native="toDistributeActive(plIds,  'mixer', '551')"
+                >分配混音师</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
           <div class="refresh" style="margin-left:20px">
             <el-dropdown trigger="click">
- 
-                  <el-button type="primary" size="mini" icon="el-icon-s-tools">批量审核</el-button>
+              <el-button type="primary" size="mini" icon="el-icon-s-tools">批量审核</el-button>
 
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item icon="el-icon-s-tools"   @click.native="toReviewActive(idsObj, '30')">通过</el-dropdown-item>
-        <el-dropdown-item icon="el-icon-s-tools" @click.native="toReviewActive(idsObj, '20')">驳回</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  icon="el-icon-s-tools"
+                  @click.native="toReviewActive(idsObj, '30')"
+                >通过</el-dropdown-item>
+                <el-dropdown-item
+                  icon="el-icon-s-tools"
+                  @click.native="toReviewActive(idsObj, '20')"
+                >驳回</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
-          
+
           <el-button
             type="danger"
             size="mini"
@@ -104,7 +132,6 @@
           <div class="refresh" style="margin-left:20px">
             <el-button type="info" size="mini" @click="refreshInfo()" icon="el-icon-refresh">重置</el-button>
           </div>
-         
         </div>
       </div>
     </search-header>
@@ -122,7 +149,7 @@
       </template>
       <el-table-column type="selection" align="center" width="40"></el-table-column>
       <el-table-column prop="idActive" label="歌曲编号" width="100" align="left"></el-table-column>
-      <el-table-column label="歌曲名称" align="left">
+      <el-table-column label="歌曲名称"  width="300" align="left">
         <template slot-scope="scope">
           <div>
             <span
@@ -160,6 +187,10 @@
           </div>
         </template>
       </el-table-column>
+            <!-- <el-table-column prop="createTime" label="编曲状态" width="150" align="left"></el-table-column>
+            <el-table-column prop="createTime" label=" 录音状态" width="150" align="left"></el-table-column>
+            <el-table-column prop="createTime" label="缩混状态" width="150" align="left"></el-table-column> -->
+
       <el-table-column prop="createTime" label="创建时间" width="150" align="left"></el-table-column>
 
       <el-table-column prop="publishTime" label="发布时间" width="150" align="left"></el-table-column>
@@ -224,10 +255,7 @@
                 <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro')">下载录缩混程文件</el-dropdown-item>
                 <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro')">下载导唱文件</el-dropdown-item>
                 <el-dropdown-item v-if="producerHide" @click.native="toReview(scope.row, '30')">通过</el-dropdown-item>
-                <el-dropdown-item
-                  v-if="producerHide"
-                  @click.native="toReview(scope.row, '20')"
-                >驳回</el-dropdown-item>
+                <el-dropdown-item v-if="producerHide" @click.native="toReview(scope.row, '20')">驳回</el-dropdown-item>
                 <el-dropdown-item v-if="producerHide" @click.native="deleteClick(scope.row)">删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -320,6 +348,13 @@
     ></music-add>
     <music-distribute :userInfo="userInfo" v-if="processType" @editProcess="editProcess"></music-distribute>
   </div>
+  </div>
+  
+  <div v-if="!permission">
+  <img class="permission-img" src="@/assets/permission.webp" width="900" height="420">
+  <div class="permission-text">对不起，您暂无权限访问该页面，请联系管理员授权！</div>
+</div>
+</div>
 </template>
 
 <script>
@@ -457,7 +492,7 @@ export default {
       processType: false,
       auditionType: false,
       plIds: [],
-      idsObj:[]
+      idsObj: []
     };
   },
   created() {
@@ -466,10 +501,10 @@ export default {
       localStorage.getItem("userInfo")
     ).account.funcGroup;
     console.log(this.funcGroupArr);
-    if (this.funcGroupArr.includes(100)) {
-      this.permission = true;
-    } else {
+    if (this.funcGroupArr.includes(1000)) {
       this.permission = false;
+    } else {
+      this.permission = true;
     }
     if (
       this.funcGroupArr.includes(150) == true ||
@@ -594,15 +629,14 @@ export default {
     handleSelectionChange(val) {
       console.log(val);
       this.plIds = [];
-      this.idsObj=[]
+      this.idsObj = [];
       if (val.length > 0) {
-        val.forEach((item)=>{
- this.plIds.push(item.id);
- this.idsObj.push(item)
-        })
-       
+        val.forEach(item => {
+          this.plIds.push(item.id);
+          this.idsObj.push(item);
+        });
       }
-      console.log(this.plIds)
+      console.log(this.plIds);
       this.multipleSelection = val;
       console.log(this.multipleSelection);
       console.log(this.$refs.multipleTable.selection);
@@ -619,15 +653,26 @@ export default {
       // this.postExcelFile(param,"http://106.53.61.91:6325/rylBGM/productLine/downloadFile", );
       downloadFile(param).then(res => {
         console.log(res);
-        if (res.status == 0) {
-          let tempMd5 = res.data;
-          //     const Base64 = require("js-base64").Base64;
-          // const exStr = Base64.encodeURI(type);
-          // const fileName = val.cr_songName;
-          let openUrl = baseUrl + "/productLine/tempDownLoadFile/" + tempMd5;
-          window.open(openUrl, "_blank");
+          if (res.status == 0) {
+            this.$message({
+              type: "success",
+              message: "请求成功!请耐心等待下载"
+            });
+            let tempMd5 = res.data;
+            //     const Base64 = require("js-base64").Base64;
+            // const exStr = Base64.encodeURI(type);
+            // const fileName = val.cr_songName;
+            let openUrl = baseUrl + "/productLine/tempDownLoadFile/" + tempMd5;
+            window.open(openUrl, "_blank");
+          } else {
+            this.$message({
+              type: "error",
+              message: `下载失败！错误码：${res.status}--错误原因：${res.des}`
+            });
+          }
+
           // tempDownLoadFile(tempMd5)
-        }
+        
       });
     },
     //点击之后的当前页数
@@ -636,9 +681,8 @@ export default {
       this.currentPage = val;
       this.musicList();
     },
-     //批量删除歌曲
+    //批量删除歌曲
     deleteClick(row) {
-      
       const param = {
         token: this.token,
         songID: [row.id]
@@ -659,14 +703,14 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: "删除失败!"
+                message: `删除失败！错误码：${res.status}--错误原因：${res.des}`
               });
             }
           });
         })
         .catch(() => {});
     },
- 
+
     //上传编曲取消
     editDistributeText() {
       this.dialogVisibleText = false;
@@ -717,7 +761,7 @@ export default {
         } else {
           this.$message({
             type: "error",
-            message: "操作失败！"
+            message: `操作失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
         this.musicList();
@@ -770,23 +814,23 @@ export default {
       this.musicList();
     },
     //批量审核操作
-    toReviewActive(idsObj,type){
-      debugger
-        if(idsObj.length==0){
-         this.$message({
-                type: "error",
-                message: "请至少选则一项进行批量操作!"
-              });
-              return false
+    toReviewActive(idsObj, type) {
+       ;
+      if (idsObj.length == 0) {
+        this.$message({
+          type: "error",
+          message: "请至少选则一项进行批量操作!"
+        });
+        return false;
       }
-      let tempIdArr=[]
-      idsObj.forEach((item)=>{
-        tempIdArr.push(item.id)
-      })
+      let tempIdArr = [];
+      idsObj.forEach(item => {
+        tempIdArr.push(item.id);
+      });
 
       console.log(idsObj);
       console.log(type);
-      console.log(tempIdArr)
+      console.log(tempIdArr);
       let tempType = "";
       if (idsObj[0].progressRateActive == 370) {
         tempType = "record";
@@ -812,24 +856,23 @@ export default {
         } else {
           this.$message({
             type: "error",
-            message: "操作失败！"
+            message: `操作失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
         this.musicList();
       });
-
     },
     //批量审核操作
-    toDistributeActive(ids,type,group){
-      if(ids.length==0){
-         this.$message({
-                type: "error",
-                message: "请至少选则一项进行批量操作!"
-              });
-              return false
+    toDistributeActive(ids, type, group) {
+      if (ids.length == 0) {
+        this.$message({
+          type: "error",
+          message: "请至少选则一项进行批量操作!"
+        });
+        return false;
       }
-      console.log(ids,type,group)
-       switch (group) {
+      console.log(ids, type, group);
+      switch (group) {
         case "200":
           this.titleFp = "分配制作人";
           break;
@@ -860,9 +903,8 @@ export default {
         processType: this.titleFp,
         plIds: this.plIds
       };
-      this.userInfo = {...param, process };
+      this.userInfo = { ...param, process };
       this.processType = true;
-      
     },
     //分配制作人
     toDistribute(row, type, group) {
@@ -917,18 +959,18 @@ export default {
     },
     // 操作
     handleCommand() {},
-     //批量删除
+    //批量删除
     deleteAll() {
-         if(this.plIds.length==0){
-         this.$message({
-                type: "error",
-                message: "请至少选则一项进行批量操作!"
-              });
-              return false
+      if (this.plIds.length == 0) {
+        this.$message({
+          type: "error",
+          message: "请至少选则一项进行批量操作!"
+        });
+        return false;
       }
       const param = {
         token: this.token,
-        songID:  JSON.parse(JSON.stringify(this.plIds))
+        songID: JSON.parse(JSON.stringify(this.plIds))
       };
       // console.log(row);
       this.$confirm("完成信息核对, 确认提交?", "提示", {
@@ -947,15 +989,14 @@ export default {
             } else {
               this.$message({
                 type: "error",
-                message: "删除失败!"
+                message: `操作失败！错误码：${res.status}--错误原因：${res.des}`
               });
             }
           });
         })
         .catch(() => {});
     },
-    
-  
+
     //查询合作模式
     queryInfoStyle() {
       const param = {
@@ -981,7 +1022,6 @@ export default {
         }
       });
     },
-
 
     //获得音乐类型列表
     musicTypeList() {
@@ -1027,7 +1067,7 @@ export default {
               tempStatus = "已提交小样";
               break;
             case 100:
-              tempStatus =  `已分配制作人--${items.producerNick}`;
+              tempStatus = `已分配制作人--${items.producerNick}`;
               break;
             case 150:
               tempStatus = `已分配编曲组长--${items.arrangement.leaderNick}`;
@@ -1078,13 +1118,15 @@ export default {
               tempStatus = "发布等一系列流程完毕";
               break;
           }
-          let publishTimeActive=''
-          if(items.publish.publishTime.indexOf('0001')>-1){
-            items.publish.publishTimeActive="暂无发布时间"
-          }else{
-            items.publish.publishTimeActive=this.dateFmt(items.publish.publishTime)
+          let publishTimeActive = "";
+          if (items.publish.publishTime.indexOf("0001") > -1) {
+            items.publish.publishTimeActive = "暂无发布时间";
+          } else {
+            items.publish.publishTimeActive = this.dateFmt(
+              items.publish.publishTime
+            );
           }
-          console.log(items.publish.publishTimeActive)
+          console.log(items.publish.publishTimeActive);
           //  let idActive=items.id
           //  console.log(idActive)
           // console.log(idActive.substring(idActive.length-5))
@@ -1094,7 +1136,7 @@ export default {
             lyricist: items.submitter.lyricist,
             tag: items.submitter.tagName.join(","),
             id: items.id,
-            idActive: items.id.substring(items.id.length-5),
+            idActive: items.id.substring(items.id.length - 5),
             demoFile: items.submitter.demoFile,
             lyricsFile: items.submitter.lyricsFile,
             producerNick: items.producerNick,

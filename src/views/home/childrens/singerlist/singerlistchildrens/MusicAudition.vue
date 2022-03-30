@@ -53,7 +53,6 @@ export default {
   },
   mounted() {
        console.log(baseUrl)
-    //this.findMusicById(this.mid);
     this.musicListlyricsFile()
      this.musicListDemo()
   },
@@ -151,16 +150,7 @@ export default {
     back() {
       this.$router.back();
     },
-    findMusicById(mid) {
-      findMusicById(mid).then(res => {
-        // console.log(res);
-        res.musicphotourl =
-          "http://localhost:8090/musicstatic/" + res.musicphotourl;
-        this.music = res;
-        this.singer = res.singer;
-        this.musicType = res.musictype;
-      });
-    }
+
   },
   filters: {
     dateFmt(date) {
