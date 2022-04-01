@@ -30,7 +30,7 @@
       />
     </div> -->
     <div class="btn" v-if="this.$store.state.isShow">
-      <el-button type="text" @click="userLogin" class="login">登录</el-button>
+      <!-- <el-button type="text" @click="userLogin" class="login">登录</el-button> -->
       <div class="shu"></div>
       <el-button type="text" @click="adminLogin" class="login"
         >管理员登录</el-button

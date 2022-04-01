@@ -2,359 +2,519 @@
   <div style="display: flex;
     justify-content: center;width:100%;">
     <div v-if="permission" style="width:100%">
-  <div id="musiclist">
-    <search-header>
-      <div class="option">
-        <div class="sing-id option-active">
-          <span>时间查询：</span>
-          <el-date-picker
-            v-model="timeValue"
-            value-format="timestamp"
-            type="daterange"
-            range-separator="至"
-            @change="timeChange"
-            size="mini"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          ></el-date-picker>
-        </div>
+      <div id="musiclist">
+        <search-header>
+          <div class="option">
+            <div class="sing-id option-active">
+              <span>时间查询：</span>
+              <el-date-picker
+                v-model="timeValue"
+                value-format="timestamp"
+                type="daterange"
+                range-separator="至"
+                @change="timeChange"
+                size="mini"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              ></el-date-picker>
+            </div>
 
-        <div class="sing-id option-active">
-          <span>歌曲名称：</span>
-          <el-input v-model="seachName" size="mini" placeholder="请输入歌曲名称" style="width: 150px" />
-        </div>
-        <div class="sing-name option-active">
-          <span>作词者：</span>
-          <el-input v-model="seachLyricist" size="mini" placeholder="请输入作词者" style="width: 150px" />
-        </div>
-        <div class="sing-singer option-active">
-          <span>作曲者:</span>
+            <div class="sing-id option-active">
+              <span>歌曲名称：</span>
+              <el-input v-model="seachName" size="mini" placeholder="请输入歌曲名称" style="width: 150px" />
+            </div>
+            <div class="sing-name option-active">
+              <span>作词者：</span>
+              <el-input
+                v-model="seachLyricist"
+                size="mini"
+                placeholder="请输入作词者"
+                style="width: 150px"
+              />
+            </div>
+            <div class="sing-singer option-active">
+              <span>作曲者:</span>
 
-          <el-input v-model="seachComposer" size="mini" placeholder="请输入作词者" style="width: 150px" />
-        </div>
-        <div class="sing-musictype option-active">
-          <span>歌曲类型：</span>
-          <el-select
-            v-model="tagValue"
-            placeholder="请选择歌曲类型"
-            style="width: 150px"
-            size="mini"
-            @change="changeMusic"
-          >
-            <el-option
-              v-for="(item, index) in styleType"
-              :label="item.name"
-              :value="item.value"
-              :key="index"
-            ></el-option>
-          </el-select>
-        </div>
-        <div class="btn option-active">
-          <el-button
-            type="primary"
-            icon="el-icon-zoom-in"
-            size="mini"
-            @click="addMusicActive()"
-          >上传成品</el-button>
-          <el-button
-            type="primary"
-            icon="el-icon-zoom-in"
-            style="margin-left:20px;"
-            size="mini"
-            @click="addMusic()"
-          >上传小样</el-button>
-          <div class="refresh" style="margin-left:20px">
-            <el-dropdown trigger="click">
-              <el-button type="primary" size="mini" icon="el-icon-s-tools">批量分配</el-button>
+              <el-input
+                v-model="seachComposer"
+                size="mini"
+                placeholder="请输入作词者"
+                style="width: 150px"
+              />
+            </div>
+            <div class="sing-musictype option-active">
+              <span>歌曲类型：</span>
+              <el-select
+                v-model="tagValue"
+                placeholder="请选择歌曲类型"
+                style="width: 150px"
+                size="mini"
+                @change="changeMusic"
+              >
+                <el-option
+                  v-for="(item, index) in styleType"
+                  :label="item.name"
+                  :value="item.value"
+                  :key="index"
+                ></el-option>
+              </el-select>
+            </div>
+            <div class="btn option-active">
+              <el-button
+                type="primary"
+                icon="el-icon-zoom-in"
+                size="mini"
+                @click="addMusicActive()"
+              >上传成品</el-button>
+              <el-button
+                type="primary"
+                icon="el-icon-zoom-in"
+                style="margin-left:20px;"
+                size="mini"
+                @click="addMusic()"
+              >上传小样</el-button>
+              <div class="refresh" style="margin-left:20px">
+                <el-dropdown trigger="click">
+                  <el-button type="primary" size="mini" icon="el-icon-s-tools">批量分配</el-button>
 
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item
-                  icon="el-icon-s-tools"
-                  @click.native="toDistributeActive(plIds, 'producer', '200')"
-                >分配制作人</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-s-tools"
-                  @click.native="toDistributeActive(plIds, 'arrangementM', '300')"
-                >分配编曲组长</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-s-tools"
-                  @click.native="toDistributeActive(plIds, 'arrangement', '351')"
-                >分配编曲师</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-s-tools"
-                  @click.native="toDistributeActive(plIds, 'recorderM', '400')"
-                >分配录音组长</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-s-tools"
-                  @click.native="toDistributeActive(plIds, 'recorder', '451')"
-                >分配录音师</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-s-tools"
-                  @click.native="toDistributeActive(plIds, 'mixerM', '500')"
-                >分配混音组长</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-s-tools"
-                  @click.native="toDistributeActive(plIds,  'mixer', '551')"
-                >分配混音师</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item
+                      icon="el-icon-s-tools"
+                      @click.native="toDistributeActive(plIds, 'producer', '200')"
+                    >分配制作人</el-dropdown-item>
+                    <el-dropdown-item
+                      icon="el-icon-s-tools"
+                      @click.native="toDistributeActive(plIds, 'arrangementM', '300')"
+                    >分配编曲组长</el-dropdown-item>
+                    <el-dropdown-item
+                      icon="el-icon-s-tools"
+                      @click.native="toDistributeActive(plIds, 'arrangement', '351')"
+                    >分配编曲师</el-dropdown-item>
+                    <el-dropdown-item
+                      icon="el-icon-s-tools"
+                      @click.native="toDistributeActive(plIds, 'recorderM', '400')"
+                    >分配录音组长</el-dropdown-item>
+                    <el-dropdown-item
+                      icon="el-icon-s-tools"
+                      @click.native="toDistributeActive(plIds, 'recorder', '451')"
+                    >分配录音师</el-dropdown-item>
+                    <el-dropdown-item
+                      icon="el-icon-s-tools"
+                      @click.native="toDistributeActive(plIds, 'mixerM', '500')"
+                    >分配混音组长</el-dropdown-item>
+                    <el-dropdown-item
+                      icon="el-icon-s-tools"
+                      @click.native="toDistributeActive(plIds,  'mixer', '551')"
+                    >分配混音师</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+              <div class="refresh" style="margin-left:20px">
+                <el-dropdown trigger="click">
+                  <el-button type="primary" size="mini" icon="el-icon-s-tools">批量审核</el-button>
+
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item
+                      icon="el-icon-s-tools"
+                      @click.native="toReviewActive(idsObj, '30')"
+                    >通过</el-dropdown-item>
+                    <el-dropdown-item
+                      icon="el-icon-s-tools"
+                      @click.native="toReviewActive(idsObj, '20')"
+                    >驳回</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+
+              <el-button
+                type="danger"
+                size="mini"
+                @click="deleteAll()"
+                style="margin-left:20px;"
+                icon="el-icon-delete"
+              >删除</el-button>
+
+              <!-- <music-delete style="margin-left:20px" :multiple-selection="multipleSelection"></music-delete> -->
+
+              <div class="refresh" style="margin-left:20px">
+                <el-button type="primary" size="mini" @click="seachInfo()" icon="el-icon-zoom-in">查询</el-button>
+              </div>
+              <div class="refresh" style="margin-left:20px">
+                <el-button type="info" size="mini" @click="refreshInfo()" icon="el-icon-refresh">重置</el-button>
+              </div>
+            </div>
           </div>
-          <div class="refresh" style="margin-left:20px">
-            <el-dropdown trigger="click">
-              <el-button type="primary" size="mini" icon="el-icon-s-tools">批量审核</el-button>
+        </search-header>
+        <el-table
+          :data="tableData"
+          border
+          ref="multipleTable"
+          @selection-change="handleSelectionChange"
+          style="width: 100%;margin-top:20px;"
+          stripe
+          size="mini"
+        >
+          <template slot="empty">
+            <p>{{ dataText }}</p>
+          </template>
+          <el-table-column type="selection" align="center" width="40"></el-table-column>
+          <el-table-column prop="idActive" label="歌曲编号" width="100" align="left"></el-table-column>
+          <el-table-column label="歌曲名称" width="300" align="left">
+            <template slot-scope="scope">
+              <div>
+                <span
+                  v-if="scope.row.progressRateActive>=720"
+                  style="color:green"
+                >{{ scope.row.songName }}(已发布)</span>
+                <span
+                  v-if="scope.row.progressRateActive<720"
+                  style="color:red"
+                >{{ scope.row.songName }}(未发布)</span>
+                <el-button
+                  style="margin-left:20px;"
+                  type="primary"
+                  size="mini"
+                  @click="toRemark(scope.row)"
+                >备注</el-button>
+                <el-button
+                  style="margin-left:20px;"
+                  type="primary"
+                  v-if="scope.row.remark.length>0"
+                  size="mini"
+                  @click="toCheck(scope.row)"
+                >查看</el-button>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="tag" label="歌曲风格" width="100" align="left"></el-table-column>
+          <el-table-column prop="lyricist" label="作词人" width="120"></el-table-column>
+          <el-table-column prop="composer" label="作曲人" width="120"></el-table-column>
+          <el-table-column prop="producerNick" label="制作人" width="120"></el-table-column>
+          <el-table-column label="歌曲状态" width="180">
+            <template slot-scope="scope">
+              <div>
+                <span style="color:#ffa500">{{ scope.row.progressRate }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="createTime" label="编曲状态" width="150">
+              <template slot-scope="scope">
+              <div style="display: flex;justify-content: center;">
+                <el-popover
+                  v-if="scope.row.arrangementStatus==10"
+                  placement="right"
+                  width="200"
+                  trigger="click"
+                >
+                  <div class="tips-item">
+                    <div class="item">编曲组长：{{scope.row.arrangementLeaderNick}}</div>
+                    <div class="item">编曲师：{{scope.row.arrangementWorkerNick}}</div>
+                    <div class="item">开始时间：{{scope.row.arrangementLeaderRecvTime}}</div>
+                    <div class="item">结束时间：{{scope.row.arrangementFinishTime}}</div>
+                  </div>
+                  <el-button slot="reference" type="primary" size="mini">已提交</el-button>
+                </el-popover>
+                 <el-popover
+                  v-if="scope.row.arrangementStatus==20"
+                  placement="right"
+                  width="200"
+                  trigger="click"
+                >
+                  <div class="tips-item">
+                    <div class="item">编曲组长：{{scope.row.arrangementLeaderNick}}</div>
+                    <div class="item">编曲师：{{scope.row.arrangementWorkerNick}}</div>
+                    <div class="item">开始时间：{{scope.row.arrangementLeaderRecvTime}}</div>
+                    <div class="item">结束时间：{{scope.row.arrangementFinishTime}}</div>
+                  </div>
+                  <el-button slot="reference" type="warning" size="mini">已驳回</el-button>
+                </el-popover>
+                  <el-popover
+                  v-if="scope.row.arrangementStatus==30"
+                  placement="right"
+                  width="200"
+                  trigger="click"
+                >
+                  <div class="tips-item">
+                    <div class="item">编曲组长：{{scope.row.arrangementLeaderNick}}</div>
+                    <div class="item">编曲师：{{scope.row.arrangementWorkerNick}}</div>
+                    <div class="item">开始时间：{{scope.row.arrangementLeaderRecvTime}}</div>
+                    <div class="item">结束时间：{{scope.row.arrangementFinishTime}}</div>
+                  </div>
+                  <el-button slot="reference" type="success" size="mini">已通过</el-button>
+                </el-popover>
+              </div>
+              </template>
+          </el-table-column>
+          <el-table-column prop="createTime" label=" 录音状态" width="150">
+                  <template slot-scope="scope">
+              <div style="display: flex;justify-content: center;">
+                <el-popover
+                  v-if="scope.row.recordingStatus==10"
+                  placement="right"
+                  width="200"
+                  trigger="click"
+                >
+                  <div class="tips-item">
+                    <div class="item">录音组长：{{scope.row.recordingLeaderNick}}</div>
+                    <div class="item">录音师：{{scope.row.recordingWorkerNick}}</div>
+                    <div class="item">开始时间：{{scope.row.recordingLeaderRecvTime}}</div>
+                    <div class="item">结束时间：{{scope.row.recordingFinishTime}}</div>
+                  </div>
+                  <el-button slot="reference" type="primary" size="mini">已提交</el-button>
+                </el-popover>
+                 <el-popover
+                  v-if="scope.row.recordingStatus==20"
+                  placement="right"
+                  width="200"
+                  trigger="click"
+                >
+                  <div class="tips-item">
+                    <div class="item">录音组长：{{scope.row.recordingLeaderNick}}</div>
+                    <div class="item">录音师：{{scope.row.recordingWorkerNick}}</div>
+                    <div class="item">开始时间：{{scope.row.recordingLeaderRecvTime}}</div>
+                    <div class="item">结束时间：{{scope.row.recordingFinishTime}}</div>
+                  </div>
+                  <el-button slot="reference" type="warning" size="mini">已驳回</el-button>
+                </el-popover>
+                 <el-popover
+                  v-if="scope.row.recordingStatus==30"
+                  placement="right"
+                  width="200"
+                  trigger="click"
+                >
+                  <div class="tips-item">
+                    <div class="item">录音组长：{{scope.row.recordingLeaderNick}}</div>
+                    <div class="item">录音师：{{scope.row.recordingWorkerNick}}</div>
+                    <div class="item">开始时间：{{scope.row.recordingLeaderRecvTime}}</div>
+                    <div class="item">结束时间：{{scope.row.recordingFinishTime}}</div>
+                  </div>
+                  <el-button slot="reference" type="success" size="mini">已通过</el-button>
+                </el-popover>
+              </div>
+              </template>
+          </el-table-column>
+          <el-table-column prop="createTime" label="缩混状态" width="150">
+             <template slot-scope="scope">
+              <div style="display: flex;justify-content: center;">
+                <el-popover
+                  v-if="scope.row.mixStatus==10"
+                  placement="right"
+                  width="200"
+                  trigger="click"
+                >
+                  <div class="tips-item">
+                    <div class="item">缩混组长：{{scope.row.mixLeaderNick}}</div>
+                    <div class="item">缩混师：{{scope.row.mixWorkerNick}}</div>
+                    <div class="item">开始时间：{{scope.row.mixLeaderRecvTime}}</div>
+                    <div class="item">结束时间：{{scope.row.mixFinishTime}}</div>
+                  </div>
+                  <el-button slot="reference" type="primary" size="mini">已提交</el-button>
+                </el-popover>
+                 <el-popover
+                  v-if="scope.row.mixStatus==20"
+                  placement="right"
+                  width="200"
+                  trigger="click"
+                >
+                  <div class="tips-item">
+                    <div class="item">缩混组长：{{scope.row.mixLeaderNick}}</div>
+                    <div class="item">缩混师：{{scope.row.mixWorkerNick}}</div>
+                    <div class="item">开始时间：{{scope.row.mixLeaderRecvTime}}</div>
+                    <div class="item">结束时间：{{scope.row.mixFinishTime}}</div>
+                  </div>
+                  <el-button slot="reference" type="warning" size="mini">已驳回</el-button>
+                </el-popover>
+                 <el-popover
+                  v-if="scope.row.mixStatus==30"
+                  placement="right"
+                  width="200"
+                  trigger="click"
+                >
+                  <div class="tips-item">
+                    <div class="item">缩混组长：{{scope.row.mixLeaderNick}}</div>
+                    <div class="item">缩混师：{{scope.row.mixWorkerNick}}</div>
+                    <div class="item">开始时间：{{scope.row.mixLeaderRecvTime}}</div>
+                    <div class="item">结束时间：{{scope.row.mixFinishTime}}</div>
+                  </div>
+                  <el-button slot="reference" type="success" size="mini">已通过</el-button>
+                </el-popover>
+              </div>
+              </template>
+          </el-table-column>
 
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item
-                  icon="el-icon-s-tools"
-                  @click.native="toReviewActive(idsObj, '30')"
-                >通过</el-dropdown-item>
-                <el-dropdown-item
-                  icon="el-icon-s-tools"
-                  @click.native="toReviewActive(idsObj, '20')"
-                >驳回</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </div>
+          <el-table-column prop="createTime" label="创建时间" width="150"></el-table-column>
 
-          <el-button
-            type="danger"
-            size="mini"
-            @click="deleteAll()"
-            style="margin-left:20px;"
-            icon="el-icon-delete"
-          >删除</el-button>
+          <el-table-column prop="publishTime" label="发布时间" width="150"></el-table-column>
 
-          <!-- <music-delete style="margin-left:20px" :multiple-selection="multipleSelection"></music-delete> -->
-
-          <div class="refresh" style="margin-left:20px">
-            <el-button type="primary" size="mini" @click="seachInfo()" icon="el-icon-zoom-in">查询</el-button>
-          </div>
-          <div class="refresh" style="margin-left:20px">
-            <el-button type="info" size="mini" @click="refreshInfo()" icon="el-icon-refresh">重置</el-button>
-          </div>
+          <el-table-column label="操作" align="center" width="100">
+            <template slot-scope="scope">
+              <div>
+                <el-dropdown trigger="click" @command="handleCommand">
+                  <span class="el-dropdown-link" style="color:#409eff;">
+                    操作
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item @click.native="toAudition(scope.row)">选择试听</el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="producerHideMain"
+                      @click.native="toDistribute(scope.row, 'producer', '200')"
+                    >分配制作人</el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="producerHide"
+                      @click.native="toDistribute(scope.row, 'arrangementM', '300')"
+                    >分配编曲组长</el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="arrangementHideM"
+                      @click.native="toDistribute(scope.row, 'arrangement', '351')"
+                    >分配编曲师</el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="producerHide"
+                      @click.native="toDistribute(scope.row, 'recorderM', '400')"
+                    >分配录音组长</el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="recorderHideM"
+                      @click.native="toDistribute(scope.row, 'recorder', '451')"
+                    >分配录音师</el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="producerHide"
+                      @click.native="toDistribute(scope.row, 'mixerM', '500')"
+                    >分配混音组长</el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="mixerHideM"
+                      @click.native="toDistribute(scope.row, 'mixer', '551')"
+                    >分配混音师</el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="arrangementHide"
+                      @click.native="toUploadArrangemen(scope.row)"
+                    >上传编曲</el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="recorderHide"
+                      @click.native="toUploadRecorder(scope.row)"
+                    >上传录音</el-dropdown-item>
+                    <el-dropdown-item v-if="mixerHide" @click.native="toUploadMix(scope.row)">上传缩混</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'demo')">下载小样文件</el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="lyricsZzHide"
+                      @click.native="todownLoadText(scope.row)"
+                    >重新上传歌词</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'arr')">下载编曲小样文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'arrPro')">下载编曲工程文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'rec')">下载录音小样文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'recPro')">下载录音工程文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'mix')">下载缩混小样文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro')">下载录缩混程文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro')">下载导唱文件</el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="producerHide"
+                      @click.native="toReview(scope.row, '30')"
+                    >通过</el-dropdown-item>
+                    <el-dropdown-item
+                      v-if="producerHide"
+                      @click.native="toReview(scope.row, '20')"
+                    >驳回</el-dropdown-item>
+                    <el-dropdown-item v-if="producerHide" @click.native="deleteClick(scope.row)">删除</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+          <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page.sync="currentPage"
+            :page-sizes="[10]"
+            :page-size="pagesize"
+            layout="total, prev, pager, next, jumper"
+            background
+            :total="getTotal"
+            style="textAlign: right"
+          ></el-pagination>
         </div>
+
+        <music-audition :userInfo="userInfo" @editaudition="editaudition" v-if="auditionType"></music-audition>
+
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+          title="上传编曲"
+          :visible.sync="dialogVisibleUpload"
+          customClass="customWidth-distribute"
+        >
+          <music-upload :userInfo="userInfo" @editDistributeBq="editDistributeBq"></music-upload>
+        </el-dialog>
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+          title="重新上传歌词"
+          :visible.sync="dialogVisibleText"
+          customClass="customWidth-distribute"
+        >
+          <music-upload-text :userInfo="userInfo" @editDistributeText="editDistributeText"></music-upload-text>
+        </el-dialog>
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+          title="上传录音"
+          :visible.sync="dialogVisibleUploadRecorder"
+          customClass="customWidth-distribute"
+        >
+          <music-upload-recorder
+            :userInfo="userInfo"
+            @editDistributeRecorder="editDistributeRecorder"
+          ></music-upload-recorder>
+        </el-dialog>
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+          title="上传缩混"
+          :visible.sync="dialogVisibleUploadMix"
+          customClass="customWidth-distribute"
+        >
+          <music-upload-mix :userInfo="userInfo" @editDistributeSh="editDistributeSh"></music-upload-mix>
+        </el-dialog>
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+          title="添加备注"
+          :visible.sync="dialogVisibleRemark"
+          customClass="customWidth-distribute"
+        >
+          <music-remark :userInfo="userInfo" @editRemark="editRemark"></music-remark>
+        </el-dialog>
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+          title="查看备注"
+          :visible.sync="dialogVisibleRemarkActive"
+          customClass="customWidth-distribute"
+        >
+          <music-remark-active :userInfo="userInfo" @editRemarkActive="editRemarkActive"></music-remark-active>
+        </el-dialog>
+
+        <music-add-active
+          v-if="addMusicTypeCp"
+          style="margin-left:0px"
+          :music-type-list="musicTypes"
+          @addMusicCp="addMusicCp"
+        ></music-add-active>
+
+        <music-add
+          v-if="addMusicTypeXy"
+          style="margin-left:20px"
+          :music-type-list="musicTypes"
+          @addMusicXy="addMusicXy"
+        ></music-add>
+        <music-distribute :userInfo="userInfo" v-if="processType" @editProcess="editProcess"></music-distribute>
       </div>
-    </search-header>
-    <el-table
-      :data="tableData"
-      border
-      ref="multipleTable"
-      @selection-change="handleSelectionChange"
-      style="width: 100%;margin-top:20px;"
-      stripe
-      size="mini"
-    >
-      <template slot="empty">
-        <p>{{ dataText }}</p>
-      </template>
-      <el-table-column type="selection" align="center" width="40"></el-table-column>
-      <el-table-column prop="idActive" label="歌曲编号" width="100" align="left"></el-table-column>
-      <el-table-column label="歌曲名称"  width="300" align="left">
-        <template slot-scope="scope">
-          <div>
-            <span
-              v-if="scope.row.progressRateActive>=720"
-              style="color:green"
-            >{{ scope.row.songName }}(已发布)</span>
-            <span
-              v-if="scope.row.progressRateActive<720"
-              style="color:red"
-            >{{ scope.row.songName }}(未发布)</span>
-            <el-button
-              style="margin-left:20px;"
-              type="primary"
-              size="mini"
-              @click="toRemark(scope.row)"
-            >备注</el-button>
-            <el-button
-              style="margin-left:20px;"
-              type="primary"
-              v-if="scope.row.remark.length>0"
-              size="mini"
-              @click="toCheck(scope.row)"
-            >查看</el-button>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="tag" label="歌曲风格" width="100" align="left"></el-table-column>
-      <el-table-column prop="lyricist" label="作词人" width="120" align="left"></el-table-column>
-      <el-table-column prop="composer" label="作曲人" width="120" align="left"></el-table-column>
-      <el-table-column prop="producerNick" label="制作人" width="120" align="left"></el-table-column>
-      <el-table-column label="歌曲状态" width="180" align="left">
-        <template slot-scope="scope">
-          <div>
-            <span style="color:#ffa500">{{ scope.row.progressRate }}</span>
-          </div>
-        </template>
-      </el-table-column>
-            <!-- <el-table-column prop="createTime" label="编曲状态" width="150" align="left"></el-table-column>
-            <el-table-column prop="createTime" label=" 录音状态" width="150" align="left"></el-table-column>
-            <el-table-column prop="createTime" label="缩混状态" width="150" align="left"></el-table-column> -->
-
-      <el-table-column prop="createTime" label="创建时间" width="150" align="left"></el-table-column>
-
-      <el-table-column prop="publishTime" label="发布时间" width="150" align="left"></el-table-column>
-
-      <el-table-column label="操作" align="center" width="100">
-        <template slot-scope="scope">
-          <div>
-            <el-dropdown trigger="click" @command="handleCommand">
-              <span class="el-dropdown-link" style="color:#409eff;">
-                操作
-                <i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="toAudition(scope.row)">选择试听</el-dropdown-item>
-                <el-dropdown-item
-                  v-if="producerHideMain"
-                  @click.native="toDistribute(scope.row, 'producer', '200')"
-                >分配制作人</el-dropdown-item>
-                <el-dropdown-item
-                  v-if="producerHide"
-                  @click.native="toDistribute(scope.row, 'arrangementM', '300')"
-                >分配编曲组长</el-dropdown-item>
-                <el-dropdown-item
-                  v-if="arrangementHideM"
-                  @click.native="toDistribute(scope.row, 'arrangement', '351')"
-                >分配编曲师</el-dropdown-item>
-                <el-dropdown-item
-                  v-if="producerHide"
-                  @click.native="toDistribute(scope.row, 'recorderM', '400')"
-                >分配录音组长</el-dropdown-item>
-                <el-dropdown-item
-                  v-if="recorderHideM"
-                  @click.native="toDistribute(scope.row, 'recorder', '451')"
-                >分配录音师</el-dropdown-item>
-                <el-dropdown-item
-                  v-if="producerHide"
-                  @click.native="toDistribute(scope.row, 'mixerM', '500')"
-                >分配混音组长</el-dropdown-item>
-                <el-dropdown-item
-                  v-if="mixerHideM"
-                  @click.native="toDistribute(scope.row, 'mixer', '551')"
-                >分配混音师</el-dropdown-item>
-                <el-dropdown-item
-                  v-if="arrangementHide"
-                  @click.native="toUploadArrangemen(scope.row)"
-                >上传编曲</el-dropdown-item>
-                <el-dropdown-item
-                  v-if="recorderHide"
-                  @click.native="toUploadRecorder(scope.row)"
-                >上传录音</el-dropdown-item>
-                <el-dropdown-item v-if="mixerHide" @click.native="toUploadMix(scope.row)">上传缩混</el-dropdown-item>
-                <el-dropdown-item @click.native="todownLoad(scope.row, 'demo')">下载小样文件</el-dropdown-item>
-                <el-dropdown-item
-                  v-if="lyricsZzHide"
-                  @click.native="todownLoadText(scope.row)"
-                >重新上传歌词</el-dropdown-item>
-                <el-dropdown-item @click.native="todownLoad(scope.row, 'arr')">下载编曲小样文件</el-dropdown-item>
-                <el-dropdown-item @click.native="todownLoad(scope.row, 'arrPro')">下载编曲工程文件</el-dropdown-item>
-                <el-dropdown-item @click.native="todownLoad(scope.row, 'rec')">下载录音小样文件</el-dropdown-item>
-                <el-dropdown-item @click.native="todownLoad(scope.row, 'recPro')">下载录音工程文件</el-dropdown-item>
-                <el-dropdown-item @click.native="todownLoad(scope.row, 'mix')">下载缩混小样文件</el-dropdown-item>
-                <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro')">下载录缩混程文件</el-dropdown-item>
-                <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro')">下载导唱文件</el-dropdown-item>
-                <el-dropdown-item v-if="producerHide" @click.native="toReview(scope.row, '30')">通过</el-dropdown-item>
-                <el-dropdown-item v-if="producerHide" @click.native="toReview(scope.row, '20')">驳回</el-dropdown-item>
-                <el-dropdown-item v-if="producerHide" @click.native="deleteClick(scope.row)">删除</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="block">
-      <el-pagination
-        @current-change="handleCurrentChange"
-        :current-page.sync="currentPage"
-        :page-sizes="[10]"
-        :page-size="pagesize"
-        layout="total, prev, pager, next, jumper"
-        background
-        :total="getTotal"
-        style="textAlign: right"
-      ></el-pagination>
     </div>
 
-    <music-audition :userInfo="userInfo" @editaudition="editaudition" v-if="auditionType"></music-audition>
-
-    <el-dialog
-      :close-on-click-modal="false"
-      :footer="false"
-      title="上传编曲"
-      :visible.sync="dialogVisibleUpload"
-      customClass="customWidth-distribute"
-    >
-      <music-upload :userInfo="userInfo" @editDistributeBq="editDistributeBq"></music-upload>
-    </el-dialog>
-    <el-dialog
-      :close-on-click-modal="false"
-      :footer="false"
-      title="重新上传歌词"
-      :visible.sync="dialogVisibleText"
-      customClass="customWidth-distribute"
-    >
-      <music-upload-text :userInfo="userInfo" @editDistributeText="editDistributeText"></music-upload-text>
-    </el-dialog>
-    <el-dialog
-      :close-on-click-modal="false"
-      :footer="false"
-      title="上传录音"
-      :visible.sync="dialogVisibleUploadRecorder"
-      customClass="customWidth-distribute"
-    >
-      <music-upload-recorder :userInfo="userInfo" @editDistributeRecorder="editDistributeRecorder"></music-upload-recorder>
-    </el-dialog>
-    <el-dialog
-      :close-on-click-modal="false"
-      :footer="false"
-      title="上传缩混"
-      :visible.sync="dialogVisibleUploadMix"
-      customClass="customWidth-distribute"
-    >
-      <music-upload-mix :userInfo="userInfo" @editDistributeSh="editDistributeSh"></music-upload-mix>
-    </el-dialog>
-    <el-dialog
-      :close-on-click-modal="false"
-      :footer="false"
-      title="添加备注"
-      :visible.sync="dialogVisibleRemark"
-      customClass="customWidth-distribute"
-    >
-      <music-remark :userInfo="userInfo" @editRemark="editRemark"></music-remark>
-    </el-dialog>
-    <el-dialog
-      :close-on-click-modal="false"
-      :footer="false"
-      title="查看备注"
-      :visible.sync="dialogVisibleRemarkActive"
-      customClass="customWidth-distribute"
-    >
-      <music-remark-active :userInfo="userInfo" @editRemarkActive="editRemarkActive"></music-remark-active>
-    </el-dialog>
-
-    <music-add-active
-      v-if="addMusicTypeCp"
-      style="margin-left:0px"
-      :music-type-list="musicTypes"
-      @addMusicCp="addMusicCp"
-    ></music-add-active>
-
-    <music-add
-      v-if="addMusicTypeXy"
-      style="margin-left:20px"
-      :music-type-list="musicTypes"
-      @addMusicXy="addMusicXy"
-    ></music-add>
-    <music-distribute :userInfo="userInfo" v-if="processType" @editProcess="editProcess"></music-distribute>
+    <div v-if="!permission">
+      <img class="permission-img" src="@/assets/permission.webp" width="900" height="420" />
+      <div class="permission-text">对不起，您暂无权限访问该页面，请联系管理员授权！</div>
+    </div>
   </div>
-  </div>
-  
-  <div v-if="!permission">
-  <img class="permission-img" src="@/assets/permission.webp" width="900" height="420">
-  <div class="permission-text">对不起，您暂无权限访问该页面，请联系管理员授权！</div>
-</div>
-</div>
 </template>
 
 <script>
@@ -653,26 +813,25 @@ export default {
       // this.postExcelFile(param,"http://106.53.61.91:6325/rylBGM/productLine/downloadFile", );
       downloadFile(param).then(res => {
         console.log(res);
-          if (res.status == 0) {
-            this.$message({
-              type: "success",
-              message: "请求成功!请耐心等待下载"
-            });
-            let tempMd5 = res.data;
-            //     const Base64 = require("js-base64").Base64;
-            // const exStr = Base64.encodeURI(type);
-            // const fileName = val.cr_songName;
-            let openUrl = baseUrl + "/productLine/tempDownLoadFile/" + tempMd5;
-            window.open(openUrl, "_blank");
-          } else {
-            this.$message({
-              type: "error",
-              message: `下载失败！错误码：${res.status}--错误原因：${res.des}`
-            });
-          }
+        if (res.status == 0) {
+          this.$message({
+            type: "success",
+            message: "请求成功!请耐心等待下载"
+          });
+          let tempMd5 = res.data;
+          //     const Base64 = require("js-base64").Base64;
+          // const exStr = Base64.encodeURI(type);
+          // const fileName = val.cr_songName;
+          let openUrl = baseUrl + "/productLine/tempDownLoadFile/" + tempMd5;
+          window.open(openUrl, "_blank");
+        } else {
+          this.$message({
+            type: "error",
+            message: `下载失败！错误码：${res.status}--错误原因：${res.des}`
+          });
+        }
 
-          // tempDownLoadFile(tempMd5)
-        
+        // tempDownLoadFile(tempMd5)
       });
     },
     //点击之后的当前页数
@@ -815,7 +974,6 @@ export default {
     },
     //批量审核操作
     toReviewActive(idsObj, type) {
-       ;
       if (idsObj.length == 0) {
         this.$message({
           type: "error",
@@ -1145,7 +1303,47 @@ export default {
             mixFile: items.mix.auditionFile,
             remark: items.remark,
             createTime: this.dateFmt(items.createTime),
-            publishTime: items.publish.publishTimeActive
+            publishTime: items.publish.publishTimeActive,
+            arrangementStatus: items.arrangement.status,
+            arrangementLeaderNick: items.arrangement.leaderNick,
+            arrangementLeaderRecvTime:
+              items.arrangement.leaderRecvTime.indexOf("000") > -1
+                ? "暂无时间"
+                : this.dateFmt(items.arrangement.leaderRecvTime),
+            arrangementWorkerNick: items.arrangement.workerNick,
+            arrangementFinishTime:
+              items.arrangement.finishTime.indexOf("000") > -1
+                ? "暂无时间"
+                : this.dateFmt(items.arrangement.finishTime),
+
+            recordingStatus: items.recording.status,
+            recordingLeaderNick: items.recording.leaderNick,
+            recordingLeaderRecvTime:
+              items.recording.leaderRecvTime.indexOf("000") > -1
+                ? "暂无时间"
+                : this.dateFmt(items.recording.leaderRecvTime),
+           recordingWorkerNick: items.recording.workerNick,
+                recordingFinishTime:
+              items.recording.finishTime.indexOf("000") > -1
+                ? "暂无时间"
+                : this.dateFmt(items.recording.finishTime),
+           recordingWorkerNick: items.recording.workerNick,
+
+            mixFinishTime:
+              items.mix.finishTime.indexOf("000") > -1
+                ? "暂无时间"
+                : this.dateFmt(items.mix.finishTime),
+                 mixStatus: items.mix.status,
+            mixLeaderNick: items.mix.leaderNick,
+            mixLeaderRecvTime:
+              items.mix.leaderRecvTime.indexOf("000") > -1
+                ? "暂无时间"
+                : this.dateFmt(items.mix.leaderRecvTime),
+            mixWorkerNick: items.mix.workerNick,
+            mixFinishTime:
+              items.mix.finishTime.indexOf("000") > -1
+                ? "暂无时间"
+                : this.dateFmt(items.mix.finishTime)
           };
           this.tableData.push(obj);
         });
@@ -1350,5 +1548,12 @@ img {
   justify-content: center;
   font-size: 30px;
   color: #9abee3;
+}
+.tips-item {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  color: #409eff;
+  font-size: 12px;
 }
 </style>
