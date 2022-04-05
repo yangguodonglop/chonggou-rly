@@ -20,7 +20,7 @@
         <el-form-item style=" display: flex;justify-content: center;">
           <el-button type="primary" size="small" @click="back()">取消</el-button>
 
-          <el-button type="primary" size="small" @click="onSubmit">保存</el-button>
+          <el-button type="primary" size="small" :disabled="saveType" @click="onSubmit">保存</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -53,7 +53,8 @@ export default {
         nick: "",
         telephone: "",
         weiXin: ""
-      }
+      },
+      saveType:false
     };
   },
   created() {},
@@ -120,6 +121,7 @@ export default {
             });
             return  false
       }
+      this.saveType=true
       const param = {
         user: this.form.user,
         password: this.form.password,
@@ -138,6 +140,8 @@ export default {
             });
             this.$emit("addUserInfo");
           }else{
+                  this.saveType=false
+
                 this.$message({
               type: "error",
               message: `添加失败！错误码：${res.status}--错误原因：${res.des}`

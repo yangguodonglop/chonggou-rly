@@ -51,7 +51,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="back()" size="small">取 消</el-button>
-        <el-button type="primary" @click="confirm()" size="small">确 定</el-button>
+        <el-button type="primary" @click="confirm()" size="small" :disabled="saveType">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -90,6 +90,7 @@ export default {
       lyricsCode: "",
       demoCode: "",
       loading:false,
+      saveType:false
     };
   },
   props: {
@@ -209,44 +210,11 @@ export default {
     refresh() {
       this.reload();
     },
-    //有变化时调用的函数
-    // handleChange(file, fileList) {
-    //   this.param.append("img", file.raw);
-    // },
-    // handleRemove(file, filesList) {
-    //   this.param.delete("img");
-    // },
-    // handleChange1(file, fileList) {
-    //   this.param.append("music", file.raw);
-    //   console.log(this.param.get("music"));
-    // },
-    // handleRemove1(file, filesList) {
-    //   this.param.delete("music");
-    // },
     back(){
           this.$emit('addMusicCp')
 
     },
     confirm() {
-      //利用表单数据传值，后端用RequestParam接收表单的值
-      // 注意 headers: {
-      //   "Content-Type": "multipart/form-data"
-      // }
-      //下面append的东西就会到form表单数据的fields中；
-      //然后通过下面的方式把内容通过axios来传到后台
-      // let musicName = this.music.musicName;
-      // var musicType = this.music.musicType;
-      // var musicHot = this.music.musicHot;
-      // var musicSinger = this.music.musicSinger;
-      // var musicLric = this.music.musicLric;
-      // this.param.append("musicname", musicName);
-      // this.param.append("musictypename", musicType);
-      // this.param.append("musichot", musicHot);
-      // this.param.append("singername", musicSinger);
-      // this.param.append("lyricurl", musicLric);
-      // const instance = this.axios.create({
-      //   withCredentials: true
-      // });
       const param = {
         token: this.token,
         songName: this.music.musicName,
@@ -259,16 +227,51 @@ export default {
           tag: this.music.musicType,
           mixProjectCode:''
         }
-    // "item": {
-    //     "songName": "",
-    //     "lyricist": "",
-    //     "composer": "",
-    //     "lyricsFile": "",
-    //     "tag": [],
-    //     "mixProjectCode": "",
-    //     "auditionFileCode": ""
-    // }
       };
+        if (this.music.musicName == "") {
+        this.$message({
+          type: "error",
+          message: "请输入正确歌曲名！"
+        });
+        return false;
+      }
+      if (this.music.musicLric == "") {
+        this.$message({
+          type: "error",
+          message: "请输入正确作词者！"
+        });
+        return false;
+      }
+      if (this.music.musicSinger == "") {
+        this.$message({
+          type: "error",
+          message: "请输入正确作曲者！"
+        });
+        return false;
+      }
+      if (this.music.musicType == "") {
+        this.$message({
+          type: "error",
+          message: "请选择歌曲风格！"
+        });
+        return false;
+      }
+
+      if (this.demoCode == "") {
+        this.$message({
+          type: "error",
+          message: "请上传正确歌曲文件"
+        });
+        return false;
+      }
+      if (this.lyricsCode == "") {
+        this.$message({
+          type: "error",
+          message: "请上传正确歌词文件！"
+        });
+        return false;
+      }
+      this.saveType=true
       console.log(param)
       commitFinishedProduct(param).then(res => {
         console.log(res);
@@ -283,6 +286,7 @@ export default {
           this.$emit('addMusicCp')
         } else {
           this.lyricsCode = "";
+      this.saveType=false
 
           this.$message({
             type: "error",

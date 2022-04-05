@@ -59,57 +59,70 @@
                 ></el-option>
               </el-select>
             </div>
-            <div class="btn option-active">
+            <div class="btn option-active option-activess">
               <el-button
+              v-if="lyricsZzHide"
                 type="primary"
                 icon="el-icon-zoom-in"
                 size="mini"
                 @click="addMusicActive()"
               >上传成品</el-button>
               <el-button
+              v-if="lyricsZzHide"
                 type="primary"
                 icon="el-icon-zoom-in"
                 style="margin-left:20px;"
                 size="mini"
                 @click="addMusic()"
               >上传小样</el-button>
-              <div class="refresh" style="margin-left:20px">
+              <div class="refresh" v-if="!plfpType" >
                 <el-dropdown trigger="click">
                   <el-button type="primary" size="mini" icon="el-icon-s-tools">批量分配</el-button>
 
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item
+                     v-if="producerHideMain"
                       icon="el-icon-s-tools"
                       @click.native="toDistributeActive(plIds, 'producer', '200')"
                     >分配制作人</el-dropdown-item>
                     <el-dropdown-item
+                           v-if="producerHide"
                       icon="el-icon-s-tools"
                       @click.native="toDistributeActive(plIds, 'arrangementM', '300')"
                     >分配编曲组长</el-dropdown-item>
                     <el-dropdown-item
+                          v-if="arrangementHideM"
                       icon="el-icon-s-tools"
                       @click.native="toDistributeActive(plIds, 'arrangement', '351')"
                     >分配编曲师</el-dropdown-item>
                     <el-dropdown-item
+                                          v-if="producerHide"
+
                       icon="el-icon-s-tools"
                       @click.native="toDistributeActive(plIds, 'recorderM', '400')"
                     >分配录音组长</el-dropdown-item>
                     <el-dropdown-item
+                                          v-if="recorderHideM"
+
                       icon="el-icon-s-tools"
                       @click.native="toDistributeActive(plIds, 'recorder', '451')"
                     >分配录音师</el-dropdown-item>
                     <el-dropdown-item
+                                          v-if="producerHide"
+
                       icon="el-icon-s-tools"
                       @click.native="toDistributeActive(plIds, 'mixerM', '500')"
                     >分配混音组长</el-dropdown-item>
                     <el-dropdown-item
+                                          v-if="mixerHideM"
+
                       icon="el-icon-s-tools"
                       @click.native="toDistributeActive(plIds,  'mixer', '551')"
                     >分配混音师</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </div>
-              <div class="refresh" style="margin-left:20px">
+              <div class="refresh"      v-if="producerHideMain || producerHide">
                 <el-dropdown trigger="click">
                   <el-button type="primary" size="mini" icon="el-icon-s-tools">批量审核</el-button>
 
@@ -127,6 +140,7 @@
               </div>
 
               <el-button
+              v-if="producerHideMain"
                 type="danger"
                 size="mini"
                 @click="deleteAll()"
@@ -652,7 +666,8 @@ export default {
       processType: false,
       auditionType: false,
       plIds: [],
-      idsObj: []
+      idsObj: [],
+      plfpType:false
     };
   },
   created() {
@@ -720,6 +735,19 @@ export default {
     ) {
       this.mixerHide = true;
     }
+
+       if (
+      this.funcGroupArr.includes(251) == true ||
+      this.funcGroupArr.includes(351) == true ||
+        this.funcGroupArr.includes(451) == true ||
+          this.funcGroupArr.includes(551) == true ||
+                    this.funcGroupArr.includes(651) == true 
+
+    ) {
+      this.plfpType = true;
+    }
+
+    
 
     //获取音乐类型列表
     // this.musicTypeList();
@@ -1491,7 +1519,7 @@ export default {
 };
 </script>
 
-<style>
+<style >
 .el-dialog__body {
   padding-top: 10px;
   padding-bottom: 10px;
@@ -1555,5 +1583,13 @@ img {
   flex-direction: column;
   color: #409eff;
   font-size: 12px;
+}
+.refresh{
+  margin-left: 20px;
+}
+.option-activess :nth-child(1){
+
+    margin-left: 0px !important;
+
 }
 </style>

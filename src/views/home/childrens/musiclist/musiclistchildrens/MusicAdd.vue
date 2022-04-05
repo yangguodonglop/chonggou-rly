@@ -1,10 +1,18 @@
 <template>
-  <div id="add"   >
-    <el-dialog :close-on-click-modal='false' title="上传小样" customClass="customWidth-addSong" :visible.sync="dialogFormVisible" >
-      <el-form :model="music" v-loading="loading"
-    element-loading-text="上传中"
-    element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(0, 0, 0, 0.8)">
+  <div id="add">
+    <el-dialog
+      :close-on-click-modal="false"
+      title="上传小样"
+      customClass="customWidth-addSong"
+      :visible.sync="dialogFormVisible"
+    >
+      <el-form
+        :model="music"
+        v-loading="loading"
+        element-loading-text="上传中"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
+      >
         <el-form-item label="歌曲名称:" :label-width="formLabelWidth">
           <el-input v-model="music.musicName" autocomplete="off" placeholder="请输入歌曲名称"></el-input>
         </el-form-item>
@@ -25,25 +33,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="上传歌曲:" prop="file" :label-width="formLabelWidth">
-          <el-upload
-            action
-            multiple
-            ref="upload_img"
-            accept=""
-            :http-request="httpRequest"
-          >
+          <el-upload action multiple ref="upload_img" accept :http-request="httpRequest">
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
             <span slot="tip" class="el-upload__tip">请选择歌曲文件上传</span>
           </el-upload>
         </el-form-item>
         <el-form-item label="上传歌词:" prop="file" :label-width="formLabelWidth">
-          <el-upload
-            action
-            multiple
-            ref="upload_img"
-             accept=""
-            :http-request="httpRequestLyric"
-          >
+          <el-upload action multiple ref="upload_img" accept :http-request="httpRequestLyric">
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
             <span slot="tip" class="el-upload__tip">请选择歌词文件上传</span>
           </el-upload>
@@ -51,7 +47,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="back()" size="small">取 消</el-button>
-        <el-button type="primary" size="small" @click="confirm()">确 定</el-button>
+        <el-button type="primary" size="small" @click="confirm()" :disabled="saveType">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -89,7 +85,8 @@ export default {
       musicTypeList: [],
       lyricsCode: "",
       demoCode: "",
-      loading:false
+      loading: false,
+      saveType: false
     };
   },
   props: {
@@ -108,8 +105,8 @@ export default {
   },
   methods: {
     //选择制作人
-    onChange(val){
-      console.log(val)
+    onChange(val) {
+      console.log(val);
     },
     //查询合作模式
     queryInfo() {
@@ -131,8 +128,7 @@ export default {
 
     // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
     httpRequest(param) {
-       
-      this.loading=true
+      this.loading = true;
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
@@ -147,7 +143,7 @@ export default {
       // }
       uploadFile(fd).then(res => {
         if (res.status == 0) {
-                this.loading=false
+          this.loading = false;
 
           this.demoCode = res.data;
           this.$message({
@@ -156,14 +152,13 @@ export default {
           });
           //this.submitForm();//提交表单
         } else {
-                          this.loading=false
+          this.loading = false;
 
           this.demoCode = "";
           this.$message({
             type: "error",
-                        message: `上传歌曲失败！错误码：${res.status}--错误原因：${res.des}`
+            message: `上传歌曲失败！错误码：${res.status}--错误原因：${res.des}`
           });
-
         }
         //  if(res.code===0){
         //    this.submitForm();//提交表单
@@ -172,7 +167,7 @@ export default {
     },
     // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
     httpRequestLyric(param) {
-         this.loading=true
+      this.loading = true;
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
@@ -187,7 +182,7 @@ export default {
       // }
       uploadFile(fd).then(res => {
         if (res.status == 0) {
-             this.loading=false
+          this.loading = false;
           this.lyricsCode = res.data;
           this.$message({
             type: "success",
@@ -195,12 +190,12 @@ export default {
           });
           //this.submitForm();//提交表单
         } else {
-             this.loading=false
+          this.loading = false;
           this.lyricsCode = "";
 
           this.$message({
             type: "error",
-                        message: `上传歌词失败！错误码：${res.status}--错误原因：${res.des}`
+            message: `上传歌词失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
       });
@@ -208,44 +203,54 @@ export default {
     refresh() {
       this.reload();
     },
-    //有变化时调用的函数
-    // handleChange(file, fileList) {
-    //   this.param.append("img", file.raw);
-    // },
-    // handleRemove(file, filesList) {
-    //   this.param.delete("img");
-    // },
-    // handleChange1(file, fileList) {
-    //   this.param.append("music", file.raw);
-    //   console.log(this.param.get("music"));
-    // },
-    // handleRemove1(file, filesList) {
-    //   this.param.delete("music");
-    // },
-    back(){
-                this.$emit('addMusicXy')
-
+    back() {
+      this.$emit("addMusicXy");
     },
     confirm() {
-      //利用表单数据传值，后端用RequestParam接收表单的值
-      // 注意 headers: {
-      //   "Content-Type": "multipart/form-data"
-      // }
-      //下面append的东西就会到form表单数据的fields中；
-      //然后通过下面的方式把内容通过axios来传到后台
-      // let musicName = this.music.musicName;
-      // var musicType = this.music.musicType;
-      // var musicHot = this.music.musicHot;
-      // var musicSinger = this.music.musicSinger;
-      // var musicLric = this.music.musicLric;
-      // this.param.append("musicname", musicName);
-      // this.param.append("musictypename", musicType);
-      // this.param.append("musichot", musicHot);
-      // this.param.append("singername", musicSinger);
-      // this.param.append("lyricurl", musicLric);
-      // const instance = this.axios.create({
-      //   withCredentials: true
-      // });
+      if (this.music.musicName == "") {
+        this.$message({
+          type: "error",
+          message: "请输入正确歌曲名！"
+        });
+        return false;
+      }
+      if (this.music.musicLric == "") {
+        this.$message({
+          type: "error",
+          message: "请输入正确作词者！"
+        });
+        return false;
+      }
+      if (this.music.musicSinger == "") {
+        this.$message({
+          type: "error",
+          message: "请输入正确作曲者！"
+        });
+        return false;
+      }
+      if (this.music.musicType == "") {
+        this.$message({
+          type: "error",
+          message: "请选择歌曲风格！"
+        });
+        return false;
+      }
+
+      if (this.demoCode == "") {
+        this.$message({
+          type: "error",
+          message: "请上传正确歌曲文件"
+        });
+        return false;
+      }
+      if (this.lyricsCode == "") {
+        this.$message({
+          type: "error",
+          message: "请上传正确歌词文件！"
+        });
+        return false;
+      }
+      this.saveType = true;
       const param = {
         token: this.token,
         songName: this.music.musicName,
@@ -257,7 +262,7 @@ export default {
           tag: this.music.musicType
         }
       };
-      console.log(param)
+      console.log(param);
       commitDemo(param).then(res => {
         console.log(res);
         if (res.status == 0) {
@@ -266,15 +271,15 @@ export default {
             type: "success",
             message: "上传小样成功！"
           });
-          this.dialogFormVisible=false
+          this.dialogFormVisible = false;
           //this.submitForm();//提交表单
-          this.$emit('addMusicXy')
+          this.$emit("addMusicXy");
         } else {
           this.lyricsCode = "";
-
+          this.saveType = true;
           this.$message({
             type: "error",
-                        message: `上传小样失败！错误码：${res.status}--错误原因：${res.des}`
+            message: `上传小样失败！错误码：${res.status}--错误原因：${res.des}`
           });
         }
       });

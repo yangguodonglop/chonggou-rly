@@ -1,68 +1,88 @@
 <template>
   <div id="add">
-      <el-form :model="music" v-loading="loading"
-    element-loading-text="上传中"
-    element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(0, 0, 0, 0.8)">
-        <el-form-item label="歌曲名称:" :label-width="formLabelWidth">
-          <el-input :disabled="true" v-model="userInfo.songName" autocomplete="off" placeholder="请输入歌曲名称"></el-input>
-        </el-form-item>
-    
-        <el-form-item label="上传缩混:" prop="file" :label-width="formLabelWidth">
-          <el-upload
-            action
-            multiple
-            ref="upload_img"
-             accept=""
-            :http-request="httpRequest"
+    <el-form
+      :model="music"
+      v-loading="loading"
+      element-loading-text="上传中"
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.8)"
+    >
+      <el-form-item label="歌曲名称:" :label-width="formLabelWidth">
+        <el-input
+          :disabled="true"
+          v-model="userInfo.songName"
+          autocomplete="off"
+          placeholder="请输入歌曲名称"
+        ></el-input>
+      </el-form-item>
+
+      <el-form-item label="上传缩混:" prop="file" :label-width="formLabelWidth">
+        <el-upload
+          action
+          multiple
+          ref="upload_img"
+          accept=""
+          :http-request="httpRequest"
+        >
+          <el-button slot="trigger" size="small" type="primary"
+            >选取文件</el-button
           >
-            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <span slot="tip" class="el-upload__tip">请选择缩混文件上传</span>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="上传工程文件:" prop="file" :label-width="formLabelWidth">
-          <el-upload
-            action
-            multiple
-            ref="upload_img"
-             accept=""
-            :http-request="httpRequestPro"
+          <span slot="tip" class="el-upload__tip">请选择缩混文件上传</span>
+        </el-upload>
+      </el-form-item>
+      <el-form-item
+        label="上传工程文件:"
+        prop="file"
+        :label-width="formLabelWidth"
+      >
+        <el-upload
+          action
+          multiple
+          ref="upload_img"
+          accept=""
+          :http-request="httpRequestPro"
+        >
+          <el-button slot="trigger" size="small" type="primary"
+            >选取文件</el-button
           >
-            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <span slot="tip" class="el-upload__tip">请选择工程文件文件上传</span>
-          </el-upload>
-        </el-form-item>
-         <!-- <el-form-item label="上传导唱文件:" prop="file" :label-width="formLabelWidth">
-          <el-upload
-            action
-            multiple
-            ref="upload_img"
-             accept=""
-            :http-request="httpRequestDchang"
-          >
-            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <span slot="tip" class="el-upload__tip">请选择.歌词文件上传</span>
-          </el-upload>
-        </el-form-item> -->
-      </el-form>
-      <div slot="footer" class="dialog-footer" style="display: flex;justify-content: center;">
-        <el-button @click="close()" size="small">取 消</el-button>
-        <el-button type="primary" @click="confirm()" size="small">确 定</el-button>
-      </div>
+          <span slot="tip" class="el-upload__tip">请选择工程文件文件上传</span>
+        </el-upload>
+      </el-form-item>
+    </el-form>
+    <div
+      slot="footer"
+      class="dialog-footer"
+      style="display: flex; justify-content: center"
+    >
+      <el-button @click="close()" size="small">取 消</el-button>
+      <el-button
+        type="primary"
+        @click="confirm()"
+        size="small"
+        :disabled="saveType"
+        >确 定</el-button
+      >
+    </div>
   </div>
 </template>
 
 <script>
-import { uploadFile, aboutMusicTag, commitDemo,commitArrangement,commitMix } from "network/home.js";
+import {
+  uploadFile,
+  aboutMusicTag,
+  commitDemo,
+  commitArrangement,
+  commitMix,
+} from "network/home.js";
 
 export default {
   name: "MusicAdd",
   inject: ["reload"],
-      props: {
+  props: {
     userInfo: {
       type: Object,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -76,22 +96,23 @@ export default {
         musicHot: "",
         musicSinger: "",
         musicAdress: "",
-        musicLric: ""
+        musicLric: "",
       },
       dialogFormVisible: false,
       formLabelWidth: "120px",
       headers: {
-        "Content-Type": "multipart/form-data"
+        "Content-Type": "multipart/form-data",
       },
       fileList: [],
       param: {},
       musicTypeList: [],
       lyricsCode: "",
       demoCode: "",
-          fileCode: "",
-    projectCode: "",
-    daoChangCode: "",
-    loading:false,
+      fileCode: "",
+      projectCode: "",
+      daoChangCode: "",
+      loading: false,
+      saveType: false,
     };
   },
 
@@ -100,34 +121,34 @@ export default {
   },
   mounted() {
     this.queryInfo();
-    console.log(this.userInfo)
+    console.log(this.userInfo);
   },
-   watch: {
+  watch: {
     userInfo(val) {
-      console.log(val)
+      console.log(val);
       // this.keyArr = [];
       // this.keyArr = val.funcGroup;
       this.$nextTick(() => {
-        this.findUserInfo()
-       // console.log(baseUrl)
-       
+        this.findUserInfo();
+        // console.log(baseUrl)
+
         // this.musicListlyricsFile()
         // this.musicListDemo()
       });
-    }
-   },
+    },
+  },
   methods: {
     //选择制作人
-    onChange(val){
-      console.log(val)
+    onChange(val) {
+      console.log(val);
     },
     //查询合作模式
     queryInfo() {
       const param = {
         token: this.token,
-        action: "get"
+        action: "get",
       };
-      aboutMusicTag(param).then(res => {
+      aboutMusicTag(param).then((res) => {
         if (res.status == 0) {
           this.musicTypeList = res.data;
           this.tableData = [];
@@ -141,7 +162,7 @@ export default {
 
     // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
     httpRequest(param) {
-      this.loading=true
+      this.loading = true;
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
@@ -154,22 +175,22 @@ export default {
       //    'Content-Type': 'multipart/form-data'
       //   }
       // }
-      uploadFile(fd).then(res => {
+      uploadFile(fd).then((res) => {
         if (res.status == 0) {
-          this.loading=false
+          this.loading = false;
           this.fileCode = res.data;
           this.$message({
             type: "success",
-            message: "上传混音文件成功！"
+            message: "上传混音文件成功！",
           });
           //this.submitForm();//提交表单
         } else {
-                    this.loading=false
+          this.loading = false;
 
           this.fileCode = "";
           this.$message({
             type: "error",
-            message: `上传混音文件失败！错误码：${res.status}--错误原因：${res.des}`
+            message: `上传混音文件失败！错误码：${res.status}--错误原因：${res.des}`,
           });
         }
         //  if(res.code===0){
@@ -179,7 +200,7 @@ export default {
     },
     // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
     httpRequestPro(param) {
-                this.loading=true
+      this.loading = true;
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
@@ -192,30 +213,30 @@ export default {
       //    'Content-Type': 'multipart/form-data'
       //   }
       // }
-      uploadFile(fd).then(res => {
+      uploadFile(fd).then((res) => {
         if (res.status == 0) {
-                    this.loading=false
+          this.loading = false;
 
           this.projectCode = res.data;
           this.$message({
             type: "success",
-            message: "上传混音工程文件成功！"
+            message: "上传混音工程文件成功！",
           });
           //this.submitForm();//提交表单
         } else {
-                    this.loading=false
+          this.loading = false;
 
           this.projectCode = "";
 
           this.$message({
             type: "error",
-            message: `上传混音工程文件失败！错误码：${res.status}--错误原因：${res.des}`
+            message: `上传混音工程文件失败！错误码：${res.status}--错误原因：${res.des}`,
           });
         }
       });
     },
-      httpRequestDchang(param) {
-                  this.loading=true
+    httpRequestDchang(param) {
+      this.loading = true;
 
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
@@ -229,68 +250,86 @@ export default {
       //    'Content-Type': 'multipart/form-data'
       //   }
       // }
-      uploadFile(fd).then(res => {
+      uploadFile(fd).then((res) => {
         if (res.status == 0) {
-                    this.loading=false
+          this.loading = false;
 
           this.daoChangCode = res.data;
           this.$message({
             type: "success",
-            message: "上传导唱文件成功！"
+            message: "上传导唱文件成功！",
           });
           //this.submitForm();//提交表单
         } else {
-                    this.loading=false
+          this.loading = false;
 
           this.daoChangCode = "";
 
           this.$message({
             type: "error",
-            message: `上传导唱文件失败！错误码：${res.status}--错误原因：${res.des}`
+            message: `上传导唱文件失败！错误码：${res.status}--错误原因：${res.des}`,
           });
         }
       });
     },
-    
+
     refresh() {
       this.reload();
     },
-   
-    close(){
-          this.$emit('editDistributeSh')
+
+    close() {
+      this.$emit("editDistributeSh");
     },
     confirm() {
-      
       const param = {
         token: this.token,
-    id: this.userInfo.id,
-    
-    auditionFileCode: this.fileCode,
-    projectCode: this.projectCode,
+        id: this.userInfo.id,
+
+        auditionFileCode: this.fileCode,
+        projectCode: this.projectCode,
       };
-      console.log(param)
-      commitMix(param).then(res => {
+      if (this.fileCode == "") {
+        this.$message({
+          type: "error",
+          message: "请选择正确的缩混文件上传！",
+        });
+        return false;
+      }
+      if (this.projectCode == "") {
+        this.$message({
+          type: "error",
+          message: "请选择正确缩混的工程文件上传！",
+        });
+        return false;
+      }
+      this.saveType = true;
+
+      console.log(param);
+      commitMix(param).then((res) => {
         console.log(res);
         if (res.status == 0) {
           this.lyricsCode = res.data;
           this.$message({
             type: "success",
-            message: "上传缩混成功！"
+            message: "上传缩混成功！",
           });
-          this.dialogFormVisible=false
+          this.dialogFormVisible = false;
           //this.submitForm();//提交表单
-          this.$emit('editDistributeSh')
+          this.$emit("editDistributeSh");
         } else {
           this.lyricsCode = "";
+          (this.fileCode = ""),
+            (this.projectCode = ""),
+            (this.saveType = false);
 
           this.$message({
             type: "error",
-            message: `上传缩混失败！错误码：${res.status}--错误原因：${res.des}`
+            message: `上传缩混失败！错误码：${res.status}--错误原因：${res.des}`,
           });
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

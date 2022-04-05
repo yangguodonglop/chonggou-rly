@@ -8,7 +8,7 @@
         <el-input v-model="form.nick"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password" :label-width="formLabelWidth">
-        <el-input v-model="form.password" type="password" :disabled="true"></el-input>
+        <el-input v-model="password" type="password" :disabled="true"></el-input>
       </el-form-item>
       <el-form-item label="手机" prop="phone" :label-width="formLabelWidth">
         <el-input v-model="form.telephone"></el-input>
@@ -49,6 +49,7 @@ export default {
         telephone: "",
         weiXin: ""
       },
+      password:"******",
       rules: {
         userName: [
           { required: true, message: "请输入姓名", trigger: "blur" },
