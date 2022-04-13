@@ -534,8 +534,6 @@
 <script>
 import {
   musicTypeList,
-  musicList,
-  deleteMusicById,
   singerList,
   deleteSong,
   baseUrl
@@ -886,7 +884,7 @@ export default {
                 type: "success",
                 message: "删除成功!"
               });
-              this.findUserInfo();
+              this.musicList();
             } else {
               this.$message({
                 type: "error",

@@ -21,7 +21,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer" style="display: flex;justify-content: center;">
         <el-button @click="close()" size="small">取 消</el-button>
-        <el-button type="primary" @click="confirm()" size="small">确 定</el-button>
+        <el-button type="primary" @click="confirm()" size="small" :disabled="saveType">确 定</el-button>
       </div>
   </div>
 </template>
@@ -65,8 +65,10 @@ export default {
       lyricsCode: "",
       demoCode: "",
           fileCode: "",
+          fileCodeActive:'',
     projectCode: "",
-    daoChangCode: ""
+    daoChangCode: "",
+    saveType:false
     };
   },
 
@@ -83,6 +85,8 @@ export default {
       // this.keyArr = [];
       // this.keyArr = val.funcGroup;
       this.$nextTick(() => {
+        console.log(val)
+        this.saveType=false
         this.queryInfo()
        // console.log(baseUrl)
        
@@ -121,39 +125,48 @@ export default {
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
       fd.append("category", "lyric");
-      uploadFile(fd).then(res => {
-        if (res.status == 0) {
-          this.fileCode = res.data;
-          this.$message({
-            type: "success",
-            message: "上传歌词成功！"
-          });
-          //this.submitForm();//提交表单
-        } else {
-          this.fileCode = "";
-          this.$message({
-            type: "error",
-            message: `上传歌词失败！错误码：${res.status}--错误原因：${res.des}`
-          });
-        }
-      });
+               this.fileCodeActive=fileObj
+      console.log(this.fileCodeActive)
+      // uploadFile(fd).then(res => {
+      //   if (res.status == 0) {
+      //     this.fileCode = res.data;
+      //     this.$message({
+      //       type: "success",
+      //       message: "上传歌词成功！"
+      //     });
+      //     //this.submitForm();//提交表单
+      //   } else {
+      //     this.fileCode = "";
+      //     this.$message({
+      //       type: "error",
+      //       message: `上传歌词失败！错误码：${res.status}--错误原因：${res.des}`
+      //     });
+      //   }
+      // });
     },
     refresh() {
       this.reload();
     },
     confirm() {
        
-      
+      this.saveType=true
       const param = {
         token: this.token,
     songID: this.userInfo.id,
     fileCode: this.fileCode,
       };
+           let fd = new FormData()
+            fd.append("fileCode",  this.fileCodeActive); // 文件对象
+      // fd.append("auditionFileCode", this.demoCodeActive);
+     fd.append('REQ',JSON.stringify(param) );
+      console.log(fd);
+         this.saveType = true;  
       console.log(param)
-      reCommitLyric(param).then(res => {
+      console.log(param)
+      reCommitLyric(fd).then(res => {
         console.log(res);
         if (res.status == 0) {
-          this.lyricsCode = res.data;
+           this.saveType=true
           this.$message({
             type: "success",
             message: "重新上传歌词成功！"
@@ -168,6 +181,7 @@ export default {
             type: "error",
             message: `重新上传歌词失败！错误码：${res.status}--错误原因：${res.des}`
           });
+           this.saveType=false
         }
       });
     },

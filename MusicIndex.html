@@ -316,8 +316,11 @@
           buyTexting: "",
           visibleType2: false,
           buysongId: '',
-          songName: ''
-
+          songName: '',
+          tempdata:JSON.parse(localStorage.getItem("admin")),//ygd,
+          // tempdata:{
+          //   token:'6257043fb67baf3dfb929a61'
+          // }
         };
       },
       mounted: function () {
@@ -331,10 +334,12 @@
           var tempurl1 = str[1]
           var tempurl2 = tempurl1.split("=")[1]
           this.axiosUrl = ''
-          this.axiosUrl = tempurl2
+          this.axiosUrl = tempurl2//杨国栋
+         // this.axiosUrl='6257027cb67baf3dfb929a5e'
           this.queryInfo(this.axiosUrl)
         }
-        //this.queryInfo(this.axiosUrl)
+        // this.axiosUrl='6257027cb67baf3dfb929a5e'
+        // this.queryInfo(this.axiosUrl)
 
 
       },
@@ -419,7 +424,7 @@
             method: 'post',
             url: _this.severUrlActive + '/god/getPurchaseHistory',
             data: {
-              token: tempdata.token,
+              token: _this.tempdata.token,
               page: _this.current1,
               pageSize: 10
             }
@@ -437,22 +442,7 @@
                 item['songName'] = item.submitter.songName
                 item['tag'] = item.submitter.tag
 
-                // if (item.createTime > 0) {
-                //   item.createTime = _this.getTimes(item.createTime * 1000)
-                // } else {
-                //   item.createTime = ""
-                // }
-                // if (item.contractTime > 0) {
-                //   item.contractTime = _this.getTimes(item.contractTime * 1000)
-                // } else {
-                //   item.contractTime = ""
-                // }
-                // if (item.publishTime > 0) {
-                //   item.publishTime = _this.getTimes(item.publishTime * 1000)
-                // } else {
-                //   item.publishTime = ""
-                // }
-                // // item["timess"] = common.getTimes(item.time * 1000);
+     
                 this.totalNum1 = 9
                 this.visiblePartner = true;
 
@@ -484,7 +474,7 @@
           let tempdata = JSON.parse(localStorage.getItem("admin"))
           let _this = this
           const param = {
-            token: tempdata.token,
+            token:  _this.tempdata.token,
             songID: val.id,
             fileCode: val.lyricsFile,
             category: "lyric"
@@ -495,8 +485,8 @@
           // tempStr =window.btoa(tempStr);
           // tempStr = $.base64.encode(tempStr)
           tempStr = window.btoa(tempStr);
-          console.log(tempStr.split("=="))
-          tempStr = tempStr.split("==")[0]
+          console.log(tempStr.split("="))
+          tempStr = tempStr.split("=")[0]
           //tempStr=split('==')[0]
           // openFileActive(tempStr).then(res => {
           //   console.log(res);
@@ -515,21 +505,22 @@
             //  // key: localStorage.getItem("admin"),
             // }
           }).then(res => {
-            console.log(val)
+            console.log(res)
             if (res.status == 200) {
+                 console.log("***")
               let tempdata1 = JSON.parse(localStorage.getItem("admin"))
 
               this.songText = res.data;
               const params = {
-                token: tempdata1.token,
+                token: this.tempdata.token,
                 songID: val.id,
                 fileCode: val.auditionFile,
-                category: "lyric"
+                category: "audition"
               };
               let tempStr1 = JSON.stringify(params);
               tempStr1 = window.btoa(tempStr1);
-              console.log(tempStr1.split("=="))
-              tempStr1 = tempStr1.split("==")[0]
+              console.log(tempStr1.split("="))
+              tempStr1 = tempStr1.split("=")[0]
               this.auditionCodeUrl = _this.severUrlActive + "/openFile/" + tempStr1;
             }
 
@@ -557,11 +548,11 @@
                 method: 'post',
                 url: _this.severUrlActive + '/god/putLockSong',
                 data: {
-                  token: tempdata.token,
-                  url: this.axiosUrl,
+                  token:  _this.tempdata.token,
+                  url: _this.axiosUrl,
                   songIDs: [_this.buysongId],
-                  collaborateMode: _this.copyright,
-                  copyrightMode: _this.cooperative
+                  collaborateMode:_this.cooperative,
+                  copyrightMode: _this.copyright
                 }
               }).then(res => {
                 console.log(res)
@@ -602,7 +593,7 @@
                 url: this.severUrlActive + '/account/updatePassword',
                 data: {
                   // key:"kehu02",
-                  token: tempdata.token,
+                  token:  _this.tempdata.token,
                   oldPassword: values.oldPassword,
                   newPassword: values.newPassword
                 }
@@ -626,7 +617,7 @@
         //版权列表
         queryCopyright() {
           let tempdata = JSON.parse(localStorage.getItem("admin"))
-
+          let _this=this
           axios({
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -635,7 +626,7 @@
             url: this.severUrlActive + '/config/aboutCopyrightMode',
             data: {
               // key: localStorage.getItem("admin"), "operation": 0, "name": ""
-              token: tempdata.token,
+              token:  _this.tempdata.token,
               action: "get",
             }
           }).then(res => {
@@ -655,7 +646,7 @@
         //合作方式列表
         queryCooperation() {
           let tempdata = JSON.parse(localStorage.getItem("admin"))
-
+          let _this=this
           axios({
             headers: {
               'Content-Type': 'multipart/form-data'
@@ -663,7 +654,7 @@
             method: 'post',
             url: this.severUrlActive + '/config/aboutCooperative',
             data: {
-              token: tempdata.token,
+              token:  _this.tempdata.token,
               action: "get",
             }
           }).then(res => {
@@ -721,37 +712,7 @@
           this.queryCooperation()
           _this.visibleType = true
 
-          // axios({
-          //   headers: {
-          //     'Content-Type': 'multipart/form-data'
-          //   },
-          //   method: 'post',
-          //   // url: this.severUrl + '/checkSold',
-          //   url: this.severUrlActive + '/god/putLockSong',
-
-          //   data: {
-          //     key: localStorage.getItem("admin"),
-          //     songName: val.name
-          //   }
-          // }).then(res => {
-          //   let tempdata = res.data
-          //   if (tempdata.state == 0) {
-          //     if (tempdata.sold === true) {
-          //       _this.visibleBuy=true
-          //     } else {
-          //       this.song = val.name
-          //       this.lockTime=val.lockTime
-          //       this.queryCopyright()
-          //       this.queryCooperation()
-          //       this.visibleType = true
-          //     }
-
-          //   } else {
-
-
-          //   }
-
-          // });
+   
 
 
         },
@@ -767,7 +728,7 @@
             // url: this.severUrl + '/openAuditionList/' + Ulrs,
             url: this.severUrlActive + '/god/openOneAudition',
             data: {
-              token: tempdata.token,
+              token:  _this.tempdata.token,
               //token:'6218e7abff343b0460492b3c',
               // url:'6218d888f60db081ef1cf1bc'
               url: Ulrs

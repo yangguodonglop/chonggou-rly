@@ -88,7 +88,9 @@ export default {
       param: {},
       musicTypeList: [],
       lyricsCode: "",
+         lyricsCodeActive: "",
       demoCode: "",
+      demoCodeActive: "",
       loading:false,
       saveType:false
     };
@@ -132,12 +134,13 @@ export default {
 
     // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
     httpRequest(param) {
-      this.loading=true;
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
       fd.append("category", "demo");
+         this.demoCodeActive=fileObj
+      console.log(this.demoCodeActive)
 
       // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
       // let config = {
@@ -145,67 +148,67 @@ export default {
       //    'Content-Type': 'multipart/form-data'
       //   }
       // }
-      uploadFile(fd).then(res => {
-        if (res.status == 0) {
-                this.loading=false;
+      // uploadFile(fd).then(res => {
+      //   if (res.status == 0) {
+      //           this.loading=false;
 
-          this.demoCode = res.data;
-          this.$message({
-            type: "success",
-            message: "上传歌曲成功！"
-          });
-          //this.submitForm();//提交表单
-        } else {
-                          this.loading=false;
+      //     this.demoCode = res.data;
+      //     this.$message({
+      //       type: "success",
+      //       message: "上传歌曲成功！"
+      //     });
+      //     //this.submitForm();//提交表单
+      //   } else {
+      //                     this.loading=false;
 
-          this.demoCode = "";
-          this.$message({
-            type: "error",
-                        message: `上传歌曲失败！错误码：${res.status}--错误原因：${res.des}`
-          });
-        }
-        //  if(res.code===0){
-        //    this.submitForm();//提交表单
-        //  }
-      });
+      //     this.demoCode = "";
+      //     this.$message({
+      //       type: "error",
+      //                   message: `上传歌曲失败！错误码：${res.status}--错误原因：${res.des}`
+      //     });
+      //   }
+      //   //  if(res.code===0){
+      //   //    this.submitForm();//提交表单
+      //   //  }
+      // });
     },
     // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
     httpRequestLyric(param) {
-                      this.loading=true;
 
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
       fd.append("category", "lyric");
-
+       this.lyricsCodeActive=fileObj
+      console.log(this.lyricsCodeActive)
       // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
       // let config = {
       //   headers: {
       //    'Content-Type': 'multipart/form-data'
       //   }
       // }
-      uploadFile(fd).then(res => {
-        if (res.status == 0) {
-                          this.loading=false;
+      // uploadFile(fd).then(res => {
+      //   if (res.status == 0) {
+      //                     this.loading=false;
 
-          this.lyricsCode = res.data;
-          this.$message({
-            type: "success",
-            message: "上传歌词成功！"
-          });
-          //this.submitForm();//提交表单
-        } else {
-                          this.loading=false;
+      //     this.lyricsCode = res.data;
+      //     this.$message({
+      //       type: "success",
+      //       message: "上传歌词成功！"
+      //     });
+      //     //this.submitForm();//提交表单
+      //   } else {
+      //                     this.loading=false;
 
-          this.lyricsCode = "";
+      //     this.lyricsCode = "";
 
-          this.$message({
-            type: "error",
-                        message: `上传歌词失败！错误码：${res.status}--错误原因：${res.des}`
-          });
-        }
-      });
+      //     this.$message({
+      //       type: "error",
+      //                   message: `上传歌词失败！错误码：${res.status}--错误原因：${res.des}`
+      //     });
+      //   }
+      // });
     },
     refresh() {
       this.reload();
@@ -215,19 +218,6 @@ export default {
 
     },
     confirm() {
-      const param = {
-        token: this.token,
-        songName: this.music.musicName,
-        item: {
-           songName: this.music.musicName,
-          lyricist: this.music.musicLric,
-          composer: this.music.musicSinger,
-          lyricsFile: this.lyricsCode,
-          auditionFileCode: this.demoCode,
-          tag: this.music.musicType,
-          mixProjectCode:''
-        }
-      };
         if (this.music.musicName == "") {
         this.$message({
           type: "error",
@@ -257,23 +247,39 @@ export default {
         return false;
       }
 
-      if (this.demoCode == "") {
+      if (this.demoCodeActive == "") {
         this.$message({
           type: "error",
           message: "请上传正确歌曲文件"
         });
         return false;
       }
-      if (this.lyricsCode == "") {
+      if (this.lyricsCodeActive == "") {
         this.$message({
           type: "error",
           message: "请上传正确歌词文件！"
         });
         return false;
       }
-      this.saveType=true
+      const param = {
+        token: this.token,
+        songName: this.music.musicName,
+        item: {
+           songName: this.music.musicName,
+          lyricist: this.music.musicLric,
+          composer: this.music.musicSinger,
+          tag: this.music.musicType,
+          mixProjectCode:''
+        }
+      };
+             let fd = new FormData()
+            fd.append("lyricsFile",  this.lyricsCodeActive); // 文件对象
+      fd.append("auditionFileCode", this.demoCodeActive);
+     fd.append('REQ',JSON.stringify(param) );
+      console.log(fd);
+         this.saveType = true;  
       console.log(param)
-      commitFinishedProduct(param).then(res => {
+      commitFinishedProduct(fd).then(res => {
         console.log(res);
         if (res.status == 0) {
           this.lyricsCode = res.data;

@@ -109,6 +109,7 @@ export default {
       lyricsCode: "",
       demoCode: "",
       fileCode: "",
+      fileCodeActive:'',
       projectCode: "",
       daoChangCode: "",
       loading: false,
@@ -168,6 +169,8 @@ export default {
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
       fd.append("category", "audition");
+            this.fileCodeActive=fileObj
+      console.log(this.fileCodeActive)
 
       // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
       // let config = {
@@ -175,28 +178,28 @@ export default {
       //    'Content-Type': 'multipart/form-data'
       //   }
       // }
-      uploadFile(fd).then((res) => {
-        if (res.status == 0) {
-          this.loading = false;
-          this.fileCode = res.data;
-          this.$message({
-            type: "success",
-            message: "上传混音文件成功！",
-          });
-          //this.submitForm();//提交表单
-        } else {
-          this.loading = false;
+      // uploadFile(fd).then((res) => {
+      //   if (res.status == 0) {
+      //     this.loading = false;
+      //     this.fileCode = res.data;
+      //     this.$message({
+      //       type: "success",
+      //       message: "上传混音文件成功！",
+      //     });
+      //     //this.submitForm();//提交表单
+      //   } else {
+      //     this.loading = false;
 
-          this.fileCode = "";
-          this.$message({
-            type: "error",
-            message: `上传混音文件失败！错误码：${res.status}--错误原因：${res.des}`,
-          });
-        }
-        //  if(res.code===0){
-        //    this.submitForm();//提交表单
-        //  }
-      });
+      //     this.fileCode = "";
+      //     this.$message({
+      //       type: "error",
+      //       message: `上传混音文件失败！错误码：${res.status}--错误原因：${res.des}`,
+      //     });
+      //   }
+      //   //  if(res.code===0){
+      //   //    this.submitForm();//提交表单
+      //   //  }
+      // });
     },
     // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
     httpRequestPro(param) {
@@ -281,13 +284,7 @@ export default {
       this.$emit("editDistributeSh");
     },
     confirm() {
-      const param = {
-        token: this.token,
-        id: this.userInfo.id,
-
-        auditionFileCode: this.fileCode,
-        projectCode: this.projectCode,
-      };
+ 
       if (this.fileCode == "") {
         this.$message({
           type: "error",
@@ -303,9 +300,19 @@ export default {
         return false;
       }
       this.saveType = true;
+           const param = {
+        token: this.token,
+        id: this.userInfo.id,
+
+        projectCode: this.projectCode,
+      };
+         let fd = new FormData()
+      fd.append("auditionFileCode", this.fileCodeActive);
+     fd.append('REQ',JSON.stringify(param) );
+      console.log(fd);
 
       console.log(param);
-      commitMix(param).then((res) => {
+      commitMix(fd).then((res) => {
         console.log(res);
         if (res.status == 0) {
           this.lyricsCode = res.data;
@@ -313,6 +320,7 @@ export default {
             type: "success",
             message: "上传缩混成功！",
           });
+            (this.saveType = false);
           this.dialogFormVisible = false;
           //this.submitForm();//提交表单
           this.$emit("editDistributeSh");

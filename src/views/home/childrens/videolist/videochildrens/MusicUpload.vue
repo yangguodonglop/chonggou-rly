@@ -38,6 +38,18 @@
           ></el-option>
         </el-select>
       </el-form-item>
+       <el-form-item label="上传歌曲:" prop="file" :label-width="formLabelWidth">
+        <el-upload
+          action
+          multiple
+          ref="upload_img"
+           accept=""
+          :http-request="httpRequestActive"
+        >
+          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+          <span slot="tip" class="el-upload__tip">请选择要更新的歌曲文件上传</span>
+        </el-upload>
+      </el-form-item>
       <el-form-item label="上传歌词:" prop="file" :label-width="formLabelWidth">
         <el-upload
           action
@@ -47,12 +59,12 @@
           :http-request="httpRequest"
         >
           <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-          <span slot="tip" class="el-upload__tip">请选择歌词文件上传</span>
+          <span slot="tip" class="el-upload__tip">请选择要更新的歌词文件上传</span>
         </el-upload>
       </el-form-item>
           <el-form-item label="" :label-width="formLabelWidth" style="display: flex;
     justify-content: end;">
-      <el-button type="primary" size="small" @click="confirm()">确 定</el-button>
+      <el-button type="primary" size="small" @click="confirm()" :disabled="saveType">确 定</el-button>
       </el-form-item>
       </div>
             <div style="font-size:16px;margin:10px 0px;">歌曲发布信息</div>
@@ -107,7 +119,7 @@
         </el-select>
       </el-form-item>
   <el-form-item label="" :label-width="formLabelWidth" style="display: flex;justify-content:flex-end;">
-      <el-button type="primary"  @click="confirmActive()" size="small">确 定</el-button>
+      <el-button type="primary"  @click="confirmActive()" size="small"  :disabled="saveTypeActive">确 定</el-button>
       </el-form-item>
       
        </div>
@@ -123,14 +135,9 @@
 import {
   uploadFile,
   aboutMusicTag,
-  commitDemo,
-  commitArrangement,
-  userListActive,
   aboutCopyrightMode,
   aboutCooperative,
-  updateSongInfo,
   updateDemo,
-  updatePublish,
   updatePublishData,
   getAccountIntro
 
@@ -173,10 +180,14 @@ export default {
       param: {},
       musicTypeList: [],
       lyricsCode: "",
+      lyricsCodeActive:'',
       demoCode: "",
       fileCode: "",
       projectCode: "",
-      daoChangCode: ""
+      daoChangCode: "",
+      saveTypeActive:false,
+      saveType:false,
+      demoCodeActive:'',
     };
   },
 
@@ -337,32 +348,21 @@ export default {
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
       fd.append("category", "lyric");
+            this.lyricsCodeActive=fileObj
+      console.log(this.lyricsCodeActive)
 
-      // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
-      // let config = {
-      //   headers: {
-      //    'Content-Type': 'multipart/form-data'
-      //   }
-      // }
-      uploadFile(fd).then(res => {
-        if (res.status == 0) {
-          this.lyricsCode = res.data;
-          this.$message({
-            type: "success",
-            message: "上传歌词成功！"
-          });
-          //this.submitForm();//提交表单
-        } else {
-          this.lyricsCode = "";
-
-          this.$message({
-            type: "error",
-                        message: `上传歌词失败！错误码：${res.status}--错误原因：${res.des}`
-
-          });
-        }
-      });
     },
+        httpRequestActive(param) {
+      let fileObj = param.file; // 相当于input里取得的files
+      let fd = new FormData(); // FormData 对象
+      fd.append("files", fileObj); // 文件对象
+      fd.append("token", this.token);
+      fd.append("category", "lyric");
+            this.demoCodeActive=fileObj
+      console.log(this.demoCodeActive)
+
+    },
+    
   
 
     refresh() {
@@ -371,27 +371,48 @@ export default {
 
     confirm() {
       let templyricsCode=''
-      if(this.lyricsCode==''){
+      if(this.lyricsCodeActive==''){
         templyricsCode=this.userInfo.lyricsCode
       }else{
-        templyricsCode=this.lyricsCode
+        templyricsCode=this.lyricsCodeActive
       }
-     const param= {
+          let tempDemoCode=''
+      if(this.demoCodeActive==''){
+        tempDemoCode=this.userInfo.demoCode
+      }else{
+        tempDemoCode=this.demoCodeActive
+      }
+//      const param= {
   
 
-        token: this.token,
-    id: this.userInfo.id,
-    demo: {
-        lyricist:  this.userInfo.lyricist,
-        composer: this.userInfo.composer,
-        lyricsCode:templyricsCode ,
-        demoCode: this.userInfo.demoCode,
-        tag: this.userInfo.tagActive
-    }
-}
+//         token: this.token,
+//     id: this.userInfo.id,
+//     demo: {
+//         lyricist:  this.userInfo.lyricist,
+//         composer: this.userInfo.composer,
+//         lyricsCode:templyricsCode ,
+//         demoCode: tempDemoCode,
+//         tag: this.userInfo.tagActive
+//     }
+// }
   
       console.log(param);
-      updateDemo(param).then(res => {
+        let fd = new FormData()
+      const param = {
+            token: this.token,
+    id: this.userInfo.id,
+        demo: {
+          lyricist: this.music.musicLric,
+          composer: this.music.musicSinger,
+          tag: this.music.musicType
+        }
+      };
+       fd.append("lyricsCode",  this.lyricsCodeActive); // 文件对象
+      fd.append("demoCode", this.demoCodeActive);
+     fd.append('REQ',JSON.stringify(param) );
+     this.saveType=true
+      console.log(fd);
+      updateDemo(fd).then(res => {
         console.log(res);
         if (res.status == 0) {
           this.lyricsCode = res.data;
@@ -399,14 +420,16 @@ export default {
             type: "success",
             message: "更新歌曲基本信息成功！"
           });
-          //this.submitForm();//提交表单
+          this.saveType=false
         } else {
 
           this.$message({
             type: "error",
-                                    message: `更新歌曲基本信息失败！错误码：${res.status}--错误原因：${res.des}`
+         message: `更新歌曲基本信息失败！错误码：${res.status}--错误原因：${res.des}`
+                                      
 
           });
+          this.saveType=false
         }
       });
     },
@@ -442,6 +465,7 @@ export default {
 }
   
       console.log(param);
+       this.saveTypeActive=true
       updatePublishData(param).then(res => {
         console.log(res);
         if (res.status == 0) {
@@ -450,6 +474,7 @@ export default {
             type: "success",
             message: "更新歌曲发布信息成功！"
           });
+            this.saveTypeActive=false
           //this.submitForm();//提交表单
         } else {
 
@@ -459,6 +484,7 @@ export default {
 
             
           });
+              this.saveTypeActive=false
         }
       });
 
