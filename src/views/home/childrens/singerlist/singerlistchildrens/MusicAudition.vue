@@ -79,7 +79,7 @@ export default {
     musicListDemo() {
       console.log(this.userInfo)
    let fileCode=''
-      if(this.userInfo.progressRateActive==0){
+      if(this.userInfo.progressRateActive<599){
         fileCode=this.userInfo.demoFile
       }else{
                 fileCode=this.userInfo.mixFile

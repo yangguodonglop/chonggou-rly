@@ -82,11 +82,10 @@ export default {
     musicListDemo() {
        
       let fileCode=''
-      if(this.userInfo.progressRateActive==0){
+      if(this.userInfo.progressRateActive<599){
         fileCode=this.userInfo.demoFile
       }else{
-                fileCode=this.userInfo.mixFile
-
+      fileCode=this.userInfo.mixFile
       }
       console.log(this.userInfo)
       const param = {
@@ -124,16 +123,11 @@ export default {
       };
       let tempStr = JSON.stringify(param);
       let tempStr1 = JSON.stringify(param);
-      console.log(tempStr);
       const Base64 = require("js-base64").Base64;
       tempStr = Base64.encodeURL(tempStr);
       console.log
           tempStr1=window.btoa(tempStr1);
-
-       console.log(tempStr);
-       console.log(tempStr1);
       openFileActive(tempStr).then(res => {
-        console.log(res);
         this.songText = res;
       });
     },

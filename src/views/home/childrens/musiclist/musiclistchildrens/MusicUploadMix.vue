@@ -123,6 +123,8 @@ export default {
   mounted() {
     this.queryInfo();
     console.log(this.userInfo);
+        this.id=this.userInfo.id
+
   },
   watch: {
     userInfo(val) {
@@ -163,7 +165,6 @@ export default {
 
     // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
     httpRequest(param) {
-      this.loading = true;
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
@@ -209,6 +210,7 @@ export default {
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
       fd.append("category", "mixPro");
+              fd.append("songID", this.id);
 
       // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
       // let config = {
@@ -246,6 +248,7 @@ export default {
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
       fd.append("category", "rec");
+              fd.append("songID", this.id);
 
       // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
       // let config = {
@@ -285,7 +288,7 @@ export default {
     },
     confirm() {
  
-      if (this.fileCode == "") {
+      if (this.fileCodeActive == "") {
         this.$message({
           type: "error",
           message: "请选择正确的缩混文件上传！",

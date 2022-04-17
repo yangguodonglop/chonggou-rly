@@ -132,6 +132,7 @@ export default {
       daoChangCode: "",
       loading: false,
       saveType: false,
+      id:'',
     };
   },
 
@@ -141,13 +142,17 @@ export default {
   mounted() {
     this.queryInfo();
     console.log(this.userInfo);
+    this.id=this.userInfo.id
   },
   watch: {
     userInfo(val) {
       console.log(val);
+        this.id=this.userInfo.id
       // this.keyArr = [];
       // this.keyArr = val.funcGroup;
       this.$nextTick(() => {
+        console.log(val)
+        this.id=this.userInfo.id
         // console.log(baseUrl)
         // this.musicListlyricsFile()
         // this.musicListDemo()
@@ -185,6 +190,7 @@ export default {
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
       fd.append("category", "arrPro");
+      fd.append("songID", this.id);
 
       // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
       // let config = {
@@ -224,6 +230,7 @@ export default {
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
       fd.append("category", "arrDC");
+            fd.append("songID", this.id);
 
       // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
       // let config = {
@@ -261,6 +268,7 @@ export default {
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
       fd.append("category", "rec");
+            fd.append("songID", this.id);
 
       // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
       // let config = {

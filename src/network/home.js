@@ -1,7 +1,8 @@
 import { request } from "./request";
 import {get,post} from './request'
 const baseUrl='http://106.53.61.91:6325/rylBGM'
-export {baseUrl}
+const baseUrlActive='http://106.53.61.91:6327'
+export {baseUrl,baseUrlActive}
 
 // export function adminLogin(key, pw) {
 //   return request({
@@ -31,8 +32,8 @@ export const adminSetPassword = (param) => post(baseUrl+'/account/adminSetPasswo
 export const aboutCopyrightMode = (param) => post(baseUrl+'/config/aboutCopyrightMode', param)
 export const aboutCooperative = (param) => post(baseUrl+'/config/aboutCooperative', param)
 export const aboutMusicTag = (param) => post(baseUrl+'/config/aboutMusicTag', param)
-export const uploadFile = (param) => post(baseUrl+'/uploadFile', param)
-export const downloadFile = (param) => post(baseUrl+'/productLine/downloadFile', param)
+export const uploadFile = (param) => post(baseUrlActive+'/uploadFile', param)
+export const downloadFile = (param) => post(baseUrlActive+'/downloadFile', param)
 export const commitDemo = (param) => post(baseUrl+'/productLine/commitDemo', param)
 export const commitArrangement = (param) => post(baseUrl+'/productLine/commitArrangement', param)
 

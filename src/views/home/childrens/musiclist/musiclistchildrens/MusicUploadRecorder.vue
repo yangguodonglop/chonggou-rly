@@ -134,6 +134,8 @@ export default {
   mounted() {
     this.queryInfo();
     console.log(this.userInfo);
+        this.id=this.userInfo.id
+
   },
   watch: {
     userInfo(val) {
@@ -180,6 +182,7 @@ export default {
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
       fd.append("category", "rec");
+           fd.append("songID", this.id);
 
       // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
       // let config = {
@@ -219,6 +222,8 @@ export default {
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
       fd.append("category", "recPro");
+                 fd.append("songID", this.id);
+
 
       // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
       // let config = {

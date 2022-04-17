@@ -407,18 +407,18 @@
                       @click.native="toUploadRecorder(scope.row)"
                     >上传录音</el-dropdown-item>
                     <el-dropdown-item v-if="mixerHide" @click.native="toUploadMix(scope.row)">上传缩混</el-dropdown-item>
-                    <el-dropdown-item @click.native="todownLoad(scope.row, 'demo')">下载小样文件</el-dropdown-item>
+                    <!-- <el-dropdown-item @click.native="todownLoad(scope.row, 'demo')">下载小样文件</el-dropdown-item> -->
                     <el-dropdown-item
                       v-if="lyricsZzHide"
                       @click.native="todownLoadText(scope.row)"
                     >重新上传歌词</el-dropdown-item>
-                    <el-dropdown-item @click.native="todownLoad(scope.row, 'arr')">下载编曲小样文件</el-dropdown-item>
-                    <el-dropdown-item @click.native="todownLoad(scope.row, 'arrPro')">下载编曲工程文件</el-dropdown-item>
-                    <el-dropdown-item @click.native="todownLoad(scope.row, 'rec')">下载录音小样文件</el-dropdown-item>
-                    <el-dropdown-item @click.native="todownLoad(scope.row, 'recPro')">下载录音工程文件</el-dropdown-item>
-                    <el-dropdown-item @click.native="todownLoad(scope.row, 'mix')">下载缩混小样文件</el-dropdown-item>
-                    <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro')">下载录缩混程文件</el-dropdown-item>
-                    <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro')">下载导唱文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'arr',scope.row.arrangementRly.file)">下载编曲小样文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'arrPro',scope.row.arrangementRly.projectFile)">下载编曲工程文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'rec',scope.row.recordingRly.file)">下载录音小样文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'recPro',scope.row.recordingRly.projectFile)">下载录音工程文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'mix',scope.row.mixRly.auditionFile)">下载缩混小样文件</el-dropdown-item>
+                    <!-- <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro',scope.row.mixRly.projectFile)">下载缩混工程文件</el-dropdown-item> -->
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro',scope.row.arrangementRly.daoChangFile)">下载导唱文件</el-dropdown-item>
                     <el-dropdown-item
                       v-if="producerHide"
                       @click.native="toReview(scope.row, '30')"
@@ -536,7 +536,8 @@ import {
   musicTypeList,
   singerList,
   deleteSong,
-  baseUrl
+  baseUrl,
+  baseUrlActive
 } from "network/home.js";
 
 import SearchHeader from "components/common/header/SearchHeader.vue";
@@ -829,12 +830,21 @@ export default {
     },
 
     //下载小样
-    todownLoad(val, item) {
-      console.log(val, item);
+    todownLoad(val, item,file) {
+      console.log(val, item,file);
+      if(file==''){
+    this.$message({
+            type: "error",
+            message: '该文件为空，不可下载！'
+          });
+          return false
+      }
+      
       const param = {
         token: this.token,
         songID: val.id,
-        category: item
+        category: item,
+        fileName:file
       };
       // this.postExcelFile(param,"http://106.53.61.91:6325/rylBGM/productLine/downloadFile", );
       downloadFile(param).then(res => {
@@ -848,7 +858,7 @@ export default {
           //     const Base64 = require("js-base64").Base64;
           // const exStr = Base64.encodeURI(type);
           // const fileName = val.cr_songName;
-          let openUrl = baseUrl + "/productLine/tempDownLoadFile/" + tempMd5;
+          let openUrl = baseUrlActive + "/tempDownLoadFile/" + tempMd5;
           window.open(openUrl, "_blank");
         } else {
           this.$message({
@@ -1315,6 +1325,9 @@ export default {
           //  console.log(idActive)
           // console.log(idActive.substring(idActive.length-5))
           let obj = {
+            arrangementRly:items.arrangement,
+            mixRly:items.mix,
+            recordingRly:items.recording,
             songName: items.submitter.songName,
             composer: items.submitter.composer,
             lyricist: items.submitter.lyricist,
@@ -1370,6 +1383,7 @@ export default {
               items.mix.finishTime.indexOf("000") > -1
                 ? "暂无时间"
                 : this.dateFmt(items.mix.finishTime)
+
           };
           this.tableData.push(obj);
         });
