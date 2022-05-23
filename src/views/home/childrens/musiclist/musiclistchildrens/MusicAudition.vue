@@ -80,6 +80,7 @@ export default {
       
     //获取歌曲
     musicListDemo() {
+      console.log(this.userInfo)
        
       let fileCode=''
       if(this.userInfo.progressRateActive<599){
@@ -101,10 +102,10 @@ export default {
       const Base64 = require("js-base64").Base64;
       //tempStr = Base64.encode(tempStr)
       tempStr = Base64.encodeURL(tempStr);
-      tempStr1=window.btoa(tempStr1);
+     // tempStr1=window.btoa(tempStr1);
 
        console.log(tempStr);
-       console.log(tempStr1);
+     //  console.log(tempStr1);
       this.auditionCodeUrl = baseUrl + "/openFile/" + tempStr;
       // openFileActive(tempStr).then(res => {
       //  // console.log(res);

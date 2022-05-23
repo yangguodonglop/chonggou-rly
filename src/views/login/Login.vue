@@ -12,7 +12,7 @@
           <el-input type="password" v-model="form.password" placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">登录</el-button>
+          <el-button type="primary" @click="onSubmit" v-on:keyup.13.native="submit" >登录</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -43,6 +43,17 @@ export default {
       }
     };
   },
+  created() {
+		//    this.setLogin();
+		  //按回车键响应
+			var _this = this;
+			document.onkeydown = function(e) {
+			let key = window.event.keyCode;
+			if (key == 13) {
+				_this.onSubmit();
+			}
+			};
+	   },
   methods: {
     onSubmit() {
       //表单验证

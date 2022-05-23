@@ -198,7 +198,8 @@ import {
   aboutMusicTag,
   openFile,
   openFileActive,
-  checkWork
+  checkWork,
+  baseUrlBuy
 } from "network/home.js";
 
 export default {
@@ -291,6 +292,7 @@ export default {
     } else {
       this.permission = false;
     }
+    console.log(baseUrlBuy)
     //获取音乐类型列表
     // this.musicTypeList();
     // 获取音乐列表
@@ -348,7 +350,8 @@ export default {
       console.log(val);
       // this.visibleUrl = true;
       this.customerAddress =
-        "http://106.53.61.91:8990/html/clientLogin.html?type=" + val.url;
+        //"http://106.53.61.91:8990/html/clientLogin.html?type=" + val.url;
+        `${baseUrlBuy}/html/clientLogin.html?type=` + val.url;
     },
 
     //上传编曲取消
@@ -366,7 +369,7 @@ export default {
       this.dialogVisibleUpload = false;
       this.dialogVisibleUrl = true;
       this.customerAddress =
-        "http://106.53.61.91:8990/html/clientLogin.html?type=" + data;
+        `${baseUrlBuy}/html/clientLogin.html?type=` + data;
       this.musicList();
     },
     //审核
@@ -432,7 +435,7 @@ export default {
       if(val){
     this.toAuditionListType = false;
        this.customerAddress =
-        "http://106.53.61.91:8990/html/clientLogin.html?type=" + val;
+        `${baseUrlBuy}/html/clientLogin.html?type=` + val;
             this.dialogVisibleUrl = true;
             
       }
@@ -509,7 +512,7 @@ export default {
       const param = {
         token: this.token,
         pageSize: 10,
-        curPage: 0,
+        curPage: this.currentPage - 1,
         filter: {
           progressRateReg: [599, 599],
           createTimeReg: createTimeReg,
@@ -605,8 +608,10 @@ export default {
 
     //点击之后的当前页数
     handleCurrentChange(val) {
+      console.log(val)
       // 当前页数
       this.currentPage = val;
+         this.musicList();
     },
 
     //时间转化

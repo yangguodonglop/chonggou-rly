@@ -9,7 +9,7 @@
           <el-upload
             action
             multiple
-            ref="upload_img"
+            ref="upload_img1"
              accept=""
             :http-request="httpRequest"
           >
@@ -21,7 +21,7 @@
           <el-upload
             action
             multiple
-            ref="upload_img"
+            ref="upload_img2"
              accept=""
             :http-request="httpRequestPro"
           >
@@ -105,10 +105,10 @@ export default {
       // this.keyArr = val.funcGroup;
       this.$nextTick(() => {
         this.findUserInfo()
-       // console.log(baseUrl)
-       
-        // this.musicListlyricsFile()
-        // this.musicListDemo()
+          this.saveType=false,
+        console.log(this.fileList)
+        this.$refs.upload_img1.clearFiles()
+        this.$refs.upload_img2.clearFiles()
       });
     }
    },

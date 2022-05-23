@@ -20,7 +20,7 @@
         <el-upload
           action
           multiple
-          ref="upload_img"
+          ref="upload_img1"
           accept=""
           :http-request="httpRequest"
         >
@@ -38,8 +38,9 @@
         <el-upload
           action
           multiple
-          ref="upload_img"
+          ref="upload_img2"
           accept=""
+          :disabled="true"
           :http-request="httpRequestPro"
         >
           <el-button slot="trigger" size="small" type="primary"
@@ -69,6 +70,7 @@
 <script>
 import {
   uploadFile,
+  uploadFileXs,
   aboutMusicTag,
   commitDemo,
   commitArrangement,
@@ -132,11 +134,11 @@ export default {
       // this.keyArr = [];
       // this.keyArr = val.funcGroup;
       this.$nextTick(() => {
-        this.findUserInfo();
-        // console.log(baseUrl)
+        this.saveType=false,
+        console.log(this.fileList)
+        this.$refs.upload_img1.clearFiles()
+        this.$refs.upload_img2.clearFiles()
 
-        // this.musicListlyricsFile()
-        // this.musicListDemo()
       });
     },
   },
@@ -295,13 +297,13 @@ export default {
         });
         return false;
       }
-      if (this.projectCode == "") {
-        this.$message({
-          type: "error",
-          message: "请选择正确缩混的工程文件上传！",
-        });
-        return false;
-      }
+      // if (this.projectCode == "") {
+      //   this.$message({
+      //     type: "error",
+      //     message: "请选择正确缩混的工程文件上传！",
+      //   });
+      //   return false;
+      // }
       this.saveType = true;
            const param = {
         token: this.token,

@@ -20,8 +20,9 @@
         <el-upload
           action
           multiple
-          ref="upload_img"
+          ref="upload_img1"
           accept=""
+          :file-list="fileList"
           :http-request="httpRequest"
         >
           <el-button slot="trigger" size="small" type="primary"
@@ -38,8 +39,9 @@
         <el-upload
           action
           multiple
-          ref="upload_img"
+          ref="upload_img2"
           accept=""
+          :disabled="true"
           :http-request="httpRequestPro"
         >
           <el-button slot="trigger" size="small" type="primary"
@@ -56,8 +58,9 @@
         <el-upload
           action
           multiple
-          ref="upload_img"
+          ref="upload_img3"
           accept=""
+          :disabled="true"
           :http-request="httpRequestDchang"
         >
           <el-button slot="trigger" size="small" type="primary"
@@ -89,6 +92,7 @@
 <script>
 import {
   uploadFile,
+  uploadFileXs,
   aboutMusicTag,
   commitDemo,
   commitArrangement,
@@ -153,9 +157,11 @@ export default {
       this.$nextTick(() => {
         console.log(val)
         this.id=this.userInfo.id
-        // console.log(baseUrl)
-        // this.musicListlyricsFile()
-        // this.musicListDemo()
+        this.saveType=false,
+        console.log(this.fileList)
+        this.$refs.upload_img1.clearFiles()
+        this.$refs.upload_img2.clearFiles()
+        this.$refs.upload_img3.clearFiles()
       });
     },
   },
@@ -189,7 +195,7 @@ export default {
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
-      fd.append("category", "arrPro");
+      fd.append("category", "arr");
       fd.append("songID", this.id);
 
       // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
@@ -198,7 +204,7 @@ export default {
       //    'Content-Type': 'multipart/form-data'
       //   }
       // }
-      uploadFile(fd).then((res) => {
+      uploadFileXs(fd).then((res) => {
         if (res.status == 0) {
           this.loading = false;
           this.fileCode = res.data;
@@ -322,13 +328,13 @@ export default {
         });
         return false;
       }
-      if (this.projectCode == "") {
-        this.$message({
-          type: "error",
-          message: "请选择正确的工程文件上传！",
-        });
-        return false;
-      }
+      // if (this.projectCode == "") {
+      //   this.$message({
+      //     type: "error",
+      //     message: "请选择正确的工程文件上传！",
+      //   });
+      //   return false;
+      // }
 
       this.saveType = true;
       console.log(param);

@@ -85,8 +85,7 @@ let tempStr = JSON.stringify(param);
       tempStr = Base64.encodeURL(tempStr);
       tempStr1=window.btoa(tempStr1);
 
-       console.log(tempStr);
-       console.log(tempStr1);
+    
 this.auditionCodeUrl=baseUrl+'/openFile/'+tempStr
       // openFileActive(tempStr).then(res => {
       //  // console.log(res);
@@ -107,7 +106,8 @@ this.auditionCodeUrl=baseUrl+'/openFile/'+tempStr
       let tempStr=JSON.stringify(param)
       console.log(tempStr)
             const Base64 = require('js-base64').Base64
-tempStr = Base64.encode(tempStr)
+tempStr = Base64.encodeURL(tempStr)
+console.log(tempStr)
       openFileActive(tempStr).then(res => {
         console.log(res);
         this.songText=res

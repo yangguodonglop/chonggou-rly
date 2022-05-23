@@ -172,8 +172,8 @@
             <p>{{ dataText }}</p>
           </template>
           <el-table-column type="selection" align="center" width="40"></el-table-column>
-          <el-table-column prop="idActive" label="歌曲编号" width="100" align="left"></el-table-column>
-          <el-table-column label="歌曲名称" width="300" align="left">
+          <el-table-column prop="idActive" label="歌曲编号" width="100" align="left" ></el-table-column>
+          <el-table-column label="歌曲名称" width="500" align="left" fixed="left">
             <template slot-scope="scope">
               <div>
                 <span
@@ -360,7 +360,7 @@
 
           <el-table-column prop="publishTime" label="发布时间" width="150"></el-table-column>
 
-          <el-table-column label="操作" align="center" width="100">
+          <el-table-column label="操作" align="center" width="100"  fixed="right">
             <template slot-scope="scope">
               <div>
                 <el-dropdown trigger="click" @command="handleCommand">

@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { queryAuditionList } from "network/home.js";
+import { queryAuditionList,baseUrlBuy } from "network/home.js";
 import fmtDate from 'common/js/Date.js';
 
 export default {
@@ -108,7 +108,7 @@ export default {
     CopyUrl(val){
       this.dialogVisibleUrl=true
  this.customerAddress =
-        "http://106.53.61.91:8990/html/clientLogin.html?type=" + val;
+        `${baseUrlBuy}/html/clientLogin.html?type=` + val;
    
     },
      // 复制成功时的回调函数
@@ -127,7 +127,7 @@ export default {
       console.log(val);
       // this.visibleUrl = true;
       this.customerAddress =
-        "http://106.53.61.91:8990/html/clientLogin.html?type=" + val;
+        `${baseUrlBuy}/html/clientLogin.html?type=` + val;
     },
     //查询合作模式
     queryInfo() {

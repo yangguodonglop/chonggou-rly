@@ -146,7 +146,7 @@ export default {
     findUserInfo() {
       const param = {
         token: this.token,
-        pageSize: 10,
+        pageSize: 100,
         curPage: this.currentPage - 1,
         fFuncGroup: parseInt(this.userInfo.fFuncGroup)
       };

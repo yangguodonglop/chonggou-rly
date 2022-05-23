@@ -1,6 +1,6 @@
 // import { request } from "./request";
 import {get,post} from './request'
-const baseUrl='http://106.53.61.91:6325'
+const baseUrl='http://47.114.141.171:8990/rylBGM'
 // export function adminLogin(key, pw) {
 //   return request({
 //     method: "POST",
@@ -11,5 +11,5 @@ const baseUrl='http://106.53.61.91:6325'
 //     }
 //   });
 // }
-export const adminLogin = param => post(baseUrl+'/rylBGM/account/signIn', param)
+export const adminLogin = param => post(baseUrl+'/account/signIn', param)
 
