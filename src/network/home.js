@@ -37,7 +37,7 @@ export const aboutCooperative = (param) => post(baseUrl+'/config/aboutCooperativ
 export const aboutMusicTag = (param) => post(baseUrl+'/config/aboutMusicTag', param)
 export const uploadFile = (param) => post(baseUrlActive+'/uploadFile', param)
 export const uploadFileXs = (param) => post(baseUrl+'/uploadFile', param)
-export const downloadFile = (param) => post(baseUrlActive+'/downloadFile', param)
+export const downloadFile = (param) => post(baseUrl+'/productLine/downloadFile', param)
 export const commitDemo = (param) => post(baseUrl+'/productLine/commitDemo', param)
 export const commitArrangement = (param) => post(baseUrl+'/productLine/commitArrangement', param)
 

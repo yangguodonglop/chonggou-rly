@@ -18,12 +18,7 @@ const SingerList = () =>
 
 const VideoList = () => import("views/home/childrens/videolist/VideoList.vue");
 
-
 const User = () => import("views/home/childrens/user/User.vue");
-const Check = () => import("views/home/childrens/user/userchildrens/Check.vue");
-const Update = () =>
-  import("views/home/childrens/user/userchildrens/Update.vue");
-const Add = () => import("views/home/childrens/user/userchildrens/Add.vue");
 
 const ULogin = () => import("views/ulogin/ULogin.vue");
 const Register = () => import("views/ulogin/Register.vue");
@@ -83,18 +78,7 @@ const routes = [
         path: "/user",
         component: User
       },
-      {
-        path: "/usercheck",
-        component: Check
-      },
-      {
-        path: "/userupdate",
-        component: Update
-      },
-      {
-        path: "/userinsert",
-        component: Add
-      }
+
     ]
   },
   {

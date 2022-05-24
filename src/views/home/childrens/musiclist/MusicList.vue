@@ -173,7 +173,7 @@
           </template>
           <el-table-column type="selection" align="center" width="40"></el-table-column>
           <el-table-column prop="idActive" label="歌曲编号" width="100" align="left" ></el-table-column>
-          <el-table-column label="歌曲名称" width="500" align="left" fixed="left">
+          <el-table-column label="歌曲名称" width="500" align="left">
             <template slot-scope="scope">
               <div>
                 <span
@@ -418,7 +418,8 @@
                     <el-dropdown-item @click.native="todownLoad(scope.row, 'recPro',scope.row.recordingRly.projectFile)">下载录音工程文件</el-dropdown-item>
                     <el-dropdown-item @click.native="todownLoad(scope.row, 'mix',scope.row.mixRly.auditionFile)">下载缩混小样文件</el-dropdown-item>
                     <!-- <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro',scope.row.mixRly.projectFile)">下载缩混工程文件</el-dropdown-item> -->
-                    <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro',scope.row.arrangementRly.daoChangFile)">下载导唱文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'arr',scope.row.arrangementRly.file)">下载导唱文件</el-dropdown-item>
+                    <!-- <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro',scope.row.arrangementRly.daoChangFile)">下载导唱文件</el-dropdown-item> -->
                     <el-dropdown-item
                       v-if="producerHide"
                       @click.native="toReview(scope.row, '30')"
@@ -858,7 +859,7 @@ export default {
           //     const Base64 = require("js-base64").Base64;
           // const exStr = Base64.encodeURI(type);
           // const fileName = val.cr_songName;
-          let openUrl = baseUrlActive + "/tempDownLoadFile/" + tempMd5;
+          let openUrl = baseUrl + "/productLine/tempDownLoadFile/" + tempMd5;
           window.open(openUrl, "_blank");
         } else {
           this.$message({
