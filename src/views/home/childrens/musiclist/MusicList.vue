@@ -8,6 +8,7 @@
             <div class="sing-id option-active">
               <span>时间查询：</span>
               <el-date-picker
+              style="width:250px;"
                 v-model="timeValue"
                 value-format="timestamp"
                 type="daterange"
@@ -54,6 +55,23 @@
                 <el-option
                   v-for="(item, index) in styleType"
                   :label="item.name"
+                  :value="item.value"
+                  :key="index"
+                ></el-option>
+              </el-select>
+            </div>
+             <div class="sing-musictype option-active">
+              <span>歌曲状态：</span>
+              <el-select
+                v-model="statusValue"
+                placeholder="请选择歌状态"
+                style="width: 150px"
+                size="mini"
+                @change="changeMusicStatus"
+              >
+                <el-option
+                  v-for="(item, index) in styleStatus"
+                  :label="item.label"
                   :value="item.value"
                   :key="index"
                 ></el-option>
@@ -418,8 +436,8 @@
                     <el-dropdown-item @click.native="todownLoad(scope.row, 'recPro',scope.row.recordingRly.projectFile)">下载录音工程文件</el-dropdown-item>
                     <el-dropdown-item @click.native="todownLoad(scope.row, 'mix',scope.row.mixRly.auditionFile)">下载缩混小样文件</el-dropdown-item>
                     <!-- <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro',scope.row.mixRly.projectFile)">下载缩混工程文件</el-dropdown-item> -->
-                    <el-dropdown-item @click.native="todownLoad(scope.row, 'arr',scope.row.arrangementRly.file)">下载导唱文件</el-dropdown-item>
-                    <!-- <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro',scope.row.arrangementRly.daoChangFile)">下载导唱文件</el-dropdown-item> -->
+                    <!-- <el-dropdown-item @click.native="todownLoad(scope.row, 'arr',scope.row.arrangementRly.file)">下载导唱文件</el-dropdown-item> -->
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'arrDC',scope.row.arrangementRly.daoChangFile)">下载导唱文件</el-dropdown-item>
                     <el-dropdown-item
                       v-if="producerHide"
                       @click.native="toReview(scope.row, '30')"
@@ -603,6 +621,17 @@ export default {
       dialogVisibleRemark: false,
       dialogVisibleRemarkActive: false,
       dialogVisibleText: false,
+      styleStatus:[{
+          value: '1',
+          label: '已分配编曲师'
+        }, {
+          value: '2',
+          label: '已分配录音师'
+        }, {
+          value: '3',
+          label: '已分配缩混师'
+        }]
+        ,
       //音乐类型
       musicTypes: [],
 
@@ -649,6 +678,9 @@ export default {
       startTime: 0,
       endTime: 0,
       tagValue: "",
+      tagValueArr:[],
+      statusValue:'',
+      styleValueArr:[],
       producerHide: false,
       producerHideMain: false,
       arrangementHide: false,
@@ -765,6 +797,21 @@ export default {
     changeMusic(val) {
       console.log(val);
       this.tagValue = val;
+
+    },
+    changeMusicStatus(val){
+      switch(val){
+        case '1':
+          this.styleValueArr=[200,299];
+          break
+              case '2':
+          this.styleValueArr=[350,499];
+          break
+              case '3':
+          this.styleValueArr=[550,599];
+          break
+      }
+     // this.statusValue=val
     },
     //选择时间
     timeChange(val) {
@@ -785,6 +832,8 @@ export default {
       this.currentPage = 1;
       this.timeValue = "";
       this.startTime = 0;
+      this.statusValue='';
+      this.styleValueArr=[];
 
       this.seachName = "";
       (this.seachLyricist = ""), (this.seachComposer = "");
@@ -1244,7 +1293,7 @@ export default {
         pageSize: 10,
         curPage: this.currentPage - 1,
         filter: {
-          progressRateReg: [],
+          progressRateReg: this.styleValueArr,
           createTimeReg: createTimeReg,
           songName: this.seachName,
           lyricist: this.seachLyricist,
@@ -1322,9 +1371,6 @@ export default {
             );
           }
           console.log(items.publish.publishTimeActive);
-          //  let idActive=items.id
-          //  console.log(idActive)
-          // console.log(idActive.substring(idActive.length-5))
           let obj = {
             arrangementRly:items.arrangement,
             mixRly:items.mix,
@@ -1334,7 +1380,8 @@ export default {
             lyricist: items.submitter.lyricist,
             tag: items.submitter.tagName.join(","),
             id: items.id,
-            idActive: items.id.substring(items.id.length - 5),
+            //idActive: items.id.substring(items.id.length - 5),
+            idActive: items.no,
             demoFile: items.submitter.demoFile,
             lyricsFile: items.submitter.lyricsFile,
             producerNick: items.producerNick,

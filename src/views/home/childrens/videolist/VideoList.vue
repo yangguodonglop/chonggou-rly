@@ -881,8 +881,7 @@ this.dialogVisibleDistribute=false
             lyricist: items.submitter.lyricist,
             tag: items.submitter.tagName.join(","),
             id: items.id,
-                                    idActive: items.id.substring(items.id.length-5),
-
+            idActive: items.no,
             demoFile: items.mix.auditionFile,
             lyricsFile: items.submitter.lyricsFile,
             producerNick: items.producerNick,

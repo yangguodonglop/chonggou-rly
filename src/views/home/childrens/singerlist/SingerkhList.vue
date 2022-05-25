@@ -61,9 +61,6 @@
             </div>
             <div class="btn option-active">
               <div class="refresh" style="margin-left:0px">
-                <el-button type="primary" @click="toUploadArrangemen" size="mini">生成试听列表</el-button>
-              </div>
-              <div class="refresh" style="margin-left:20px">
                 <el-button type="primary" size="mini" @click="seachInfo()" icon="el-icon-zoom-in">查询</el-button>
               </div>
               <div class="refresh" style="margin-left:20px">
@@ -585,8 +582,7 @@ export default {
             lyricist: items.submitter.lyricist,
             tag: items.submitter.tagName.join(","),
             id: items.id,
-                        idActive: items.id.substring(items.id.length-5),
-
+            idActive: items.no,
             demoFile: items.submitter.demoFile,
             lyricsFile: items.submitter.lyricsFile,
             producerNick: items.producerNick,

@@ -582,8 +582,8 @@ export default {
             lyricist: items.submitter.lyricist,
             tag: items.submitter.tagName.join(","),
             id: items.id,
-                        idActive: items.id.substring(items.id.length-5),
-
+            // idActive: items.id.substring(items.id.length-5),
+            idActive: items.no,
             demoFile: items.submitter.demoFile,
             lyricsFile: items.submitter.lyricsFile,
             producerNick: items.producerNick,

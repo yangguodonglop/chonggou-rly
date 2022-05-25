@@ -60,7 +60,6 @@
           multiple
           ref="upload_img3"
           accept=""
-          :disabled="true"
           :http-request="httpRequestDchang"
         >
           <el-button slot="trigger" size="small" type="primary"
@@ -273,16 +272,9 @@ export default {
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象
       fd.append("token", this.token);
-      fd.append("category", "rec");
-            fd.append("songID", this.id);
-
-      // let url = process.env.CMS1_BASE_API + 'cdnDel/uploadExcel'
-      // let config = {
-      //   headers: {
-      //    'Content-Type': 'multipart/form-data'
-      //   }
-      // }
-      uploadFile(fd).then((res) => {
+      fd.append("category", "arrDC");
+      fd.append("songID", this.id);
+      uploadFileXs(fd).then((res) => {
         if (res.status == 0) {
           this.loading = false;
 
