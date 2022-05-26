@@ -430,11 +430,12 @@
                       v-if="lyricsZzHide"
                       @click.native="todownLoadText(scope.row)"
                     >重新上传歌词</el-dropdown-item>
-                    <el-dropdown-item @click.native="todownLoad(scope.row, 'arr',scope.row.arrangementRly.file)">下载编曲小样文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'demo',scope.row.demoRly.demoFile)">下载小样文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'arr',scope.row.arrangementRly.file)">下载编曲文件</el-dropdown-item>
                     <el-dropdown-item @click.native="todownLoad(scope.row, 'arrPro',scope.row.arrangementRly.projectFile)">下载编曲工程文件</el-dropdown-item>
-                    <el-dropdown-item @click.native="todownLoad(scope.row, 'rec',scope.row.recordingRly.file)">下载录音小样文件</el-dropdown-item>
+                    <el-dropdown-item @click.native="todownLoad(scope.row, 'rec',scope.row.recordingRly.file)">下载录音文件</el-dropdown-item>
                     <el-dropdown-item @click.native="todownLoad(scope.row, 'recPro',scope.row.recordingRly.projectFile)">下载录音工程文件</el-dropdown-item>
-                    <el-dropdown-item @click.native="todownLoad(scope.row, 'mix',scope.row.mixRly.auditionFile)">下载缩混小样文件</el-dropdown-item>
+                    <!-- <el-dropdown-item @click.native="todownLoad(scope.row, 'mix',scope.row.mixRly.auditionFile)">下载缩混文件</el-dropdown-item> -->
                     <!-- <el-dropdown-item @click.native="todownLoad(scope.row, 'mixPro',scope.row.mixRly.projectFile)">下载缩混工程文件</el-dropdown-item> -->
                     <!-- <el-dropdown-item @click.native="todownLoad(scope.row, 'arr',scope.row.arrangementRly.file)">下载导唱文件</el-dropdown-item> -->
                     <el-dropdown-item @click.native="todownLoad(scope.row, 'arrDC',scope.row.arrangementRly.daoChangFile)">下载导唱文件</el-dropdown-item>
@@ -1372,6 +1373,7 @@ export default {
           }
           console.log(items.publish.publishTimeActive);
           let obj = {
+            demoRly:items.submitter,
             arrangementRly:items.arrangement,
             mixRly:items.mix,
             recordingRly:items.recording,
