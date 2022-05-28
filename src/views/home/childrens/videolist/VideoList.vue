@@ -1064,6 +1064,9 @@ this.dialogVisibleDistribute=false
  .el-dialog__body{
   padding-top: 10px
   }
+  .el-table--mini .el-table__cell {
+    padding: 4px 0 !important;
+      }
 .customWidth-audition {
   width: 500px;
 }

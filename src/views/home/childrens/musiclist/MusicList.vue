@@ -64,13 +64,30 @@
               <span>歌曲状态：</span>
               <el-select
                 v-model="statusValue"
-                placeholder="请选择歌状态"
+                placeholder="请选择歌曲状态"
                 style="width: 150px"
                 size="mini"
                 @change="changeMusicStatus"
               >
                 <el-option
                   v-for="(item, index) in styleStatus"
+                  :label="item.label"
+                  :value="item.value"
+                  :key="index"
+                ></el-option>
+              </el-select>
+            </div>
+               <div class="sing-musictype option-active">
+              <span>分配角色：</span>
+              <el-select
+                v-model="roleValue"
+                placeholder="请选择歌曲分配角色"
+                style="width: 170px"
+                size="mini"
+                @change="changeRole"
+              >
+                <el-option
+                  v-for="(item, index) in  roleList"
                   :label="item.label"
                   :value="item.value"
                   :key="index"
@@ -229,9 +246,14 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="createTime" label="编曲状态" width="150">
+          <el-table-column prop="createTime" label="编曲状态" width="200">
               <template slot-scope="scope">
-              <div style="display: flex;justify-content: center;">
+                <div style="display: flex;justify-content: start;align-items: center;">
+                  <div style="display: flex;justify-content: start;flex-direction: column;margin-right:10px;">
+                    <div style="color:#ffa500">编曲组长：{{scope.row.arrangementLeaderNick==''?'暂无':scope.row.arrangementLeaderNick}}</div>
+                    <div style="color:#ffa500">编曲师：{{scope.row.arrangementWorkerNick==''?'暂无':scope.row.arrangementWorkerNick}}</div>
+                    </div>
+              <div style="display: flex;justify-content: start;">
                 <el-popover
                   v-if="scope.row.arrangementStatus==10"
                   placement="right"
@@ -275,10 +297,16 @@
                   <el-button slot="reference" type="success" size="mini">已通过</el-button>
                 </el-popover>
               </div>
+                </div>
               </template>
           </el-table-column>
-          <el-table-column prop="createTime" label=" 录音状态" width="150">
+          <el-table-column prop="createTime" label=" 录音状态" width="200">
                   <template slot-scope="scope">
+                    <div style="display: flex;justify-content: start;align-items: center;">
+                       <div style="display: flex;justify-content: start;flex-direction: column;margin-right:10px;">
+                    <div style="color:#ffa500">录音组长：{{scope.row.recordingLeaderNick==''?'暂无':scope.row.recordingLeaderNick}}</div>
+                    <div style="color:#ffa500">录音师：{{scope.row.recordingWorkerNick==''?'暂无':scope.row.recordingWorkerNick}}</div>
+                    </div>
               <div style="display: flex;justify-content: center;">
                 <el-popover
                   v-if="scope.row.recordingStatus==10"
@@ -323,10 +351,16 @@
                   <el-button slot="reference" type="success" size="mini">已通过</el-button>
                 </el-popover>
               </div>
+                    </div>
               </template>
           </el-table-column>
-          <el-table-column prop="createTime" label="缩混状态" width="150">
+          <el-table-column prop="createTime" label="缩混状态" width="220">
              <template slot-scope="scope">
+                                   <div style="display: flex;justify-content: start;align-items: center;">
+                   <div style="display: flex;justify-content: start;flex-direction: column;margin-right:10px;">
+                    <div style="color:#ffa500">缩混组长：{{scope.row.mixLeaderNick==''?'暂无':scope.row.mixLeaderNick}}</div>
+                    <div style="color:#ffa500">缩混师：{{scope.row.mixWorkerNick==''?'暂无':scope.row.mixWorkerNick}}</div>
+                    </div>
               <div style="display: flex;justify-content: center;">
                 <el-popover
                   v-if="scope.row.mixStatus==10"
@@ -371,6 +405,7 @@
                   <el-button slot="reference" type="success" size="mini">已通过</el-button>
                 </el-popover>
               </div>
+                                   </div>
               </template>
           </el-table-column>
 
@@ -633,6 +668,33 @@ export default {
           label: '已分配缩混师'
         }]
         ,
+           roleList:[
+         
+        {
+          value: 300,
+          label: "编曲组长"
+        },
+        {
+          value: 351,
+          label: "编曲师"
+        },
+        {
+          value: 400,
+          label: "录音组长"
+        },
+        {
+          value: 451,
+          label: "录音师"
+        },
+        {
+          value: 500,
+          label: "混音组长"
+        },
+        {
+          value: 551,
+          label: "混音师"
+        },
+        ],
       //音乐类型
       musicTypes: [],
 
@@ -681,6 +743,7 @@ export default {
       tagValue: "",
       tagValueArr:[],
       statusValue:'',
+      roleValue:'',
       styleValueArr:[],
       producerHide: false,
       producerHideMain: false,
@@ -814,6 +877,9 @@ export default {
       }
      // this.statusValue=val
     },
+    changeRole(val){
+      this.roleValue=val
+    },
     //选择时间
     timeChange(val) {
       console.log(val);
@@ -835,6 +901,7 @@ export default {
       this.startTime = 0;
       this.statusValue='';
       this.styleValueArr=[];
+      this.roleValue='';
 
       this.seachName = "";
       (this.seachLyricist = ""), (this.seachComposer = "");
@@ -1294,6 +1361,8 @@ export default {
         pageSize: 10,
         curPage: this.currentPage - 1,
         filter: {
+          position:this.roleValue,
+          account:JSON.parse(localStorage.getItem("userInfo")).account.account,
           progressRateReg: this.styleValueArr,
           createTimeReg: createTimeReg,
           songName: this.seachName,
@@ -1302,6 +1371,10 @@ export default {
           tag: tagValue
         }
       };
+      if(this.roleValue==''){
+          delete param.filter.position
+        }
+
       getProductionSong(param).then(res => {
         console.log(res);
         this.tableData = [];
@@ -1585,6 +1658,9 @@ export default {
 .el-dialog__body {
   padding-top: 10px;
   padding-bottom: 10px;
+}
+.el-table .cell{
+  line-height: 20px !important;
 }
 .customWidth-audition {
   width: 500px;

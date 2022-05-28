@@ -75,7 +75,7 @@ export default {
 }
 .myVideo-dimensions{
   width: 100%!important;
-  height: 570px;
+  height: 560px;
 }
 
 #content .center {
