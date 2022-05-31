@@ -1373,6 +1373,7 @@ export default {
       };
       if(this.roleValue==''){
           delete param.filter.position
+          delete param.filter.account
         }
 
       getProductionSong(param).then(res => {
