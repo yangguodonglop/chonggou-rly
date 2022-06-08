@@ -18,8 +18,10 @@ export default new Vuex.Store({
     },
     saveMusicUrl(state, data) {
       state.MusicUrl = data;
+    },
+    setRouterList(state, data) {
+      state.routerList = data;
     }
   },
-  actions: {},
   modules: {}
 });

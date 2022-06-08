@@ -1,277 +1,420 @@
 <template>
-<div style="display: flex;
-    justify-content: center;width:100%;">
-<div v-if="permission" style="width:100%">
-  <div id="musiclist">
-    <search-header>
-      <div class="option">
-         <div class="sing-id option-active">
-          <span>时间查询：</span>
-          <el-date-picker
-          style="300px"
-            v-model="timeValue"
-            value-format="timestamp"
-            type="daterange"
-            range-separator="至"
-            @change="timeChange"
-            size="mini"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          >
-          </el-date-picker>
-        </div>
+  <div style="display: flex; justify-content: center; width: 100%">
+    <div v-if="permission" style="width: 100%">
+      <div id="musiclist">
+        <search-header>
+          <div class="option">
+            <div class="sing-id option-active">
+              <span>时间查询：</span>
+              <el-date-picker
+                style="300px"
+                v-model="timeValue"
+                value-format="timestamp"
+                type="daterange"
+                range-separator="至"
+                @change="timeChange"
+                size="mini"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              >
+              </el-date-picker>
+            </div>
 
-        <div class="sing-id option-active">
-          <span>歌曲名称：</span>
-          <el-input
-            v-model="seachName"
-            size="mini"
-            placeholder="请输入歌曲名称"
-            style="width: 150px"
-          />
-        </div>
-        <div class="sing-name option-active">
-          <span>作词者：</span>
-          <el-input
-            v-model="seachLyricist"
-            size="mini"
-            placeholder="请输入作词者"
-            style="width: 150px"
-          />
-        </div>
-        <div class="sing-singer option-active">
-          <span>作曲者:</span>
+            <div class="sing-id option-active">
+              <span>歌曲名称：</span>
+              <el-input
+                v-model="seachName"
+                size="mini"
+                placeholder="请输入歌曲名称"
+                style="width: 150px"
+              />
+            </div>
+            <div class="sing-name option-active">
+              <span>作词者：</span>
+              <el-input
+                v-model="seachLyricist"
+                size="mini"
+                placeholder="请输入作词者"
+                style="width: 150px"
+              />
+            </div>
+            <div class="sing-singer option-active">
+              <span>作曲者:</span>
 
-          <el-input
-            v-model="seachComposer"
-            size="mini"
-            placeholder="请输入作词者"
-            style="width: 150px"
-          />
-        </div>
-        <div class="sing-musictype option-active" >
-          <span>歌曲类型：</span>
-          <el-select
-            v-model="tagValue"
-            placeholder="请选择歌曲类型"
-            style="width: 150px"
-            size="mini"
-            @change="changeMusic"
-          >
-            <el-option
-              v-for="(item, index) in styleType"
-              :label="item.name"
-              :value="item.value"
-              :key="index"
-            ></el-option>
-          </el-select>
-        </div>
-         <div class="sing-musictype option-active"  >
-          <span>发布状态：</span>
-             <el-select
-             size="mini"
-          v-model="notDone"
-          style="width:150px"
-          placeholder="请选择发布状态查询"
-          @change="handleChangeState"
-        >
-          <el-option label="全部" value="0">全部</el-option>
-          <el-option label="未收到合同" value="4">未收到合同</el-option>
-          <el-option label="未收到首笔款" value="5">未收到首笔款</el-option>
-          <el-option label="未发布" value="6">未发布</el-option>
-        </el-select>
-        </div>
-          
-        <div class="btn option-active">
-           <div class="refresh" style="margin-left:0px;">
-            <el-button type="primary"  @click="toUploadMix()" size="mini">查询有效歌单</el-button>
-          </div>
-            <div class="refresh" style="margin-left:20px">
-            <el-button
-              type="primary"
-              size="mini"
-              @click="seachInfo()"
-            icon="el-icon-zoom-in"
-              >查询</el-button
-            >
-          </div>
-          <div class="refresh" style="margin-left:20px">
-            <el-button
-              type=""
-              size="mini"
-              @click="refreshInfo()"
-            icon="el-icon-zoom-in"
-              >重置</el-button
-            >
-          </div>
-        </div>
-      </div>
-    </search-header>
-    <el-table
-      :data="tableData"
-      border
-  style="width: 100%;margin-top:20px;"
-        stripe
-      size="mini"
-      :default-sort="{ prop: 'musicid', order: 'ascending' }"
-      @selection-change="handleSelectionChange"
-    >
-      <template slot="empty">
-        <p>{{ dataText }}</p>
-      </template>
-      <el-table-column type="selection" width="40"></el-table-column>
-      <el-table-column prop="idActive" label="歌曲编号" width="80" align="center"></el-table-column>
-      <el-table-column prop="songName" label="歌曲名称" width="200" align="center"></el-table-column>
-      <el-table-column prop="tag" label="歌曲风格" width="100" align="center"></el-table-column>
-      <el-table-column prop="lyricist" label="作词人" width="120" align="center"></el-table-column>
-      <el-table-column prop="composer" label="作曲人" width="120" align="center"></el-table-column>
-      <el-table-column prop="collaborateName" label="合作模式" width="80" align="center"></el-table-column>
-      <el-table-column prop="copyrightName" label="版权模式" width="80" align="center"></el-table-column>
-      <el-table-column prop="startLockTime" label="确定意向时间" width="140" align="center"></el-table-column>
-      <el-table-column prop="contractTime" label="签合同时间" width="140" align="center">
-        <template slot-scope="scope">
-          <span>{{scope.row.startLockTime}}</span>
-          <el-button
-            :disabled="scope.row.progressRate!==720"
-            type="primary"
-            size="mini"
-            @click="onclick(scope.row,'contract')"
-          >确认收到合同</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column prop="cashDepositTime" label="收到首笔款时间" width="140" align="center">
-        <template slot-scope="scope">
-          <span>{{scope.row.cashDepositTime}}</span>
-          <el-button
-            :disabled="scope.row.progressRate!==730"
-            type="primary"
-            size="mini"
-            @click="onclick(scope.row,'payment')"
-          >确认首笔付款</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column prop="publishTime" label="发布时间" width="140" align="center">
-        <template slot-scope="scope">
-          <span>{{scope.row.publishTime}}</span>
-          <el-button
-            :disabled="scope.row.progressRate!==740"
-            type="primary"
-            size="mini"
-            @click="onclick(scope.row,'publish')"
-          >发布</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column prop="finishLockTime" label="锁定到期时间" width="140" align="center"></el-table-column>
-      <el-table-column prop="account" label="发行人员" width="120" align="center"></el-table-column>
-      <el-table-column label="操作" align="center" width="120">
-        <template slot-scope="scope">
-          <div>
-            <el-dropdown trigger="click" @command="handleCommand">
-              <span class="el-dropdown-link" style="color:#409eff;">
-                操作
-                <i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="toAudition(scope.row)">选择试听</el-dropdown-item>
-                <el-dropdown-item @click.native="toLock(scope.row)">延期锁定</el-dropdown-item>
-                <el-dropdown-item
-                  type="text"
+              <el-input
+                v-model="seachComposer"
+                size="mini"
+                placeholder="请输入作词者"
+                style="width: 150px"
+              />
+            </div>
+            <div class="sing-musictype option-active">
+              <span>歌曲类型：</span>
+              <el-select
+                v-model="tagValue"
+                placeholder="请选择歌曲类型"
+                style="width: 150px"
+                size="mini"
+                @change="changeMusic"
+              >
+                <el-option
+                  v-for="(item, index) in styleType"
+                  :label="item.name"
+                  :value="item.value"
+                  :key="index"
+                ></el-option>
+              </el-select>
+            </div>
+            <div class="sing-musictype option-active">
+              <span>发布状态：</span>
+              <el-select
+                size="mini"
+                v-model="notDone"
+                style="width: 150px"
+                placeholder="请选择发布状态查询"
+                @change="handleChangeState"
+              >
+                <el-option label="全部" value="0">全部</el-option>
+                <el-option label="未收到合同" value="4">未收到合同</el-option>
+                <el-option label="未收到首笔款" value="5"
+                  >未收到首笔款</el-option
+                >
+                <el-option label="未发布" value="6">未发布</el-option>
+              </el-select>
+            </div>
+            <div class="sing-musictype option-active">
+              <span>客户：</span>
+              <el-select
+                v-model="roleValue"
+                placeholder="请选择客户"
+                style="width: 170px"
+                size="mini"
+                @change="changeRole"
+              >
+                <el-option
+                  v-for="(item, index) in roleList"
+                  :label="item.nick"
+                  :value="item.account"
+                  :key="index"
+                ></el-option>
+              </el-select>
+            </div>
+
+            <div class="btn option-active">
+              <div class="refresh" style="margin-left: 0px">
+                <el-button type="primary" @click="toUploadMix()" size="mini"
+                  >查询有效歌单</el-button
+                >
+              </div>
+              <div class="refresh" style="margin-left: 20px">
+                <el-button
+                  type="primary"
                   size="mini"
-                  @click.native="removeLockSong(scope.row)"
-                >解除锁定</el-dropdown-item>
-
-                <el-dropdown-item @click.native="toDistribute(scope.row,'producer','200')">查看试听情况</el-dropdown-item>
-                <el-dropdown-item @click.native="toUploadArrangemen(scope.row)">更新信息</el-dropdown-item>
-
-               
-              </el-dropdown-menu>
-            </el-dropdown>
+                  @click="seachInfo()"
+                  icon="el-icon-zoom-in"
+                  >查询</el-button
+                >
+              </div>
+              <div class="refresh" style="margin-left: 20px">
+                <el-button
+                  type=""
+                  size="mini"
+                  @click="refreshInfo()"
+                  icon="el-icon-zoom-in"
+                  >重置</el-button
+                >
+              </div>
+            </div>
           </div>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="block">
-      <el-pagination
-        @current-change="handleCurrentChange"
-        :current-page.sync="currentPage"
-        :page-sizes="[10]"
-        :page-size="pagesize"
-        layout="total, sizes, prev, pager, next, jumper"
-        background
-        :total="getTotal"
-        style="textAlign: right"
-      ></el-pagination>
-    </div>
-    <el-dialog :close-on-click-modal='false'
-      :footer="false"
-      title="试听"
-      :visible.sync="dialogVisibleAudition"
-      customClass="customWidth-audition"
-    >
-      <music-audition :userInfo="userInfo" @editInfo="editInfo"></music-audition>
-    </el-dialog>
-    <el-dialog :close-on-click-modal='false'
-      :footer="false"
-      title="查看试听记录"
-      :visible.sync="dialogVisibleDistribute"
-      customClass="customWidth-distribute"
-    >
-      <music-distribute :userInfo="userInfo" @editDistributeSt="editDistributeSt"></music-distribute>
-    </el-dialog>
-    <el-dialog :close-on-click-modal='false'
-      :footer="false"
-      title="更新信息"
-      :visible.sync="dialogVisibleUpload"
-      customClass="customWidth-distribute"
-    >
-      <music-upload :userInfo="userInfo" @editUpdateInfo="editUpdateInfo"></music-upload>
-    </el-dialog>
-    <el-dialog :close-on-click-modal='false'
-      :footer="false"
-      title="上传录音"
-      :visible.sync="dialogVisibleUploadRecorder"
-      customClass="customWidth-distribute"
-    >
-      <music-upload-recorder :userInfo="userInfo" @editDistributeRecorder="editDistributeRecorder"></music-upload-recorder>
-    </el-dialog>
-    <el-dialog :close-on-click-modal='false'
-      :footer="false"
-            :modal="false"
-      title="查看有效歌单"
-      :visible.sync="dialogVisibleUploadMix"
-      customClass="customWidth-distribute-list"
-      style="z-index:2000"
-    >
-      <music-upload-mix :userInfo="userInfo" @editDistributeRecorderList="editDistributeRecorderList"></music-upload-mix>
-    </el-dialog>
-    <el-dialog :close-on-click-modal='false'
-      :footer="true"
-      title="延迟锁定"
-      :visible.sync="lockType"
-      customClass="customWidth-distribute"
-    >
-      <div>
-        <el-form class="userfrom">
-          <el-form-item label="歌曲名" prop="userName" :label-width="formLabelWidth">
-            <el-input :disabled="true" v-model="songName" ref="ipt"></el-input>
-          </el-form-item>
-          <el-form-item label="延迟天数" prop="userName" :label-width="formLabelWidth">
-            <el-input v-model="extendDays" ref="ipt"></el-input>
-          </el-form-item>
-          <el-form-item style=" display: flex;justify-content: end;">
-            <el-button type="primary" @click="onSubmit">确定</el-button>
-            <el-button type="primary" @click="onBack">取消</el-button>
-          </el-form-item>
-        </el-form>
+        </search-header>
+        <el-table
+          :data="tableData"
+          border
+          style="width: 100%; margin-top: 20px"
+          stripe
+          size="mini"
+          :default-sort="{ prop: 'musicid', order: 'ascending' }"
+          @selection-change="handleSelectionChange"
+        >
+          <template slot="empty">
+            <p>{{ dataText }}</p>
+          </template>
+          <el-table-column type="selection" width="40"></el-table-column>
+          <el-table-column
+            prop="idActive"
+            label="歌曲编号"
+            width="80"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="songName"
+            label="歌曲名称"
+            width="200"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="tag"
+            label="歌曲风格"
+            width="100"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="lyricist"
+            label="作词人"
+            width="120"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="composer"
+            label="作曲人"
+            width="120"
+            align="center"
+          ></el-table-column>
+            <el-table-column
+            prop="client"
+            label="买入客户"
+            width="120"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="collaborateName"
+            label="合作模式"
+            width="80"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="copyrightName"
+            label="版权模式"
+            width="80"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="startLockTime"
+            label="确定意向时间"
+            width="140"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="contractTime"
+            label="签合同时间"
+            width="140"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.startLockTime }}</span>
+              <el-button
+                :disabled="scope.row.progressRate !== 720"
+                type="primary"
+                size="mini"
+                @click="onclick(scope.row, 'contract')"
+                >确认收到合同</el-button
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="cashDepositTime"
+            label="收到首笔款时间"
+            width="140"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.cashDepositTime }}</span>
+              <el-button
+                :disabled="scope.row.progressRate !== 730"
+                type="primary"
+                size="mini"
+                @click="onclick(scope.row, 'payment')"
+                >确认首笔付款</el-button
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="publishTime"
+            label="发布时间"
+            width="140"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <span>{{ scope.row.publishTime }}</span>
+              <el-button
+                :disabled="scope.row.progressRate !== 740"
+                type="primary"
+                size="mini"
+                @click="onclick(scope.row, 'publish')"
+                >发布</el-button
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="finishLockTime"
+            label="锁定到期时间"
+            width="140"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="account"
+            label="发行人员"
+            width="120"
+            align="center"
+          ></el-table-column>
+          <el-table-column label="操作" align="center" width="120">
+            <template slot-scope="scope">
+              <div>
+                <el-dropdown trigger="click" @command="handleCommand">
+                  <span class="el-dropdown-link" style="color: #409eff">
+                    操作
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item @click.native="toAudition(scope.row)"
+                      >选择试听</el-dropdown-item
+                    >
+                    <el-dropdown-item @click.native="toLock(scope.row)"
+                      >延期锁定</el-dropdown-item
+                    >
+                    <el-dropdown-item
+                      type="text"
+                      size="mini"
+                      @click.native="removeLockSong(scope.row)"
+                      >解除锁定</el-dropdown-item
+                    >
+
+                    <el-dropdown-item
+                      @click.native="toDistribute(scope.row, 'producer', '200')"
+                      >查看试听情况</el-dropdown-item
+                    >
+                    <el-dropdown-item
+                      @click.native="toUploadArrangemen(scope.row)"
+                      >更新信息</el-dropdown-item
+                    >
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="block">
+          <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page.sync="currentPage"
+            :page-sizes="[10]"
+            :page-size="pagesize"
+            layout="total, sizes, prev, pager, next, jumper"
+            background
+            :total="getTotal"
+            style="textalign: right"
+          ></el-pagination>
+        </div>
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+          title="试听"
+          :visible.sync="dialogVisibleAudition"
+          customClass="customWidth-audition"
+        >
+          <music-audition
+            :userInfo="userInfo"
+            @editInfo="editInfo"
+          ></music-audition>
+        </el-dialog>
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+          title="查看试听记录"
+          :visible.sync="dialogVisibleDistribute"
+          customClass="customWidth-distribute"
+        >
+          <music-distribute
+            :userInfo="userInfo"
+            @editDistributeSt="editDistributeSt"
+          ></music-distribute>
+        </el-dialog>
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+          title="更新信息"
+          :visible.sync="dialogVisibleUpload"
+          customClass="customWidth-distribute"
+        >
+          <music-upload
+            :userInfo="userInfo"
+            @editUpdateInfo="editUpdateInfo"
+          ></music-upload>
+        </el-dialog>
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+          title="上传录音"
+          :visible.sync="dialogVisibleUploadRecorder"
+          customClass="customWidth-distribute"
+        >
+          <music-upload-recorder
+            :userInfo="userInfo"
+            @editDistributeRecorder="editDistributeRecorder"
+          ></music-upload-recorder>
+        </el-dialog>
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="false"
+          :modal="false"
+          title="查看有效歌单"
+          :visible.sync="dialogVisibleUploadMix"
+          customClass="customWidth-distribute-list"
+          style="z-index: 2000"
+        >
+          <music-upload-mix
+            :userInfo="userInfo"
+            @editDistributeRecorderList="editDistributeRecorderList"
+          ></music-upload-mix>
+        </el-dialog>
+        <el-dialog
+          :close-on-click-modal="false"
+          :footer="true"
+          title="延迟锁定"
+          :visible.sync="lockType"
+          customClass="customWidth-distribute"
+        >
+          <div>
+            <el-form class="userfrom">
+              <el-form-item
+                label="歌曲名"
+                prop="userName"
+                :label-width="formLabelWidth"
+              >
+                <el-input
+                  :disabled="true"
+                  v-model="songName"
+                  ref="ipt"
+                ></el-input>
+              </el-form-item>
+              <el-form-item
+                label="延迟天数"
+                prop="userName"
+                :label-width="formLabelWidth"
+              >
+                <el-input v-model="extendDays" ref="ipt"></el-input>
+              </el-form-item>
+              <el-form-item style="display: flex; justify-content: end">
+                <el-button type="primary" @click="onSubmit">确定</el-button>
+                <el-button type="primary" @click="onBack">取消</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-dialog>
       </div>
-    </el-dialog>
+    </div>
+    <div v-if="!permission">
+      <img
+        class="permission-img"
+        src="@/assets/permission.webp"
+        width="900"
+        height="420"
+      />
+      <div class="permission-text">
+        对不起，您暂无权限访问该页面，请联系管理员授权！
+      </div>
+    </div>
   </div>
-  </div>
-<div v-if="!permission">
-  <img class="permission-img" src="@/assets/permission.webp" width="900" height="420">
-  <div class="permission-text">对不起，您暂无权限访问该页面，请联系管理员授权！</div>
-</div>
-</div>
 </template>
 
 <script>
@@ -284,7 +427,7 @@ import {
   getPublishSong,
   doWork,
   extendLock,
-  removeLockSong
+  removeLockSong,
 } from "network/home.js";
 
 import SearchHeader from "components/common/header/SearchHeader.vue";
@@ -303,7 +446,8 @@ import {
   openFile,
   openFileActive,
   checkWork,
-  getPublishSongSell
+  getPublishSongSell,
+  userListActive
 } from "network/home.js";
 
 export default {
@@ -317,7 +461,7 @@ export default {
     MusicUpload,
     MusicUploadRecorder,
     MusicUploadMix,
-    extendLock
+    extendLock,
   },
 
   data() {
@@ -331,7 +475,7 @@ export default {
         musicHot: null,
         musicWordAdress: null,
         musicUrl: null,
-        musicSonger: null
+        musicSonger: null,
       },
       //音乐类型
       musicTypes: [],
@@ -374,29 +518,62 @@ export default {
       songIDs: [],
       extendDays: 3,
       songName: "",
-      getTotal:0,
-              seachName: '',
-      seachLyricist: '',
-      seachComposer: '',
-      timeValue: '',
+      getTotal: 0,
+      seachName: "",
+      seachLyricist: "",
+      seachComposer: "",
+      timeValue: "",
       startTime: 0,
       endTime: 0,
-      tagValue: '',
-      publishstate:"",
-      progressRateReg:[720, 1000],
-      permission:true,
-      notDone:'0'
-      
+      tagValue: "",
+      publishstate: "",
+      roleValue:'',
+      progressRateReg: [720, 1000],
+      permission: true,
+      notDone: "0",
+        roleList:[
+         
+        {
+          value: 300,
+          label: "编曲组长"
+        },
+        {
+          value: 351,
+          label: "编曲师"
+        },
+        {
+          value: 400,
+          label: "录音组长"
+        },
+        {
+          value: 451,
+          label: "录音师"
+        },
+        {
+          value: 500,
+          label: "混音组长"
+        },
+        {
+          value: 551,
+          label: "混音师"
+        },
+        ],
     };
   },
   created() {
-         this.funcGroupArr = JSON.parse(localStorage.getItem("userInfo")).account.funcGroup
-     console.log(this.funcGroupArr)
-      
-      if (this.funcGroupArr.includes(100)||this.funcGroupArr.includes(600) || this.funcGroupArr.includes(651)){
-this.permission=true
-      } else{
-      this.permission= false;
+    this.funcGroupArr = JSON.parse(
+      localStorage.getItem("userInfo")
+    ).account.funcGroup;
+    console.log(this.funcGroupArr);
+
+    if (
+      this.funcGroupArr.includes(100) ||
+      this.funcGroupArr.includes(600) ||
+      this.funcGroupArr.includes(651)
+    ) {
+      this.permission = true;
+    } else {
+      this.permission = false;
     }
     //获取音乐类型列表
     // this.musicTypeList();
@@ -404,14 +581,46 @@ this.permission=true
     this.musicList();
     //this.musicList1();
     this.queryInfoStyle();
+    this.findClientInfo()
     //获取歌手列表
     // this.getSingerList();
   },
   methods: {
-    handleChangeState(val){
-      console.log(val)
-      this.publishstate=val
-        this.notDone=val
+    // 查询客户账户列表
+    findClientInfo() {
+      const param = {
+        token: this.token,
+        pageSize: 100,
+        curPage: this.currentPage - 1,
+        fFuncGroup: 1000
+      };
+      //向后端发送请求并接受数据库中的用户列表
+      userListActive(param).then(res => {
+        console.log(res);
+              this.roleList=[]
+        if (res.status == 0) {
+          this.roleList=res.data.item
+         
+        }
+          console.log(this.roleList)    
+   });
+    },
+    // 选择歌曲类型
+    changeMusic(val) {
+      console.log(val);
+      this.tagValue = val;
+
+    },
+    // 按照客户查询
+    changeRole(val){
+      this.roleValue=val
+      console.log(this.roleValue)
+    },
+    
+    handleChangeState(val) {
+      console.log(val);
+     // this.publishstate = val;
+      this.notDone = val;
       // switch(val){
       //   case '0':
       //   this.notDone=0
@@ -425,10 +634,10 @@ this.permission=true
       //       case '6':
       //   this.notDone=6
       //   break;
-        
+
       // }
-      this.currentPage=1
-      this.musicList()
+      this.currentPage = 1;
+      this.musicList();
     },
     //选择歌曲类型
     changeMusic(val) {
@@ -450,21 +659,21 @@ this.permission=true
       this.musicList();
     },
     refreshInfo() {
-      this.tagValue = '';
+      this.tagValue = "";
       this.currentPage = 1;
-      this.timeValue = '';
+      this.timeValue = "";
       this.startTime = 0;
-      this.notDone='0'
+      this.notDone = "0";
+      this.roleValue='';
 
-      this.seachName = '';
-      (this.seachLyricist = ''), (this.seachComposer = '');
+      this.seachName = "";
+      (this.seachLyricist = ""), (this.seachComposer = "");
       this.musicList();
     },
     //取消更新信息
-    editUpdateInfo(){
-      this.dialogVisibleUpload=false
-          this.musicList();
-
+    editUpdateInfo() {
+      this.dialogVisibleUpload = false;
+      this.musicList();
     },
     //延迟锁定
     toLock(val) {
@@ -479,18 +688,18 @@ this.permission=true
         token: this.token,
 
         songIDs: [this.songIDs],
-        extendDays: parseInt(this.extendDays)
+        extendDays: parseInt(this.extendDays),
       };
-      extendLock(param).then(res => {
+      extendLock(param).then((res) => {
         if (res.status == 0) {
           this.$message({
             type: "success",
-            message: "延期锁定成功!"
+            message: "延期锁定成功!",
           });
         } else {
           this.$message({
             type: "error",
-            message: "延期锁定失败!"
+            message: "延期锁定失败!",
           });
         }
         this.lockType = false;
@@ -505,26 +714,26 @@ this.permission=true
       const param = {
         token: this.token,
 
-        songIDs: [row.id]
+        songIDs: [row.id],
       };
       this.$confirm("是否解除锁定?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
-          removeLockSong(param).then(res => {
+          removeLockSong(param).then((res) => {
             if (res.status == 0) {
               this.$message({
                 type: "success",
-                message: "解除锁定成功!"
+                message: "解除锁定成功!",
               });
               this.findUserInfo();
-                    this.musicList();
+              this.musicList();
             } else {
               this.$message({
                 type: "error",
-                message: "解除锁定失败!"
+                message: "解除锁定失败!",
               });
             }
           });
@@ -536,25 +745,25 @@ this.permission=true
     deleteClick(row) {
       const param = {
         token: this.token,
-        songID: row.id
+        songID: row.id,
       };
       this.$confirm("完成信息核对, 确认删除?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
-          deleteSong(param).then(res => {
+          deleteSong(param).then((res) => {
             if (res.status == 0) {
               this.$message({
                 type: "success",
-                message: "删除成功!"
+                message: "删除成功!",
               });
               this.findUserInfo();
             } else {
               this.$message({
                 type: "error",
-                message: "删除失败!"
+                message: "删除失败!",
               });
             }
           });
@@ -568,10 +777,10 @@ this.permission=true
       this.musicList();
     },
     //取消试听记录查看
-    editDistributeSt(){
-this.dialogVisibleDistribute=false
+    editDistributeSt() {
+      this.dialogVisibleDistribute = false;
     },
-      editDistributeRecorderList() {
+    editDistributeRecorderList() {
       this.dialogVisibleUploadMix = false;
       this.musicList();
     },
@@ -582,9 +791,9 @@ this.dialogVisibleDistribute=false
       const param = {
         token: this.token,
         songID: item.id,
-        step: val
+        step: val,
       };
-      doWork(param).then(res => {
+      doWork(param).then((res) => {
         console.log(res);
 
         if (res.status == 0) {
@@ -592,19 +801,19 @@ this.dialogVisibleDistribute=false
             case "contract":
               this.$message({
                 type: "success",
-                message: "确认收到合同成功！"
+                message: "确认收到合同成功！",
               });
               break;
             case "payment":
               this.$message({
                 type: "success",
-                message: "确认收到首笔款成功！"
+                message: "确认收到首笔款成功！",
               });
               break;
             case "publish":
               this.$message({
                 type: "success",
-                message: "发布成功！"
+                message: "发布成功！",
               });
               break;
           }
@@ -615,19 +824,19 @@ this.dialogVisibleDistribute=false
             case "contract":
               this.$message({
                 type: "error",
-                message: "确认收到合同失败！"
+                message: "确认收到合同失败！",
               });
               break;
             case "payment":
               this.$message({
                 type: "error",
-                message: "确认收到首笔款失败！"
+                message: "确认收到首笔款失败！",
               });
               break;
             case "publish":
               this.$message({
                 type: "error",
-                message: "发布失败！"
+                message: "发布失败！",
               });
               break;
           }
@@ -662,19 +871,19 @@ this.dialogVisibleDistribute=false
         songID: row.id,
         step: tempType,
         operation: parseInt(typeNum),
-        remark: "暂无备注"
+        remark: "暂无备注",
       };
-      checkWork(param).then(res => {
+      checkWork(param).then((res) => {
         if (res.status == 0) {
           this.$message({
             type: "success",
-            message: "操作成功！"
+            message: "操作成功！",
           });
           //this.submitForm();//提交表单
         } else {
           this.$message({
             type: "error",
-            message: "操作失败！"
+            message: "操作失败！",
           });
         }
       });
@@ -705,7 +914,7 @@ this.dialogVisibleDistribute=false
     toDistribute(row, type, group) {
       const param = {
         selecttype: type,
-        fFuncGroup: group
+        fFuncGroup: group,
       };
       this.userInfo = { ...row, ...param };
       this.dialogVisibleDistribute = true;
@@ -728,26 +937,26 @@ this.dialogVisibleDistribute=false
       console.log(row);
       const param = {
         token: this.token,
-        songID: row.id
+        songID: row.id,
       };
       // console.log(row);
       this.$confirm("完成信息核对, 确认提交?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       })
         .then(() => {
-          deleteSong(param).then(res => {
+          deleteSong(param).then((res) => {
             if (res.status == 0) {
               this.$message({
                 type: "success",
-                message: "删除成功!"
+                message: "删除成功!",
               });
               this.musicList();
             } else {
               this.$message({
                 type: "error",
-                message: "删除失败!"
+                message: "删除失败!",
               });
             }
           });
@@ -758,9 +967,9 @@ this.dialogVisibleDistribute=false
     queryInfoStyle() {
       const param = {
         token: this.token,
-        action: "get"
+        action: "get",
       };
-      aboutMusicTag(param).then(res => {
+      aboutMusicTag(param).then((res) => {
         console.log(res);
         if (res.status == 0) {
           // this.tableData=[]
@@ -775,8 +984,8 @@ this.dialogVisibleDistribute=false
       this.$router.push({
         path: "/musiccheck",
         query: {
-          mid: row.musicid
-        }
+          mid: row.musicid,
+        },
       });
     },
 
@@ -784,28 +993,28 @@ this.dialogVisibleDistribute=false
       this.$router.push({
         path: "/musicupdate",
         query: {
-          mid: row.musicid
-        }
+          mid: row.musicid,
+        },
       });
     },
 
     //获得音乐类型列表
     musicTypeList() {
-      musicTypeList().then(res => {
+      musicTypeList().then((res) => {
         this.musicTypes = res;
       });
     },
 
     //获取音乐列表
     musicList() {
-          let createTimeReg = [];
+      let createTimeReg = [];
       if (this.startTime == 0) {
         createTimeReg = [];
       } else {
         createTimeReg = [this.startTime, this.endTime];
       }
       let tagValue = [];
-      if (this.tagValue == '') {
+      if (this.tagValue == "") {
         tagValue = [];
       } else {
         tagValue = [this.tagValue];
@@ -813,108 +1022,109 @@ this.dialogVisibleDistribute=false
       const param = {
         token: this.token,
         pageSize: 10,
-        curPage: this.currentPage-1,
+        curPage: this.currentPage - 1,
         filter: {
           progressRateReg: this.progressRateReg,
-          publishTime:createTimeReg,
+          publishTime: createTimeReg,
           songName: this.seachName,
-          publisher: this.publishstate,
-          tag:tagValue,
-             lyricist:this.seachLyricist,
-        composer:this.seachComposer,
-        notDone:parseInt(this.notDone) 
-        }
+          publisher: this.roleValue,
+          tag: tagValue,
+          lyricist: this.seachLyricist,
+          composer: this.seachComposer,
+          notDone: parseInt(this.notDone),
+        },
       };
-      getPublishSongSell(param).then(res => {
+      getPublishSongSell(param).then((res) => {
         console.log(res);
         this.tableData = [];
-        if( res.data.item.length>0){
-           res.data.item.forEach((items, index) => {
-          let tempStatus = "";
-          switch (items.progressRate) {
-            case 0:
-              tempStatus = "已提交小样";
-              break;
-            case 100:
-              tempStatus = "已提交小样";
-              break;
-            case 150:
-              tempStatus = "已分配编曲组长";
-              break;
-            case 200:
-              tempStatus = "已分配编曲师";
-              break;
-            case 220:
-              tempStatus = "编曲师已提交";
-              break;
-            case 299:
-              tempStatus = "编曲已完成";
-              break;
-            case 300:
-              tempStatus = "已分配录音组长";
-              break;
-            case 350:
-              tempStatus = "已分配录音师";
-              break;
-            case 370:
-              tempStatus = "录音师已提交";
-              break;
-            case 499:
-              tempStatus = "录音完成";
-              break;
-            case 500:
-              tempStatus = "已分配缩混组长";
-              break;
-            case 550:
-              tempStatus = "已分配缩混师";
-              break;
-            case 570:
-              tempStatus = "缩混师已提交";
-              break;
-            case 599:
-              tempStatus = "缩混完成";
-              break;
-          }
-          let obj = {
-            songName: items.submitter.songName,
-            composer: items.submitter.composer,
-            lyricist: items.submitter.lyricist,
-            tag: items.submitter.tagName.join(","),
-            id: items.id,
-            idActive: items.no,
-            demoFile: items.mix.auditionFile,
-            lyricsFile: items.submitter.lyricsFile,
-            producerNick: items.producerNick,
-            copyrightName: items.publish.copyrightName,
-            collaborateName: items.publish.collaborateName,
-            startLockTime: this.dateFmt(items.publish.startLockTime),
-            contractTime: this.dateFmt(items.publish.contractTime),
-            cashDepositTime: this.dateFmt(items.publish.cashDepositTime),
-            publishTime: this.dateFmt(items.publish.publishTime),
-            finishLockTime: this.dateFmt(items.publish.finishLockTime),
-            account: items.publish.account,
-            progressRate: items.progressRate,
-            publisher: items.publish.publisher,
-            tagActive: items.submitter.tag,
-            collaborate: items.publish.collaborate,
-            copyright: items.publish.copyright,
-            lyricsCode:items.submitter.lyricsFile,
-            demoCode:items.mix.auditionFile,
-            account:items.publish.account
-          };
-          this.tableData.push(obj);
-        });
-        this.getTotal=res.data.count
-        }else{
-          this.tableData=[]
-            this.getTotal=res.data.count
+        if (res.data.item.length > 0) {
+          res.data.item.forEach((items, index) => {
+            let tempStatus = "";
+            switch (items.progressRate) {
+              case 0:
+                tempStatus = "已提交小样";
+                break;
+              case 100:
+                tempStatus = "已提交小样";
+                break;
+              case 150:
+                tempStatus = "已分配编曲组长";
+                break;
+              case 200:
+                tempStatus = "已分配编曲师";
+                break;
+              case 220:
+                tempStatus = "编曲师已提交";
+                break;
+              case 299:
+                tempStatus = "编曲已完成";
+                break;
+              case 300:
+                tempStatus = "已分配录音组长";
+                break;
+              case 350:
+                tempStatus = "已分配录音师";
+                break;
+              case 370:
+                tempStatus = "录音师已提交";
+                break;
+              case 499:
+                tempStatus = "录音完成";
+                break;
+              case 500:
+                tempStatus = "已分配缩混组长";
+                break;
+              case 550:
+                tempStatus = "已分配缩混师";
+                break;
+              case 570:
+                tempStatus = "缩混师已提交";
+                break;
+              case 599:
+                tempStatus = "缩混完成";
+                break;
+            }
+            let obj = {
+              songName: items.submitter.songName,
+              composer: items.submitter.composer,
+              lyricist: items.submitter.lyricist,
+              tag: items.submitter.tagName.join(","),
+              id: items.id,
+              idActive: items.no,
+              demoFile: items.mix.auditionFile,
+              lyricsFile: items.submitter.lyricsFile,
+              producerNick: items.producerNick,
+              copyrightName: items.publish.copyrightName,
+              collaborateName: items.publish.collaborateName,
+              startLockTime: this.dateFmt(items.publish.startLockTime),
+              contractTime: this.dateFmt(items.publish.contractTime),
+              cashDepositTime: this.dateFmt(items.publish.cashDepositTime),
+              publishTime: this.dateFmt(items.publish.publishTime),
+              finishLockTime: this.dateFmt(items.publish.finishLockTime),
+              account: items.publish.account,
+              progressRate: items.progressRate,
+              publisher: items.publish.publisher,
+              tagActive: items.submitter.tag,
+              collaborate: items.publish.collaborate,
+              copyright: items.publish.copyright,
+              lyricsCode: items.submitter.lyricsFile,
+              demoCode: items.mix.auditionFile,
+              account: items.publish.account,
+              client:items.publish.publisherNick
+              
+            };
+            this.tableData.push(obj);
+          });
+          this.getTotal = res.data.count;
+        } else {
+          this.tableData = [];
+          this.getTotal = res.data.count;
         }
-       
       });
     },
     //获取歌手列表
     getSingerList() {
-      singerList().then(res => {
+      singerList().then((res) => {
         // console.log(res);
         this.singerList = res;
         for (var i = 0; i < res.length; i++) {
@@ -966,7 +1176,7 @@ this.dialogVisibleDistribute=false
     handleCurrentChange(val) {
       // 当前页数
       this.currentPage = val;
-      this.musicList()
+      this.musicList();
     },
 
     hotFilter(val) {
@@ -986,13 +1196,13 @@ this.dialogVisibleDistribute=false
     //刷新
     refresh() {
       this.reload();
-    }
+    },
   },
   computed: {
     getTableData() {
       if (this.search.musicid) {
         return this.tableData
-          .filter(data => {
+          .filter((data) => {
             if (data.musicid == this.search.musicid) {
               return data;
             }
@@ -1004,7 +1214,7 @@ this.dialogVisibleDistribute=false
       }
       if (this.search.musicname) {
         return this.tableData
-          .filter(data => {
+          .filter((data) => {
             if (
               data.musicname
                 .toLowerCase()
@@ -1020,7 +1230,7 @@ this.dialogVisibleDistribute=false
       }
       if (this.search.singer) {
         return this.tableData
-          .filter(data => {
+          .filter((data) => {
             if (
               data.singer.singername
                 .toLowerCase()
@@ -1036,7 +1246,7 @@ this.dialogVisibleDistribute=false
       }
       if (this.search.musictype) {
         return this.tableData
-          .filter(data => {
+          .filter((data) => {
             if (
               data.musictype.musictypename
                 .toLowerCase()
@@ -1055,18 +1265,17 @@ this.dialogVisibleDistribute=false
         this.currentPage * this.pagesize
       );
     },
-   
-  }
+  },
 };
 </script>
 
 <style >
- .el-dialog__body{
-  padding-top: 10px
-  }
-  .el-table--mini .el-table__cell {
-    padding: 4px 0 !important;
-      }
+.el-dialog__body {
+  padding-top: 10px;
+}
+.el-table--mini .el-table__cell {
+  padding: 4px 0 !important;
+}
 .customWidth-audition {
   width: 500px;
 }
@@ -1087,10 +1296,10 @@ this.dialogVisibleDistribute=false
   margin-top: 5px;
 } */
 .option .option-active {
-display: flex;
-align-items: center;
-height: 40px;
-margin-left: 20px
+  display: flex;
+  align-items: center;
+  height: 40px;
+  margin-left: 20px;
 }
 
 .option .btn {
@@ -1113,17 +1322,17 @@ img {
   width: 50px;
   height: 50px;
 }
-.permission-img{
+.permission-img {
   width: 900px;
   height: 420px;
 }
-.permission-text{
+.permission-text {
   display: flex;
-    justify-content: center;
-    font-size: 30px;
-    color: #9abee3;
+  justify-content: center;
+  font-size: 30px;
+  color: #9abee3;
 }
-.el-range-editor.el-input__inner{
-  width: 300px!important;
+.el-range-editor.el-input__inner {
+  width: 300px !important;
 }
 </style>

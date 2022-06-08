@@ -5,16 +5,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.js"></script>
+ <script src="https://cdn.staticfile.org/vue/2.5.17/vue.min.js"></script>
+   <!-- <script src="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.js"></script>
   <script src="  https://unpkg.com/ant-design-vue@1.7.2/dist/antd.min.js"></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.css" rel="stylesheet" type="text/css" />
   <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.0/axios.js"></script> -->
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  
-  <!--   <script src="https://cdn.jsdelivr.net/npm/ant-design-vue@1.4.10/dist/antd.min.js"></script> -->
+  <!-- <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.5/vue.common.dev.js"></script>
+    
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.9/vue.common.dev.js"></script> -->
   <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.15.7/index.js"></script>
     <!-- <script src="  https://unpkg.com/ant-design-vue@1.7.2/dist/antd.min.js"></script> -->
   
@@ -29,12 +29,14 @@
 <style>
   html {
     width: 100%;
-    height: 100%
+    height: 100%;
+    overflow: hidden;
   }
 
   body {
     height: 100%;
-    width: 100%
+    width: 100%;
+    margin: 0px !important;
   }
 
   #root {
@@ -42,36 +44,6 @@
     height: 100%;
   }
 
-  /* .container {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-
-    position: relative;
-
-    background: url(http://47.114.141.171:8990/logo01.jpg) no-repeat;
-    background-size: 100% 100%;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-  }
-
-  .main {
-    width: 100%;
-    height: 100%;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .main-form {
-    width: 400px;
-    height: 210px;
-    border-radius: 4px;
-    background: #ffffff;
-
-  } */
 
 
 
@@ -111,7 +83,7 @@
   /* 要给背景图片设置宽高 */
   width: 100%;
   height: 100%;
-  background-image: url("http://106.53.61.91:8990/html/login.webp");
+  background-image: url("http://47.114.141.171:8990/html/login.webp");
   background-size: 100% 100%;
   background-repeat: no-repeat;
 }
@@ -191,7 +163,7 @@
           stepCaptchaVisible: false,
           // form: this.$form.createForm(this),
           // serverUrl:"106.53.61.91:6325/rylBGM/account",
-           serverUrl:"http://47.114.141.171:6325",
+           serverUrl:"http://47.114.141.171:8990",
 
           // 表单要提交的数据
       form: {
@@ -229,7 +201,7 @@
           this.axiosUrl = tempurl2
           //  strs = str.split("=");
           //  id = strs[1];
-          this.queryInfo(this.axiosUrl)
+         // this.queryInfo(this.axiosUrl)
         }
 
       },

@@ -2,33 +2,19 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 
 const Login = () => import("views/login/Login.vue");
-
 const Home = () => import("views/home/Home.vue");
-
 const MusicList = () => import("views/home/childrens/musiclist/MusicList.vue");
-const MusicCheck = () =>
-  import("views/home/childrens/musiclist/musiclistchildrens/MusicCheck.vue");
-
-
-const SingerList = () =>
-  import("views/home/childrens/singerlist/SingerList.vue");
-  const SingerkhList = () =>
-  import("views/home/childrens/singerlist/SingerkhList.vue");
-
-
+const MusicCheck = () =>import("views/home/childrens/musiclist/musiclistchildrens/MusicCheck.vue");
+const SingerList = () =>import("views/home/childrens/singerlist/SingerList.vue");
+const SingerkhList = () =>import("views/home/childrens/singerlist/SingerkhList.vue");
 const VideoList = () => import("views/home/childrens/videolist/VideoList.vue");
-
 const User = () => import("views/home/childrens/user/User.vue");
-
 const ULogin = () => import("views/ulogin/ULogin.vue");
 const Register = () => import("views/ulogin/Register.vue");
-
 const UHome = () => import("views/uhome/UHome.vue");
 const UPassword = () => import("views/uhome/header/UpdatePassword.vue");
 const UInfo = () => import("views/uhome/header/UpdateInfo.vue");
-
 const Find = () => import("views/uhome/container/find/Find.vue");
-
 const Song = () => import("views/uhome/container/detail/Song.vue");
 const Singer = () => import("views/uhome/container/detail/Singer.vue");
 const Singers = () => import("views/uhome/container/singers/Singers.vue");
