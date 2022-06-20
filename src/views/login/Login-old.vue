@@ -82,12 +82,7 @@ export default {
                 type: "success"
               });
               localStorage.setItem("userInfo", JSON.stringify(res.data));
-              // console.log(this.$store.state)
-              // console.log(routerList.admin)
-              // console.log(VueRouter)
               this.$store.commit("saveUserName", this.form.username);
-              // this.$store.commit("saveRouterList", routerList.admin);
-              console.log(this.$store.state)
               console.log(res.data);
               let funGroup = res.data.account.funcGroup;
               console.log(funGroup);
@@ -95,17 +90,9 @@ export default {
                 this.$router.push({
                   path: "/SingerkhList"
                 });
-              }
-            else if (funGroup.includes(100) ||funGroup.includes(150)||funGroup.includes(200)||
-                funGroup.includes(251)||funGroup.includes(300)||funGroup.includes(351)||
-                funGroup.includes(400)||funGroup.includes(451)|| funGroup.includes(500)||funGroup.includes(551)) {
+              } else {
                 this.$router.push({
                   path: "/MusicList"
-                });
-              }
-              else {
-                this.$router.push({
-                  path: "/singerlist"
                 });
               }
             } else {

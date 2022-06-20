@@ -16,7 +16,7 @@
       </el-dropdown-menu>
     </el-dropdown>
       </div>
-
+   
       <!-- <span class="user">欢迎你！{{ this.$store.state.saveUserName }}</span>
       <el-button type="text" class="out" @click="out">退出系统</el-button> -->
     </div>
@@ -31,18 +31,17 @@
               :unique-opened="true"
               ref="menu"
             >
-              <el-submenu index="1" v-if="funcGroupArr.includes(100) ||funcGroupArr.includes(150)||funcGroupArr.includes(200)||
-                funcGroupArr.includes(251)||funcGroupArr.includes(300)||funcGroupArr.includes(351)||
-                funcGroupArr.includes(400)||funcGroupArr.includes(451)|| funcGroupArr.includes(500)||funcGroupArr.includes(551)">
+              <el-submenu index="1">
                 <template slot="title">
                   <i class="el-icon-s-tools"></i>
                   <span>制作管理</span>
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="/musiclist">歌曲列表</el-menu-item>
+                  <!-- <el-menu-item index="/musictype">音乐类型</el-menu-item> -->
                 </el-menu-item-group>
               </el-submenu>
-              <el-submenu index="2" v-if="funcGroupArr.includes(100) || funcGroupArr.includes(600) || funcGroupArr.includes(651)">
+              <el-submenu index="2">
                 <template slot="title">
                   <i class="el-icon-headset"></i>
                   <span slot="title">歌单管理</span>
@@ -51,7 +50,7 @@
                   <el-menu-item index="/singerlist">生成试听歌单</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-              <el-submenu index="3" v-if="funcGroupArr.includes(100) || funcGroupArr.includes(600) || funcGroupArr.includes(651)">
+              <el-submenu index="3">
                 <template slot="title">
                   <i class="el-icon-shopping-cart-1"></i>
                   <span slot="title">发布管理</span>
@@ -60,7 +59,7 @@
                   <el-menu-item index="/videolist">发布列表</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-                <el-submenu index="4" v-if="funcGroupArr.includes(100) || funcGroupArr.includes(1000)">
+                <el-submenu index="4">
                 <template slot="title">
                   <i class="el-icon-s-custom"></i>
                   <span slot="title">客户管理</span>
@@ -69,7 +68,7 @@
                   <el-menu-item index="/singerkhList">试听列表</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-              <el-submenu index="5" v-if="funcGroupArr.includes(100)">
+              <el-submenu index="5">
                 <template slot="title">
                   <i class="el-icon-user-solid"></i>
                   <span slot="title">用户管理</span>
@@ -130,12 +129,7 @@ export default {
       },
     };
   },
-  created() {
-    this.funcGroupArr = JSON.parse(
-      localStorage.getItem("userInfo")
-    ).account.funcGroup;
-    console.log(this.funcGroupArr);
-  },
+  created() {},
   methods: {
     //下拉菜单
       handleCommand(command) {
@@ -188,7 +182,7 @@ export default {
              this.dialogVisible = false;
            this.$router.push("/login");
           }
-
+         
         })
         .catch(() => {
           this.$message.error("修改密码失败！");

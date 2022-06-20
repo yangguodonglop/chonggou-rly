@@ -1,24 +1,25 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import store from "store";
 
-const Login = () => import("views/login/Login.vue");
-const Home = () => import("views/home/Home.vue");
-const MusicList = () => import("views/home/childrens/musiclist/MusicList.vue");
-const MusicCheck = () =>import("views/home/childrens/musiclist/musiclistchildrens/MusicCheck.vue");
-const SingerList = () =>import("views/home/childrens/singerlist/SingerList.vue");
-const SingerkhList = () =>import("views/home/childrens/singerlist/SingerkhList.vue");
-const VideoList = () => import("views/home/childrens/videolist/VideoList.vue");
-const User = () => import("views/home/childrens/user/User.vue");
-const ULogin = () => import("views/ulogin/ULogin.vue");
-const Register = () => import("views/ulogin/Register.vue");
-const UHome = () => import("views/uhome/UHome.vue");
-const UPassword = () => import("views/uhome/header/UpdatePassword.vue");
-const UInfo = () => import("views/uhome/header/UpdateInfo.vue");
-const Find = () => import("views/uhome/container/find/Find.vue");
-const Song = () => import("views/uhome/container/detail/Song.vue");
-const Singer = () => import("views/uhome/container/detail/Singer.vue");
-const Singers = () => import("views/uhome/container/singers/Singers.vue");
-const Video = () => import("views/uhome/container/detail/Video.vue");
+const Login = () => import("@/views/login/Login.vue");
+const Home = () => import("@/views/home/Home.vue");
+const MusicList = () => import("@/views/home/childrens/musiclist/MusicList.vue");
+const MusicCheck = () => import("@/views/home/childrens/musiclist/musiclistchildrens/MusicCheck.vue");
+const SingerList = () => import("@/views/home/childrens/singerlist/SingerList.vue");
+const SingerkhList = () => import("@/views/home/childrens/singerlist/SingerkhList.vue");
+const VideoList = () => import("@/views/home/childrens/videolist/VideoList.vue");
+const User = () => import("@/views/home/childrens/user/User.vue");
+const ULogin = () => import("@/views/ulogin/ULogin.vue");
+const Register = () => import("@/views/ulogin/Register.vue");
+const UHome = () => import("@/views/uhome/UHome.vue");
+const UPassword = () => import("@/views/uhome/header/UpdatePassword.vue");
+const UInfo = () => import("@/views/uhome/header/UpdateInfo.vue");
+const Find = () => import("@/views/uhome/container/find/Find.vue");
+const Song = () => import("@/views/uhome/container/detail/Song.vue");
+const Singer = () => import("@/views/uhome/container/detail/Singer.vue");
+const Singers = () => import("@/views/uhome/container/singers/Singers.vue");
+const Video = () => import("@/views/uhome/container/detail/Video.vue");
 
 const originalPush = VueRouter.prototype.push;
 VueRouter.prototype.push = function push(location) {
@@ -30,91 +31,91 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    redirect: "/find"
+    redirect: "/login",
+    component:  () => import("@/views/login/Login.vue")
+  },
+  {
+    path: "/login",
+    component:  () => import("@/views/login/Login.vue")
+  },
+  {
+    path: "/ulogin",
+    component: () => import("@/views/ulogin/ULogin.vue")
   },
   {
     path: "/home",
-    component: Home,
+    component:() => import("@/views/home/Home.vue"),
     children: [
       {
         path: "/musiclist",
-        component: MusicList
+        component: () => import("@/views/home/childrens/musiclist/MusicList.vue"),
       },
 
       {
         path: "/musiccheck",
-        component: MusicCheck
+        component: import("@/views/home/childrens/musiclist/musiclistchildrens/MusicCheck.vue"),
       },
-   
+
       {
         path: "/singerlist",
-        component: SingerList
+        component: () => import("@/views/home/childrens/singerlist/SingerList.vue"),
       },
       {
         path: "/SingerkhList",
-        component: SingerkhList
+        component: () => import("@/views/home/childrens/singerlist/SingerkhList.vue"),
       },
-      
-  
+
+
       {
         path: "/videolist",
-        component: VideoList
+        component:() => import("@/views/home/childrens/videolist/VideoList.vue")
       },
       {
         path: "/user",
-        component: User
+        component: () => import("@/views/home/childrens/user/User.vue")
       },
 
     ]
   },
   {
-    path: "/login",
-    component: Login
-  },
-  {
-    path: "/ulogin",
-    component: ULogin
-  },
-  {
     path: "/uhome",
-    component: UHome,
+    component:  () => import("@/views/uhome/UHome.vue"),
     children: [
       {
         path: "/find",
-        component: Find
+        component: () => import("@/views/uhome/container/find/Find.vue")
       },
       {
         path: "/song",
-        component: Song
+        component:() => import("@/views/uhome/container/detail/Song.vue")
       },
       {
         path: "/singer",
-        component: Singer
+        component:() => import("@/views/uhome/container/detail/Singer.vue")
       },
       {
         path: "/singers",
-        component: Singers
+        component:() => import("@/views/uhome/container/singers/Singers.vue")
       },
       {
         path: "/video",
-        component: Video
+        component: () => import("@/views/uhome/container/detail/Video.vue")
       }
     ]
   },
   {
     path: "/register",
-    component: Register
+    component:  () => import("@/views/ulogin/Register.vue")
   },
   {
     path: "/upassword",
-    component: UPassword
+    component: () => import("@/views/uhome/header/UpdatePassword.vue")
   },
   {
     path: "/uinfo",
-    component: UInfo
+    component:  () => import("@/views/uhome/header/UpdateInfo.vue")
   }
 ];
-
 const router = new VueRouter({
   mode: "hash",
   base: process.env.BASE_URL,
@@ -127,5 +128,6 @@ const router = new VueRouter({
     }
   }
 });
+
 
 export default router;
