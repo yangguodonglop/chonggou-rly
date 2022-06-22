@@ -52,7 +52,6 @@ export default {
 
   },
   mounted() {
-       console.log(baseUrl)
     this.musicListlyricsFile()
      this.musicListDemo()
   },
@@ -93,6 +92,8 @@ export default {
         category: "audition"
       };
       
+      console.log(param)
+      console.log("****")
 //       let tempStr=JSON.stringify(param)
 //       console.log(tempStr)
 //             const Base64 = require('js-base64').Base64
@@ -105,15 +106,12 @@ export default {
 //       // });
         let tempStr = JSON.stringify(param);
       let tempStr1 = JSON.stringify(param);
-      console.log(tempStr);
       const Base64 = require("js-base64").Base64;
       //tempStr = Base64.encode(tempStr)
       tempStr = Base64.encodeURL(tempStr);
       tempStr1=window.btoa(tempStr1);
-
-       console.log(tempStr);
-       console.log(tempStr1);
       this.auditionCodeUrl = baseUrl + "/openFile/" + tempStr;
+      console.log(this.auditionCodeUrl)
     },
       //获取歌词
     musicListlyricsFile() {
@@ -133,14 +131,9 @@ export default {
 
   let tempStr = JSON.stringify(param);
       let tempStr1 = JSON.stringify(param);
-      console.log(tempStr);
       const Base64 = require("js-base64").Base64;
       tempStr = Base64.encodeURL(tempStr);
-      console.log
           tempStr1=window.btoa(tempStr1);
-
-       console.log(tempStr);
-       console.log(tempStr1);
       openFileActive(tempStr).then(res => {
         console.log(res);
         this.songText=res

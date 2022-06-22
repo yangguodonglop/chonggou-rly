@@ -80,7 +80,6 @@ export default {
       
     //获取歌曲
     musicListDemo() {
-      console.log(this.userInfo)
        
       let fileCode=''
       if(this.userInfo.progressRateActive<599){
@@ -97,16 +96,13 @@ export default {
       };
       console.log(param)
       let tempStr = JSON.stringify(param);
-      let tempStr1 = JSON.stringify(param);
-      console.log(tempStr);
       const Base64 = require("js-base64").Base64;
       //tempStr = Base64.encode(tempStr)
+      debugger
       tempStr = Base64.encodeURL(tempStr);
      // tempStr1=window.btoa(tempStr1);
-
-       console.log(tempStr);
-     //  console.log(tempStr1);
       this.auditionCodeUrl = baseUrl + "/openFile/" + tempStr;
+      console.log(this.auditionCodeUrl)
       // openFileActive(tempStr).then(res => {
       //  // console.log(res);
       //   this.auditionCodeUrl=res
@@ -129,6 +125,7 @@ export default {
       console.log
           tempStr1=window.btoa(tempStr1);
       openFileActive(tempStr).then(res => {
+        console.log(res)
         this.songText = res;
       });
     },

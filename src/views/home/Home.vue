@@ -42,7 +42,7 @@
                   <el-menu-item index="/musiclist">歌曲列表</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-              <el-submenu index="2" v-if="funcGroupArr.includes(100) || funcGroupArr.includes(600) || funcGroupArr.includes(651)">
+              <el-submenu index="2" v-if="funcGroupArr.includes(100) || funcGroupArr.includes(600) || funcGroupArr.includes(651) || funcGroupArr.includes(150)">
                 <template slot="title">
                   <i class="el-icon-headset"></i>
                   <span slot="title">歌单管理</span>
@@ -51,7 +51,7 @@
                   <el-menu-item index="/singerlist">生成试听歌单</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-              <el-submenu index="3" v-if="funcGroupArr.includes(100) || funcGroupArr.includes(600) || funcGroupArr.includes(651)">
+              <el-submenu index="3" v-if="funcGroupArr.includes(100) || funcGroupArr.includes(600) || funcGroupArr.includes(651)|| funcGroupArr.includes(150)">
                 <template slot="title">
                   <i class="el-icon-shopping-cart-1"></i>
                   <span slot="title">发布管理</span>
@@ -60,7 +60,7 @@
                   <el-menu-item index="/videolist">发布列表</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-                <el-submenu index="4" v-if="funcGroupArr.includes(100) || funcGroupArr.includes(1000)">
+                <el-submenu index="4" v-if="funcGroupArr.includes(100) || funcGroupArr.includes(1000) || funcGroupArr.includes(150)">
                 <template slot="title">
                   <i class="el-icon-s-custom"></i>
                   <span slot="title">客户管理</span>
@@ -69,7 +69,7 @@
                   <el-menu-item index="/singerkhList">试听列表</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-              <el-submenu index="5" v-if="funcGroupArr.includes(100)">
+              <el-submenu index="5" v-if="funcGroupArr.includes(100) || funcGroupArr.includes(150)">
                 <template slot="title">
                   <i class="el-icon-user-solid"></i>
                   <span slot="title">用户管理</span>
