@@ -110,7 +110,7 @@
                 size="mini"
                 @click="addMusic()"
               >上传小样</el-button>
-              <div class="refresh" v-if="!plfpType" >
+              <div class="refresh" v-if="plfpType" >
                 <el-dropdown trigger="click">
                   <el-button type="primary" size="mini" icon="el-icon-s-tools">批量分配</el-button>
 
@@ -833,11 +833,13 @@ export default {
     }
 
        if (
-      this.funcGroupArr.includes(251) == true ||
-      this.funcGroupArr.includes(351) == true ||
-        this.funcGroupArr.includes(451) == true ||
-          this.funcGroupArr.includes(551) == true ||
-                    this.funcGroupArr.includes(651) == true 
+      this.funcGroupArr.includes(100) == true ||
+      this.funcGroupArr.includes(150) == true ||
+        this.funcGroupArr.includes(200) == true ||
+          this.funcGroupArr.includes(300) == true ||
+                    this.funcGroupArr.includes(400) == true ||
+                                        this.funcGroupArr.includes(500) == true 
+
 
     ) {
       this.plfpType = true;

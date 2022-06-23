@@ -288,7 +288,7 @@ export default {
       localStorage.getItem("userInfo")
     ).account.funcGroup;
     console.log(this.funcGroupArr);
-    if (this.funcGroupArr.includes(100) || this.funcGroupArr.includes(1000) ) {
+    if (this.funcGroupArr.includes(100) || this.funcGroupArr.includes(1500) ) {
       this.permission = true;
     } else {
       this.permission = false;

@@ -91,7 +91,7 @@ export default {
               console.log(res.data);
               let funGroup = res.data.account.funcGroup;
               console.log(funGroup);
-              if (funGroup.includes(1000)) {
+              if (funGroup.includes(1500)) {
                 this.$router.push({
                   path: "/SingerkhList"
                 });

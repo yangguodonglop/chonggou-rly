@@ -60,7 +60,7 @@
                   <el-menu-item index="/videolist">发布列表</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
-                <el-submenu index="4" v-if="funcGroupArr.includes(100) || funcGroupArr.includes(1000) || funcGroupArr.includes(150)">
+                <el-submenu index="4" v-if="funcGroupArr.includes(100) || funcGroupArr.includes(1500) || funcGroupArr.includes(150)">
                 <template slot="title">
                   <i class="el-icon-s-custom"></i>
                   <span slot="title">客户管理</span>

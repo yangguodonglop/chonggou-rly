@@ -82,6 +82,10 @@ export default {
         {
           id: 1000,
           label: "客户"
+        },
+         {
+          id: 1500,
+          label: "超级客户"
         }
       ],
       keyArr: []
