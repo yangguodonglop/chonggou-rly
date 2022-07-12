@@ -120,6 +120,8 @@ export default {
 
     // param是自带参数。 this.$refs.upload.submit() 会自动调用 httpRequest方法.在里面取得file
     httpRequest(param) {
+            console.log(param)
+
       let fileObj = param.file; // 相当于input里取得的files
       let fd = new FormData(); // FormData 对象
       fd.append("files", fileObj); // 文件对象

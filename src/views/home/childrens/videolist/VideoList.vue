@@ -105,6 +105,9 @@
                 <el-button type="primary" @click="toUploadMix()" size="mini"
                   >查询有效歌单</el-button
                 >
+                <el-button type="danger" @click="toMoveToMixAll()" size="mini"
+                  >批量移除锁定至缩混</el-button
+                >
               </div>
               <div class="refresh" style="margin-left: 20px">
                 <el-button
@@ -133,6 +136,7 @@
           style="width: 100%; margin-top: 20px"
           stripe
           size="mini"
+          ref="multipleTable"
           :default-sort="{ prop: 'musicid', order: 'ascending' }"
           @selection-change="handleSelectionChange"
         >
@@ -170,7 +174,7 @@
             width="120"
             align="center"
           ></el-table-column>
-            <el-table-column
+          <el-table-column
             prop="client"
             label="买入客户"
             width="120"
@@ -286,6 +290,9 @@
                     <el-dropdown-item
                       @click.native="toUploadArrangemen(scope.row)"
                       >更新信息</el-dropdown-item
+                    >
+                    <el-dropdown-item @click.native="toMoveToMix(scope.row)"
+                      >移除锁定至缩混</el-dropdown-item
                     >
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -447,7 +454,8 @@ import {
   openFileActive,
   checkWork,
   getPublishSongSell,
-  userListActive
+  userListActive,
+  moveToMix,
 } from "network/home.js";
 
 export default {
@@ -527,37 +535,36 @@ export default {
       endTime: 0,
       tagValue: "",
       publishstate: "",
-      roleValue:'',
+      roleValue: "",
       progressRateReg: [720, 1000],
       permission: true,
       notDone: "0",
-        roleList:[
-         
+      roleList: [
         {
           value: 300,
-          label: "编曲组长"
+          label: "编曲组长",
         },
         {
           value: 351,
-          label: "编曲师"
+          label: "编曲师",
         },
         {
           value: 400,
-          label: "录音组长"
+          label: "录音组长",
         },
         {
           value: 451,
-          label: "录音师"
+          label: "录音师",
         },
         {
           value: 500,
-          label: "混音组长"
+          label: "混音组长",
         },
         {
           value: 551,
-          label: "混音师"
+          label: "混音师",
         },
-        ],
+      ],
     };
   },
   created() {
@@ -581,45 +588,118 @@ export default {
     this.musicList();
     //this.musicList1();
     this.queryInfoStyle();
-    this.findClientInfo()
+    this.findClientInfo();
     //获取歌手列表
     // this.getSingerList();
   },
   methods: {
+    //批量勾选
+    handleSelectionChange(val) {
+      console.log(val);
+      this.plIds = [];
+      this.idsObj = [];
+      if (val.length > 0) {
+        val.forEach((item) => {
+          this.plIds.push(item.id);
+          this.idsObj.push(item);
+        });
+      }
+      console.log(this.plIds);
+      this.multipleSelection = val;
+      console.log(this.multipleSelection);
+    },
+    // 批量移除锁定至缩混
+    toMoveToMixAll(val) {
+      console.log(val);
+      console.log(this.multipleSelection);
+      if (this.multipleSelection.length < 1) {
+        this.$message({
+          type: "error",
+          message: "请至少选择一首歌曲进行操作！",
+        });
+        return false;
+      }
+      const tempArr = [];
+      this.multipleSelection.forEach((item) => {
+        tempArr.push(item["id"]);
+      });
+
+      const param = {
+        token: this.token,
+        songID: tempArr,
+      };
+      moveToMix(param).then((res) => {
+        if (res.status == 0) {
+          this.$message({
+            type: "success",
+            message: "移除锁定至缩混成功!",
+          });
+        } else {
+          this.$message({
+            type: "error",
+            message: `移除锁定失败！错误码：${res.status}--错误原因：${res.des}`,
+          });
+        }
+        this.lockType = false;
+        this.musicList();
+      });
+    },
+
+    // 移除锁定至缩混
+    toMoveToMix(val) {
+      console.log(val);
+      const param = {
+        token: this.token,
+        songID: [val.id],
+      };
+      moveToMix(param).then((res) => {
+        if (res.status == 0) {
+          this.$message({
+            type: "success",
+            message: "移除锁定至缩混成功!",
+          });
+        } else {
+          this.$message({
+            type: "error",
+            message: `移除锁定失败！错误码：${res.status}--错误原因：${res.des}`,
+          });
+        }
+        this.lockType = false;
+        this.musicList();
+      });
+    },
     // 查询客户账户列表
     findClientInfo() {
       const param = {
         token: this.token,
         pageSize: 100,
         curPage: this.currentPage - 1,
-        fFuncGroup: 1000
+        fFuncGroup: 1000,
       };
       //向后端发送请求并接受数据库中的用户列表
-      userListActive(param).then(res => {
+      userListActive(param).then((res) => {
         console.log(res);
-              this.roleList=[]
+        this.roleList = [];
         if (res.status == 0) {
-          this.roleList=res.data.item
-         
+          this.roleList = res.data.item;
         }
-          console.log(this.roleList)    
-   });
+        console.log(this.roleList);
+      });
     },
     // 选择歌曲类型
     changeMusic(val) {
       console.log(val);
       this.tagValue = val;
-
     },
     // 按照客户查询
-    changeRole(val){
-      this.roleValue=val
-      console.log(this.roleValue)
+    changeRole(val) {
+      this.roleValue = val;
+      console.log(this.roleValue);
     },
-    
+
     handleChangeState(val) {
       console.log(val);
-     // this.publishstate = val;
+      // this.publishstate = val;
       this.notDone = val;
       // switch(val){
       //   case '0':
@@ -664,7 +744,7 @@ export default {
       this.timeValue = "";
       this.startTime = 0;
       this.notDone = "0";
-      this.roleValue='';
+      this.roleValue = "";
 
       this.seachName = "";
       (this.seachLyricist = ""), (this.seachComposer = "");
@@ -699,7 +779,7 @@ export default {
         } else {
           this.$message({
             type: "error",
-            message: "延期锁定失败!",
+            message: `上传成品失败！错误码：${res.status}--错误原因：${res.des}`,
           });
         }
         this.lockType = false;
@@ -1110,8 +1190,7 @@ export default {
               lyricsCode: items.submitter.lyricsFile,
               demoCode: items.mix.auditionFile,
               account: items.publish.account,
-              client:items.publish.publisherNick
-              
+              client: items.publish.publisherNick,
             };
             this.tableData.push(obj);
           });
@@ -1165,11 +1244,6 @@ export default {
       this.search.musicname = "";
       this.search.musictype = "";
       this.search.singer = "";
-    },
-
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
-      // console.log(this.multipleSelection);
     },
 
     //点击之后的当前页数

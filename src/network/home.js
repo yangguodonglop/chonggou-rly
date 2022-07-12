@@ -1,6 +1,6 @@
 import { request } from "./request";
 import {get,post} from './request'
-// const baseUrl='http://106.53.61.91:6325/rylBGM'
+// const baseUrl='http://175.27.187.172:6325/rylBGM'
 const baseUrl='http://47.114.141.171:8990/rylBGM'
 // const baseUrlActive='http://106.53.61.91:6327'
 const baseUrlActive='http://192.168.2.202:6327'
@@ -66,6 +66,7 @@ export const remarkToSongActive = (param) => post(baseUrl+'/productLine/putSongR
 export const reCommitLyric = (param) => post(baseUrl+'/productLine/reCommitLyric', param)
 export const getAuditionRec = (param) => post(baseUrl+'/sell/getAuditionRec', param)
 export const getAccountIntro = (param) => post(baseUrl+'/account/getAccountIntro', param)
+export const moveToMix = (param) => post(baseUrl+'/sell/moveToMix', param)
 
 
 // export const deleteSong = (param) => post(baseUrl+'/productLine/deleteSong', param)
